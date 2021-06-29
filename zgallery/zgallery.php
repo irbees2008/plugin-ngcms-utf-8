@@ -1,7 +1,8 @@
 <?php
 if (!defined('NGCMS'))
-	die ('HAL');
-function plugin_block_zgallery($number, $mode, $cat, $overrideTemplateName, $cacheExpire) {
+	die('HAL');
+function plugin_block_zgallery($number, $mode, $cat, $overrideTemplateName, $cacheExpire)
+{
 
 	global $config, $mysql, $tpl, $template, $twig, $twigLoader, $langMonths, $lang, $TemplateCache, $userROW;
 	@include_once root . 'includes/classes/upload.class.php';
@@ -49,10 +50,10 @@ function plugin_block_zgallery($number, $mode, $cat, $overrideTemplateName, $cac
 	$tpath = locatePluginTemplates(array($templateName), 'zgallery', pluginGetVariable('zgallery', 'localsource'));
 	// Preload template configuration variables
 	@templateLoadVariables();
-	$cacheKeys [] = '|number=' . $number;
-	$cacheKeys [] = '|mode=' . $mode;
-	$cacheKeys [] = '|cat=' . $cat;
-	$cacheKeys [] = '|templateName=' . $templateName;
+	$cacheKeys[] = '|number=' . $number;
+	$cacheKeys[] = '|mode=' . $mode;
+	$cacheKeys[] = '|cat=' . $cat;
+	$cacheKeys[] = '|templateName=' . $templateName;
 	// Generate cache file name [ we should take into account SWITCHER plugin ]
 	$cacheFileName = md5('zgallery' . $config['theme'] . $templateName . $config['default_lang'] . join('', $cacheKeys)) . '.txt';
 	if (!$cacheDisabled && ($cacheExpire > 0)) {
@@ -75,7 +76,7 @@ function plugin_block_zgallery($number, $mode, $cat, $overrideTemplateName, $cac
 		$row['fname'] = $fname;
 		$row['fileurl'] = $fileurl;
 		$row['thumburl'] = $thumburl;
-		$tEntries [] = $row;
+		$tEntries[] = $row;
 	}
 	$tVars['entries'] = $tEntries;
 	$tVars['tpl_url'] = tpl_url;
@@ -89,9 +90,11 @@ function plugin_block_zgallery($number, $mode, $cat, $overrideTemplateName, $cac
 	return $output;
 }
 
-class ShowZgallery extends NewsFilter {
+class ShowZgallery extends NewsFilter
+{
 
-	function showNews($newsID, $SQLnews, &$tvars, $mode = array()) {
+	function showNews($newsID, $SQLnews, &$tvars, $mode = array())
+	{
 
 		global $mysql, $tpl, $config, $twig;
 		/*
@@ -127,9 +130,10 @@ class ShowZgallery extends NewsFilter {
 	}
 }
 
-function plugin_block_zgallery_showTwig($params) {
+function plugin_block_zgallery_showTwig($params)
+{
 
-	global $CurrentHandler, $config;
+
 
 	return plugin_block_zgallery($params['number'], $params['mode'], $params['cat'], $params['template'], isset($params['cacheExpire']) ? $params['cacheExpire'] : 0);
 }

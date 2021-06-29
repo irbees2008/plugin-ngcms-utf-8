@@ -5,7 +5,7 @@ class OGNEWSNewsFilter extends NewsFilter
 {
     function showNews($newsID, $SQLnews, $tvars, $mode = array())
     {
-        global $CurrentHandler, $config;
+
         if (($CurrentHandler['handlerName'] == 'news') || ($CurrentHandler['handlerName'] == 'print')) {
             if ($SQLnews['alt_name'] == $CurrentHandler['params']['altname']) {
                 if (isset($mode)) {

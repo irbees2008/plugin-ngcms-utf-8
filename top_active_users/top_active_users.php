@@ -1,7 +1,8 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
-function plugin_top_active_users($number, $mode, $overrideTemplateName, $cacheExpire) {
+if (!defined('NGCMS')) die('HAL');
+function plugin_top_active_users($number, $mode, $overrideTemplateName, $cacheExpire)
+{
 
 	global $config, $mysql, $tpl, $template, $twig, $twigLoader, $langMonths, $lang, $TemplateCache;
 	// Prepare keys for cacheing
@@ -42,9 +43,9 @@ function plugin_top_active_users($number, $mode, $overrideTemplateName, $cacheEx
 	// - Check if noavatar is defined on template level
 	$tplVars = $TemplateCache['site']['#variables'];
 	$noAvatarURL = (isset($tplVars['configuration']) && is_array($tplVars['configuration']) && isset($tplVars['configuration']['noAvatarImage']) && $tplVars['configuration']['noAvatarImage']) ? (tpl_url . "/" . $tplVars['configuration']['noAvatarImage']) : (avatars_url . "/noavatar.gif");
-	$cacheKeys [] = '|number=' . $number;
-	$cacheKeys [] = '|mode=' . $mode;
-	$cacheKeys [] = '|templateName=' . $templateName;
+	$cacheKeys[] = '|number=' . $number;
+	$cacheKeys[] = '|mode=' . $mode;
+	$cacheKeys[] = '|templateName=' . $templateName;
 	// Generate cache file name [ we should take into account SWITCHER plugin ]
 	$cacheFileName = md5('top_active_users' . $config['theme'] . $templateName . $config['default_lang'] . join('', $cacheKeys)) . '.txt';
 	if (!$cacheDisabled && ($cacheExpire > 0)) {
@@ -75,7 +76,7 @@ function plugin_top_active_users($number, $mode, $overrideTemplateName, $cacheEx
 		} else {
 			$avatars = '';
 		}
-		$tEntries [] = array(
+		$tEntries[] = array(
 			'name'        => $row['name'],
 			'link'        => $alink,
 			'ulink'       => $ublog_link,
@@ -106,9 +107,10 @@ function plugin_top_active_users($number, $mode, $overrideTemplateName, $cacheEx
 // * mode			- Mode for show
 // * template		- Personal template for plugin
 // * cacheExpire	- age of cache [in seconds]
-function plugin_top_active_users_showTwig($params) {
+function plugin_top_active_users_showTwig($params)
+{
 
-	global $CurrentHandler, $config;
+
 
 	return plugin_top_active_users($params['number'], $params['mode'], $params['template'], isset($params['cacheExpire']) ? $params['cacheExpire'] : 0);
 }
