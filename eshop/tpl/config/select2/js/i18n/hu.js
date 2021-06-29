@@ -1,0 +1,3 @@
+/*! Select2 4.0.0 | https://github.com/select2/select2/blob/master/LICENSE.md */
+
+(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/hu",[],function(){return{inputTooLong:function(e){var t=e.input.length-e.maximum;return"TГєl hosszГє. "+t+" karakterrel tГ¶bb, mint kellene."},inputTooShort:function(e){var t=e.minimum-e.input.length;return"TГєl rГ¶vid. MГ©g "+t+" karakter hiГЎnyzik."},loadingMore:function(){return"TГ¶ltГ©sвЂ¦"},maximumSelected:function(e){return"Csak "+e.maximum+" elemet lehet kivГЎlasztani."},noResults:function(){return"Nincs talГЎlat."},searching:function(){return"KeresГ©sвЂ¦"}}}),{define:e.define,require:e.require}})();
