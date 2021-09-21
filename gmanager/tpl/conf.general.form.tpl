@@ -37,13 +37,13 @@
 					<small>{l_gmanager:desc_cell}</small>
 				</td>
 				<td width="50%" class="contentEntry2">
-					<input type="text" size="10" name="main_cell" value="{main_cell}"/></td>
+					<input type="text" class="form-control" size="10" name="main_cell" value="{main_cell}"/></td>
 			</tr>
 			<tr>
 				<td width="50%" class="contentEntry1">{l_gmanager:label_row}<br/>
 					<small>{l_gmanager:desc_row}</small>
 				</td>
-				<td width="50%" class="contentEntry2"><input type="text" size="10" name="main_row" value="{main_row}"/>
+				<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="10" name="main_row" value="{main_row}"/>
 				</td>
 			</tr>
 			<tr>
@@ -62,14 +62,14 @@
 				<td width="50%" class="contentEntry1">{l_gmanager:label_cell}<br/>
 					<small>{l_gmanager:desc_cell}</small>
 				</td>
-				<td width="50%" class="contentEntry2"><input type="text" size="10" name="one_cell" value="{one_cell}"/>
+				<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="10" name="one_cell" value="{one_cell}"/>
 				</td>
 			</tr>
 			<tr>
 				<td width="50%" class="contentEntry1">{l_gmanager:label_row}<br/>
 					<small>{l_gmanager:desc_row}</small>
 				</td>
-				<td width="50%" class="contentEntry2"><input type="text" size="10" name="one_row" value="{one_row}"/>
+				<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="10" name="one_row" value="{one_row}"/>
 				</td>
 			</tr>
 			<tr>

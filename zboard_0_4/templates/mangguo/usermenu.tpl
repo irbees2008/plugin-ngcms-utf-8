@@ -31,7 +31,7 @@ var set_pass  = 0;
 				<input type="hidden" name="redirect" value="{{ redirect }}" />
 				<div class="label">
 					<label for="login">Р›РѕРіРёРЅ:</label>
-					<input type="text" id="login" name="username" class="input">
+					<input type="text" class="form-control" id="login" name="username" class="input">
 				</div>
 				<div class="label clearfix">
 					<label for="password">РџР°СЂРѕР»СЊ:</label>

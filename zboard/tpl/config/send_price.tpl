@@ -3,11 +3,11 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 <td width="50%" class="contentEntry1">Время (в днях)<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="time" value="{time}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="time" value="{time}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">Стоимость<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="price" value="{price}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="price" value="{price}" /></td>
 </tr>
 </table>
 <table border="0" width="100%" cellspacing="0" cellpadding="0">

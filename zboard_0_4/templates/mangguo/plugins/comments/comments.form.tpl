@@ -5,7 +5,7 @@ function reload_captcha() {
 	if (captc != null) {
 		captc.src = "{captcha_url}?rand="+Math.random();
 	}
-}	
+}
 
 function add_comment(){
 	// First - delete previous error message
@@ -28,7 +28,7 @@ function add_comment(){
 	cajax.requestFile = "{post_url}"; //+Math.random();
 	cajax.method = 'POST';
 	//cajax.element = 'new_comments';
-	cajax.onComplete = function() { 
+	cajax.onComplete = function() {
 		if (cajax.responseStatus[0] == 200) {
 			try {
 				var resRX = eval('('+cajax.response+')');
@@ -38,18 +38,18 @@ function add_comment(){
 				} else {
 					nc = document.getElementById('new_comments');
 				}
-				nc.innerHTML += resRX['data'];				
-				if (resRX['status']) { 
+				nc.innerHTML += resRX['data'];
+				if (resRX['status']) {
 					// Added successfully!
 					form.content.value = '';
 				}
-  			} catch (err) { 
-				alert('Error parsing JSON output. Result: '+cajax.response); 
+  			} catch (err) {
+				alert('Error parsing JSON output. Result: '+cajax.response);
 			}
 		} else {
 			alert('TX.fail: HTTP code '+cajax.responseStatus[0]);
-		}	
-		[captcha] 
+		}
+		[captcha]
 		reload_captcha();[/captcha]
 	}
 	cajax.runAJAX();
@@ -61,16 +61,16 @@ function add_comment(){
 <form id="comment" method="post" action="{post_url}" class="comment-form" name="form" [ajax]onsubmit="add_comment(); return false;"[/ajax]>
 	<input type="hidden" name="newsid" value="{newsid}" />
 	<input type="hidden" name="referer" value="{request_uri}" />
-	
+
 <ul class="comment-author">
 	[not-logged]
 		<li class="item clearfix">
 			<label for="name">Р’РІРµРґРёС‚Рµ РёРјСЏ: </label>
-			<input type="text" name="name" value="{savedname}" class="input">
+			<input type="text" class="form-control" name="name" value="{savedname}" class="input">
 		</li>
 		<li class="item clearfix">
 			<label for="email">Р’РІРµРґРёС‚Рµ E-mail: </label>
-			<input type="text" name="mail" value="{savedmail}" class="input">
+			<input type="text" class="form-control" name="mail" value="{savedmail}" class="input">
 		</li>
 		[/not-logged]
 		<div class="clearfix"></div>
@@ -85,7 +85,7 @@ function add_comment(){
 	<ul class="comment-author">
 		<li class="item clearfix">
 			<label for="captcha">Р’РІРµРґРёС‚Рµ РєРѕРґ Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё: </label>
-			<input type="text" name="vcode" id="captcha" class="input">
+			<input type="text" class="form-control" name="vcode" id="captcha" class="input">
 			<img id="img_captcha" onclick="reload_captcha();" src="{captcha_url}?rand={rand}" alt="captcha" />
 		</li>
 	</ul>
@@ -93,6 +93,6 @@ function add_comment(){
 		<span class="submit">
 		<button tabindex="5" type="submit" id="sendComment" value="Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№" >Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№</button>
 		</span>
-	</form>	
+	</form>
 
 </div>

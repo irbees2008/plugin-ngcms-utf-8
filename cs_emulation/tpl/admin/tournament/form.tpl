@@ -5,12 +5,12 @@
 </table>
 <form action="?mod=extra-config&amp;plugin={plugin}&amp;action={action}&amp;id={id}" method="post" name="tournament">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr> 
-      <td width="100%" colspan="2" class="contentHead"><img src="{skins_url}/images/nav.gif" hspace="8">Создание/редактирование соревнования</td> 
-    </tr> 
+    <tr>
+      <td width="100%" colspan="2" class="contentHead"><img src="{skins_url}/images/nav.gif" hspace="8">Создание/редактирование соревнования</td>
+    </tr>
     <tr>
       <td class="contentEntry1"><label for="name">Название</label></td>
-      <td class="contentEntry2"><input type="text" size="40" name="name" id="name" value="{name}" /></td>
+      <td class="contentEntry2"><input type="text" class="form-control" size="40" name="name" id="name" value="{name}" /></td>
     </tr>
     <tr>
       <td class="contentEntry1"><label for="type">Тип</label></td>

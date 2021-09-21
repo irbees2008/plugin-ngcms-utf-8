@@ -54,7 +54,7 @@ function preview(){
   <tr>
    <td width="10"><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td width="100">{l_title}:</td>
-   <td><input type="text" class="important" size="79" name="title" value="{title}" tabindex="1" /></td>
+   <td><input type="text" class="form-control" class="important" size="79" name="title" value="{title}" tabindex="1" /></td>
   </tr>
   <tr>
    <td valign="top" colspan=3>{quicktags}<br /> {smilies}<br />
@@ -63,22 +63,22 @@ function preview(){
   <tr>
    <td><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td>{l_alt_name}:</td>
-   <td><input type="text" name="alt_name" value="{alt_name}" size="60" tabindex="3" /></td>
+   <td><input type="text" class="form-control" name="alt_name" value="{alt_name}" size="60" tabindex="3" /></td>
   </tr>
 [meta]
   <tr>
    <td><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td>{l_description}:</td>
-   <td><input type="text" name="description" value="{description}" size="60" tabindex="4" /></td>
+   <td><input type="text" class="form-control" name="description" value="{description}" size="60" tabindex="4" /></td>
   </tr>
   <tr>
    <td valign="top"><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td valign="top">{l_keywords}:</td>
-   <td valign="top"><input type="text" name="keywords" value="" size="60" tabindex="5" /> 
-   
+   <td valign="top"><input type="text" class="form-control" name="keywords" value="" size="60" tabindex="5" />
+
 
    <input type="submit" value="Get Keywords" name="autokey_keys"  onclick="javascript:SendPOST(); return false;">
-   
+
    <br /><div id="autokey_out"></div></td>
   </tr>
 [/meta]
@@ -138,7 +138,7 @@ function preview(){
   <tr><td></td><td><label><input type="checkbox" name="pinned" value="1" {ifpin} class="check" id="pinned" /> {l_add_pinned}</label></td></tr>
   <tr><td></td><td><label><input type="checkbox" name="favorite" value="1" {iffav} class="check" id="favorite" /> {l_add_favorite}</label></td></tr>
   <tr><td></td><td><label><input type="checkbox" name="allow_com" value="1" {ifch} class="check" id="allow_com" /> {l_com_approve}</label></td></tr>
-  <tr><td></td><td><label><input type="checkbox" name="setViews" value="1" class="check" id="setViews" /> {l_set_views}:</label> <input type="text" size="4" name="views" value="{views}" /></td></tr>
+  <tr><td></td><td><label><input type="checkbox" name="setViews" value="1" class="check" id="setViews" /> {l_set_views}:</label> <input type="text" class="form-control" size="4" name="views" value="{views}" /></td></tr>
   <tr><td></td><td><label><input type="checkbox" name="flag_HTML" value="1" {ifhtml} class="check" id="flag_HTML" {disable_flag_html} /> {l_flag_html}</label> {flags_lost}</td></tr>
   <tr><td></td><td><label><input type="checkbox" name="flag_RAW" value="1" {ifraw} class="check" id="flag_RAW" {disable_flag_raw} /> {l_flag_raw}</label> {flags_lost}</td></tr>
   <tr><td></td><td>[isplugin autokeys]{autokeys}[/isplugin]</td></tr>

@@ -14,7 +14,7 @@ $cfg = array();
 array_push($cfg, array('descr' => $lang['jchat:desc']));
 $cfgX = array();
 array_push($cfgX, array('type' => 'flat', 'input' => '<tr><td class="contentEntry1" valign="top" colspan="2">Всего записей: ' . $jcRowCount . '</td></tr>'));
-array_push($cfgX, array('type' => 'flat', 'input' => '<tr><td class="contentEntry1" valign="top" colspan="2"><input type="checkbox" name="purge" value="1"/> Удалить старые записи, оставив последние <input type="text" name="purge_save" size="3" value="50"/></td></tr>'));
+array_push($cfgX, array('type' => 'flat', 'input' => '<tr><td class="contentEntry1" valign="top" colspan="2"><input type="checkbox" name="purge" value="1"/> Удалить старые записи, оставив последние <input type="text" class="form-control" name="purge_save" size="3" value="50"/></td></tr>'));
 array_push($cfgX, array('type' => 'flat', 'input' => '<tr><td class="contentEntry1" valign="top" colspan="2"><input type="checkbox" name="reload" value="1"/> Перезагрузить страницу у всех посетителей</td></tr>'));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>' . $lang['jchat:conf.stat'] . '</b>', 'entries' => $cfgX));
 $cfgX = array();

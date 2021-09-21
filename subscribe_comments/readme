@@ -18,7 +18,7 @@
 <table>
 <tr>
 <td style="padding: 15px;" align="left" colspan="2">Подписаться, не комментрируя<br/>
-E-mail: <input type="text" name="subscribe_field" value="" /> <input type="submit" name="subscribe_me" class="button" value="Подписаться" /></td>
+E-mail: <input type="text" class="form-control" name="subscribe_field" value="" /> <input type="submit" name="subscribe_me" class="button" value="Подписаться" /></td>
 </tr>
 </table>
 </form>

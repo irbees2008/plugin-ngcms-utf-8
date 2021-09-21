@@ -75,11 +75,11 @@
 									<dd>{{ status }}</dd>
 									<dt>Вебсайт:</dt>
 									<dd>
-										<input type="text" name="site" value="{{ site.print }}" size="40" maxlength="50"/>{{ error.url.print }}
+										<input type="text" class="form-control" name="site" value="{{ site.print }}" size="40" maxlength="50"/>{{ error.url.print }}
 									</dd>
 									<dt>E-mail:</dt>
 									<dd>
-										<input type="text" name="mail" value="{{ mail }}" size="40" maxlength="50"/>{{ error.url.mail }}
+										<input type="text" class="form-control" name="mail" value="{{ mail }}" size="40" maxlength="50"/>{{ error.url.mail }}
 									</dd>
 								</dl>
 								<div class="clearer"></div>

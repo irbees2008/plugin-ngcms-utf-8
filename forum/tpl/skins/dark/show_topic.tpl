@@ -1,23 +1,23 @@
-<div class="linkst"> 
-	<div class="inbox"> 
-		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p> 
+<div class="linkst">
+	<div class="inbox">
+		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p>
 		<p class="postlink conr">{% if (post_send and state == 'open') %}<a href='{{ addpost }}'>Добавить сообщение</a>{% endif %}</p>
 		<ul><li><a href='{{ home_link }}'>Список</a>&nbsp;</li><li>&raquo;&nbsp;<a href='{{ forum_link }}'>{{ forum_name }}</a>&nbsp;</li><li>&raquo;&nbsp;{{ subject }}</li></ul>
 		<div class="clearer"></div>
-	</div> 
-</div> 
-<div id="msg" class="block"> 
+	</div>
+</div>
+<div id="msg" class="block">
 	<form id="search" method="get" action="{{ link_topic_s }}">
-	<h2><span>Поиск по теме</span></h2> 
-	<div class="box"> 
-		<div class="inbox"> 
+	<h2><span>Поиск по теме</span></h2>
+	<div class="box">
+		<div class="inbox">
 			<input type="hidden" name="id" value="{{ tid }}">
 			{% if (not num_page == 1) %}<input type="hidden" name="page" value="{{ num_page }}">{% endif %}
-			<label><input type="text" name="s" size="40" value="{{ search }}" maxlength="100" /><input type="submit" value="Искать" accesskey="s" /><br /></label> 
-		</div> 
-	</div> 
+			<label><input type="text" class="form-control" name="s" size="40" value="{{ search }}" maxlength="100" /><input type="submit" value="Искать" accesskey="s" /><br /></label>
+		</div>
+	</div>
 	</form>
-</div> 
+</div>
 
 <div id="result">
 {% for entry in entries %}
@@ -32,7 +32,7 @@
 		<div class="box">
 			<div class="inbox">
 				<div class="postleft">
-					<dl> 
+					<dl>
 						<dt><strong><a href="{{ entry.profile_link }}">{{ entry.author }}</a>{% if (entry.tc) %} ТС{% endif %}</strong></dt>
 						<dd class="usertitle"><strong>{{ entry.userstatus }}</strong></dd>
 						<dd class="postavatar"><img src="{% if (entry.avatar.true) %}{{ entry.avatar.print }}{% else %}{{ entry.avatar.print }}/noavatar.gif{% endif %}" /></dd>
@@ -40,9 +40,9 @@
 						<dd>Сообщений: {{ entry.num_post }}</dd>
 						{% if (entry.ip.true) %}
 						<dd>IP: {{ entry.ip.print }}</dd>
-						{% endif %}{% if (entry.uid) %} 
+						{% endif %}{% if (entry.uid) %}
 						<dd>
-							<a href='{{ entry.reputation_link }}'>Рейтинг</a> : 
+							<a href='{{ entry.reputation_link }}'>Рейтинг</a> :
 							<a href='{{ entry.plus }}'>+</a>
 							&nbsp;&nbsp;<strong>{{ entry.sum }}&nbsp;&nbsp;</strong>
 							<a href='{{ entry.minus }}'>-</a>
@@ -56,9 +56,9 @@
 						{% endif %}
 					</dl>
 				</div>
-				<div class="postright"> 
+				<div class="postright">
 					<h3></h3>
-						<div class="postmsg"> 
+						<div class="postmsg">
 							<p>{{ entry.message }}</p>
 							{% if (entry.editdate.true) %}<p class="postedit"><em>Отредактированно {{ entry.editdate.edited_by }} ({% if entry.editdate.time|date('d-m-Y') == "now"|date('d-m-Y') %}
 	Сегодня {{ entry.editdate.time|date('H:i') }}
@@ -73,14 +73,14 @@
 								<a href='{{ entry.file_link }}'>{{ entry.file }}</a>, Размер: {{ entry.size }} Кбайт, Скачано: {{ entry.int_file }}<br />
 							{% endfor %}
 							</div>{% endif %}
-						</div> 
+						</div>
 					<div class="postsignature"><hr />{{ entry.signature }}</div>
 					{% if (entry.list_thank) %}<dl>
 						<dd>Спасибо сказали: {{ entry.list_thank }}</dd>
 					</dl>{% endif %}
-				</div> 
-				<div class="clearer"></div> 
-				<div class="postfootleft">{% if (entry.active) %}<p><strong>Активен</strong></p>{% else %}<p>Неактивен</p>{% endif %}</div> 
+				</div>
+				<div class="clearer"></div>
+				<div class="postfootleft">{% if (entry.active) %}<p><strong>Активен</strong></p>{% else %}<p>Неактивен</p>{% endif %}</div>
 				<div class="postfootright">
 					<ul>
 						{% if (global.user) %}<li class="postreport"><a href="{{ entry.complaints_link }}">Сообщить модератору</a></li>{% endif %}
@@ -104,15 +104,15 @@
 	</div>
 {% endfor %}
 </div>
-<div class="linkst"> 
-	<div class="inbox"> 
-		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p> 
+<div class="linkst">
+	<div class="inbox">
+		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p>
 		<p class="postlink conr">{% if (post_send and state == 'open') %}<a href='{{ addpost }}'>Добавить сообщение</a>{% endif %}</p>
 		<ul><li><a href='{{ home_link }}'>Список</a>&nbsp;</li><li>&raquo;&nbsp;<a href='{{ forum_link }}'>{{ forum_name }}</a>&nbsp;</li><li>&raquo;&nbsp;{{ subject }}</li></ul>
 		{% if (subscript.true) %}Вы подписаны на эту тему - <a href='{{ subscript.uns }}'>Отписаться</a>{% else %}<a href='{{ subscript.sus }}'>Подписаться и отслеживать тему</a>{% endif %}
-		<div class="clearer"></div> 
-	</div> 
-</div> 
+		<div class="clearer"></div>
+	</div>
+</div>
 <div class="blockform">
 	<div class="box">
 		<div style="padding-left: 4px">
@@ -121,8 +121,8 @@
 					<dt>Пользователей: {{ local.num_user_loc }} {{ local.list_loc_user }}</dt>
 					<dt>Ботов: {{ local.num_bot_loc }} {{ local.list_loc_bot }}</dt>
 				</dl>
-		</div> 
-	</div> 
+		</div>
+	</div>
 </div>
 <div style="float:right"><script src="http://pip.qip.ru/js/pip_button.js?type=3" type="text/javascript" charset="UTF-8"></script></div>
 <div class="clearer"></div><br />
@@ -148,7 +148,7 @@
 </div>
 <script>
 	var myOpt = {
-		buttons: 'bold,italic,underline,strike|,-|,link,myimg,|,smilebox,|,bullist,numlist,|,codephp, |,quotes', 
+		buttons: 'bold,italic,underline,strike|,-|,link,myimg,|,smilebox,|,bullist,numlist,|,codephp, |,quotes',
 			allButtons: {
 				myimg: {
 					title: 'Изображение',
@@ -173,7 +173,7 @@
 				codephp: {
 					title: CURLANG.code,
 					buttonText:"[code]",
-					transform:{ 
+					transform:{
 						'<div class="codewrap"><div class="codetop">Код: PHP</div><div class="codemain">{SELTEXT}</div></div>':"[code=PHP]{SELTEXT}[/code]"
 					}
 				},quotes:{

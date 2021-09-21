@@ -22,12 +22,12 @@ $("#send_event").click(function() {
 				$('#mcode').val('');
 			}
 		}
-	}).error(function() { 
-		alert('HTTP error during request', 'ERROR'); 
+	}).error(function() {
+		alert('HTTP error during request', 'ERROR');
 	});
 
   });
-  
+
 });
 
 </script>
@@ -54,22 +54,22 @@ $("#send_event").click(function() {
 			    </div>
 				<div class="line">
 					<span class="label">Куда едем:</span>
-					<input type="text" class="text_input" id="announce_name" value="{{announce_name}}" />
+					<input type="text" class="form-control" class="text_input" id="announce_name" value="{{announce_name}}" />
 		    		<div class="clear"></div>
 			    </div>
 				<div class="line">
 					<span class="label">Место сбора:</span>
-					<input type="text" class="text_input" id="announce_place" value="{{announce_place}}" />
+					<input type="text" class="form-control" class="text_input" id="announce_place" value="{{announce_place}}" />
 		    		<div class="clear"></div>
 			    </div>
 				<div class="line">
 					<span class="label">Время сбора:</span>
-					<input type="text" class="text_input time ui-timepicker-input" name="announce_timepicker" id="announce_timepicker" autocomplete="off" />
+					<input type="text" class="form-control" class="text_input time ui-timepicker-input" name="announce_timepicker" id="announce_timepicker" autocomplete="off" />
 		    		<div class="clear"></div>
 			    </div>
 				<div class="line">
 					<span class="label">Дата:</span>
-					<input type="text" class="text_input datepicker" name="announce_datepicker" id="announce_datepicker">
+					<input type="text" class="form-control" class="text_input datepicker" name="announce_datepicker" id="announce_datepicker">
 		    		<div class="clear"></div>
 			    </div>
 				<div class="line">

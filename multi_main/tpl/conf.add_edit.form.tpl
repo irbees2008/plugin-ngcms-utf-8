@@ -17,7 +17,7 @@
 						<td width="50%" class="contentEntry1">{l_multi_main:label_tpl}<br />
 							<small>{l_multi_main:desc_tpl}</small>
 						</td>
-						<td width="50%" class="contentEntry2"><input type="text" size="80" name="tpl" value="{tpl}" />
+						<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="tpl" value="{tpl}" />
 						</td>
 					</tr>
 				</table>

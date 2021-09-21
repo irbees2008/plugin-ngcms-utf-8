@@ -21,7 +21,7 @@
 				<small></small>
 			</td>
 			<td width="50%" class="contentEntry2">
-				<input type="text" size="80" name="forum_name" value="{{ forum_name }}"/></td>
+				<input type="text" class="form-control" size="80" name="forum_name" value="{{ forum_name }}"/></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Описание форума<br/>
@@ -56,7 +56,7 @@
 				<small>Укажите логины пользователей через запятую</small>
 			</td>
 			<td width="50%" class="contentEntry2">
-				<input type="text" size="80" name="forum_moderators" value="{{ forum_moderators }}"/></td>
+				<input type="text" class="form-control" size="80" name="forum_moderators" value="{{ forum_moderators }}"/></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Создавать темы</td>

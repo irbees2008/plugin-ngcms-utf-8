@@ -20,7 +20,7 @@
       {% if (flags.captcha) %}
       <tr>
         <td width="50%">{{ lang['testmanager:captcha'] }}<img id="img_captcha" onclick="this.src='{{ captcha_url }}&rand='+Math.random();" src="{{ captcha_url }}&rand={{ captcha_rand }}" alt="captcha" /></td>
-        <td width="50%"><input type="text" name="vcode" style="width:80px" class="input" /></td>
+        <td width="50%"><input type="text" class="form-control" name="vcode" style="width:80px" class="input" /></td>
       </tr>
       {% endif %}
       <table class="table">
@@ -30,6 +30,6 @@
           </td>
         </tr>
     </table>
-  </form>  
+  </form>
 </div>
 {% endif %}

@@ -37,19 +37,19 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WM-идентификатор, которому был выписан счета(счета) на оплату:</label>
-	<input type="text" name="wmid" value=""/>
+	<input type="text" class="form-control" name="wmid" value=""/>
 	<br/>
 
 	<label>номер счета (в системе WebMoney):</label>
-	<input type="text" name="wminvid" value="0"/>
+	<input type="text" class="form-control" name="wminvid" value="0"/>
 	<br/>
 
 	<label>минимальное время и дата создания счета:</label>
-	<input type="text" name="datestart" value="20070418 00:00:00"/>
+	<input type="text" class="form-control" name="datestart" value="20070418 00:00:00"/>
 	<br/>
 
 	<label>максимальное время и дата создания счета:</label>
-	<input type="text" name="datefinish" value="20070422 00:00:00"/>
+	<input type="text" class="form-control" name="datefinish" value="20070422 00:00:00"/>
 	<br/>
 
 	<input type="submit" value="получить счета"/>

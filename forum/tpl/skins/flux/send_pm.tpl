@@ -7,7 +7,7 @@
 				<fieldset>
 					<legend>Напишите ваше сообщение и нажмите отправить</legend>
 					<div class="infldset txtarea">
-						<label class="conl"><strong>Получатель</strong><br/><input type="text" name="sendto" size="25" maxlength="25" value="{{ sendto }}" tabindex="1"/><br/></label>
+						<label class="conl"><strong>Получатель</strong><br/><input type="text" class="form-control" name="sendto" size="25" maxlength="25" value="{{ sendto }}" tabindex="1"/><br/></label>
 						<div class="clearer"></div>
 						<label><strong>Заголовок</strong><br/><input class="longinput" type='text' name='title' value='{{ title }}' size="80" maxlength="70" tabindex='2'/><br/></label>
 

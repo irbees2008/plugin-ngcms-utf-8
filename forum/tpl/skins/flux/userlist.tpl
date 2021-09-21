@@ -6,7 +6,7 @@
 				<fieldset>
 					<legend>Поиск и сортировка пользователей</legend>
 					<div class="infldset">
-						<label class="conl">Имя<br/><input type="text" name="username" value="{{ username }}" size="25" maxlength="25"/><br/></label>
+						<label class="conl">Имя<br/><input type="text" class="form-control" name="username" value="{{ username }}" size="25" maxlength="25"/><br/></label>
 						<label class="conl">Группа
 							<br/><select name="show_group">
 								<option value="-1" {% if (show_group_) %}selected{% endif %}>Все пользователи</option>

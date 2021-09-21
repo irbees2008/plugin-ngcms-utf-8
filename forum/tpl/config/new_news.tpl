@@ -13,7 +13,7 @@
 			<td width="50%" class="contentEntry1">Название новости<br/>
 				<small></small>
 			</td>
-			<td width="50%" class="contentEntry2"><input type="text" size="40" name="title" value="{{ title }}"/></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="title" value="{{ title }}"/></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Описание новости<br/>

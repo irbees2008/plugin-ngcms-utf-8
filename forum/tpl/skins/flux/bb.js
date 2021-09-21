@@ -326,11 +326,11 @@ function getFile(n) {
 		}
 		if (ok == 1) {
 			var code = '{IMAGE' + n + '}';
-			document.getElementById('attachMeta' + n).innerHTML = '&nbsp;<input type="text" readonly value="' + code + '" title="Вставьте этот код в любое место сообщения" size="' + (code.length) + '" style="font-family:monospace;color:#ff8e00;" />';
+			document.getElementById('attachMeta' + n).innerHTML = '&nbsp;<input type="text" class="form-control" readonly value="' + code + '" title="Вставьте этот код в любое место сообщения" size="' + (code.length) + '" style="font-family:monospace;color:#ff8e00;" />';
 		} else {
 			document.getElementById('attach' + n).innerHTML = '';
 		}
 	} else {
 		document.getElementById('attach' + n).innerHTML = '';
 	}
-} 
+}

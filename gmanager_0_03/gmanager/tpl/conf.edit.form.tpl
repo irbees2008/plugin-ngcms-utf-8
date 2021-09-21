@@ -9,7 +9,7 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_title}<br /><small>{l_gmanager:desc_title}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="title" value="{title}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="title" value="{title}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_if_active}<br /><small>{l_gmanager:desc_if_active}</small></td>
@@ -26,14 +26,14 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_skin}<br /><small>{l_gmanager:desc_skin}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="skin" value="{skin}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="skin" value="{skin}" /></td>
 </tr><tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_cell}<br /><small>{l_gmanager:desc_cell}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="count_cells" value="{count_cells}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="count_cells" value="{count_cells}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_row}<br /><small>{l_gmanager:desc_row}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="count_rows" value="{count_rows}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="count_rows" value="{count_rows}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_page}<br /><small>{l_gmanager:desc_page}</small></td>

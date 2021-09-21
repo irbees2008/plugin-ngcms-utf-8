@@ -10,7 +10,7 @@
    </tr>
    <tr>
     <td>Название опроса:<br/></td>
-    <td><input type="text" style="width: 300px;" name="nvtitle" value="Вам понравилась новость?" /></td>
+    <td><input type="text" class="form-control" style="width: 300px;" name="nvtitle" value="Вам понравилась новость?" /></td>
    </tr>
     <tr>
     <td>Варианты ответов:<br/>(один на строку)</td>

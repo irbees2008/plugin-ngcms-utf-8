@@ -23,7 +23,7 @@ function NumChar() {
 </tr>
 <tr align="left"><td class="contentRow" width="170"><b>Текст цитаты:</b></td><td>{smilies}<br />{bbcodes}<textarea style="margin-left: 0px;" cols="80" rows="6" id="content" name="content"></textarea></td></tr>
 <tr align="left"><td class="contentRow" width="170"><b>Активна:</b></td><td><select name="active" style="width:auto">{active}</select></td></tr>
-<tr align="left"><td class="contentRow" width="170"><b>Выставить рейтинг:</b></td><td><input type="text" size="3" name="rating" value="" /></td></tr>
+<tr align="left"><td class="contentRow" width="170"><b>Выставить рейтинг:</b></td><td><input type="text" class="form-control" size="3" name="rating" value="" /></td></tr>
 <tr><td colspan="2"><input type="submit" name="actions" value="Сохранить" /></td></tr>
 </table>
 <hr/>

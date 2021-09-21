@@ -6,7 +6,7 @@
 		</tr>
 		<tr>
 			<td>Имя:</td>
-			<td><input type="text" name="username" value="{{ username }}" size="25"/></td>
+			<td><input type="text" class="form-control" name="username" value="{{ username }}" size="25"/></td>
 		</tr>
 		<tr>
 			<td>Группа:</td>

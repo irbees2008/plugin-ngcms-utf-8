@@ -3,11 +3,11 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 <td width="50%" class="contentEntry1">Заголовок мероприятия<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="40" name="announce_name" value="{announce_name}"  /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="announce_name" value="{announce_name}"  /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">Место сбора мероприятия<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="40" name="announce_place" value="{announce_place}"  /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="announce_place" value="{announce_place}"  /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">Автор<br /><small></small></td>

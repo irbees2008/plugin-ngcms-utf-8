@@ -13,7 +13,7 @@
 				<td width="50%" class="contentEntry1">{l_gmanager:label_title}<br/>
 					<small>{l_gmanager:desc_title}</small>
 				</td>
-				<td width="50%" class="contentEntry2"><input type="text" size="80" name="title" value="{title}"/></td>
+				<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="title" value="{title}"/></td>
 			</tr>
 			<tr>
 				<td width="50%" class="contentEntry1">{l_gmanager:label_if_active}<br/>

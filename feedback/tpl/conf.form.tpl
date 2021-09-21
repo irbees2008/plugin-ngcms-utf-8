@@ -39,7 +39,7 @@
 							<td width="50%">{{ lang['feedback:form_url'] }}</td>
 							<td width="50%">
 								<div class="input-group">
-									<input type="text" value="{{ url }}" class="form-control" readonly />
+									<input type="text" class="form-control" value="{{ url }}" class="form-control" readonly />
 									{% if flags.active %}
 									<div class="input-group-append">
 										<span class="input-group-text">
@@ -53,13 +53,13 @@
 						<tr>
 							<td width="50%">{{ lang['feedback:form_name'] }}</td>
 							<td width="50%">
-								<input type="text" name="name" value="{{ name }}" class="form-control" required />
+								<input type="text" class="form-control" name="name" value="{{ name }}" class="form-control" required />
 							</td>
 						</tr>
 						<tr>
 							<td width="50%">{{ lang['feedback:form_title'] }}</td>
 							<td width="50%">
-								<input type="text" name="title" value="{{ title }}" class="form-control" required />
+								<input type="text" class="form-control" name="title" value="{{ title }}" class="form-control" required />
 							</td>
 						</tr>
 						<tr>
@@ -115,7 +115,7 @@
 								{{ lang['feedback:template_on_site'] }} {% if (not tfiles.site.isFound) %}<span class="text-info">[{{ lang['feedback:by_default'] }}]</span>{% endif %}
 							</td>
 							<td width="50%">
-								<input type="text" value="{{ tfiles.site.file }}" class="form-control" readonly />
+								<input type="text" class="form-control" value="{{ tfiles.site.file }}" class="form-control" readonly />
 							</td>
 						</tr>
 						<tr>
@@ -123,7 +123,7 @@
 								{{ lang['feedback:template_in_mail'] }} {% if (not tfiles.mail.isFound) %}<span class="text-info">[{{ lang['feedback:by_default'] }}]</span>{% endif %}
 							</td>
 							<td width="50%">
-								<input type="text" value="{{ tfiles.mail.file }}" class="form-control" readonly />
+								<input type="text" class="form-control" value="{{ tfiles.mail.file }}" class="form-control" readonly />
 							</td>
 						</tr>
 						<tr>
@@ -198,8 +198,8 @@
 					{% for egroup in egroups %}
 						<tr>
 							<td><input type="number" name="elist[{{ loop.index }}][0]" value="{{ egroup.num }}" class="form-control" disabled /></td>
-							<td><input type="text" name="elist[{{ loop.index }}][1]" value="{{ egroup.name }}" class="form-control" /></td>
-							<td><input type="text" name="elist[{{ loop.index }}][2]" value="{{ egroup.value }}" class="form-control" /></td>
+							<td><input type="text" class="form-control" name="elist[{{ loop.index }}][1]" value="{{ egroup.name }}" class="form-control" /></td>
+							<td><input type="text" class="form-control" name="elist[{{ loop.index }}][2]" value="{{ egroup.value }}" class="form-control" /></td>
 						</tr>
 					{% endfor %}
 					</tbody>

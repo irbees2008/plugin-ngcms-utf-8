@@ -210,7 +210,7 @@ class XFieldsNewsFilter extends NewsFilter
                         $xfEntry['input'] = $val;
                         break;
                     case 'text':
-                        $val = '<input type="text" id="form_xfields_'.$id.'" name="xfields['.$id.']" title="'.$data['title'].'" value="'.secure_html($data['default']).'"/>';
+                        $val = '<input type="text" class="form-control" id="form_xfields_'.$id.'" name="xfields['.$id.']" title="'.$data['title'].'" value="'.secure_html($data['default']).'"/>';
                         $xfEntry['input'] = $val;
                         break;
                     case 'select':
@@ -486,7 +486,7 @@ class XFieldsNewsFilter extends NewsFilter
                     $xfEntries[intval($data['area'])][] = $xfEntry;
                     break;
                 case 'text':
-                    $val = '<input type="text" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
+                    $val = '<input type="text" class="form-control" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
                     $xfEntry['input'] = $val;
                     $xfEntries[intval($data['area'])][] = $xfEntry;
                     break;
@@ -1040,7 +1040,7 @@ if (getPluginStatusActive('uprofile')) {
                         $xfEntry['input'] = $val;
                         break;
                     case 'text':
-                        $val = '<input type="text" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
+                        $val = '<input type="text" class="form-control" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
                         $xfEntry['input'] = $val;
                         break;
                     case 'select':

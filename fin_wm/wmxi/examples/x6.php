@@ -36,11 +36,11 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WM-идентфиикатор получателя сообщения:</label>
-	<input type="text" name="receiverwmid" value=""/>
+	<input type="text" class="form-control" name="receiverwmid" value=""/>
 	<br/>
 
 	<label>тема сообщения:</label>
-	<input type="text" name="msgsubj" value="тестирование X6 wmxi"/>
+	<input type="text" class="form-control" name="msgsubj" value="тестирование X6 wmxi"/>
 	<br/>
 
 	<label>текст сообщения:</label>

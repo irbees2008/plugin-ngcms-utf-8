@@ -149,7 +149,7 @@
 						<div class="col-xs-12 col-sm-4 col-md-3">
 							<div class="form-group">
 								<label>{{ fields.firstname.name }}</label>
-								<input type="text" class="form-control required" placeholder="{{ fields.firstname.placeholder }}" name="{{ fields.firstname.id }}" value="{{ fields.firstname.default_value }}">
+								<input type="text" class="form-control" class="form-control required" placeholder="{{ fields.firstname.placeholder }}" name="{{ fields.firstname.id }}" value="{{ fields.firstname.default_value }}">
 							</div>
 						</div>
 					{% endif %}
@@ -158,7 +158,7 @@
 						<div class="col-xs-12 col-sm-4 col-md-3">
 							<div class="form-group">
 								<label>{{ fields.lastname.name }}</label>
-								<input type="text" class="form-control required" placeholder="{{ fields.lastname.placeholder }}" name="{{ fields.lastname.id }}" value="{{ fields.lastname.default_value }}">
+								<input type="text" class="form-control" class="form-control required" placeholder="{{ fields.lastname.placeholder }}" name="{{ fields.lastname.id }}" value="{{ fields.lastname.default_value }}">
 							</div>
 						</div>
 					{% endif %}
@@ -175,7 +175,7 @@
 						{% if(fields.item) %}
 							<div class="form-group">
 								<label>{{ fields.item.name }}</label>
-								<input type="text" class="form-control required" placeholder="{{ fields.item.placeholder }}" name="{{ fields.item.id }}" value="{{ fields.item.default_value }}">
+								<input type="text" class="form-control" class="form-control required" placeholder="{{ fields.item.placeholder }}" name="{{ fields.item.id }}" value="{{ fields.item.default_value }}">
 							</div>
 						{% endif %}
 					</div>

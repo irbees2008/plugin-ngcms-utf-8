@@ -4,32 +4,32 @@
 <div class="hd">РџРѕРёСЃРє</div>
 <div class="bd">
 
-<form id="search" method="post" action=""> 
+<form id="search" method="post" action="">
 <label class="conl">РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°<br />
-<input type="text" name="keywords" size="40" maxlength="100" />
+<input type="text" class="form-control" name="keywords" size="40" maxlength="100" />
 <br />
-</label> 
+</label>
 
 <label class="conl">РљР°С‚РµРіРѕСЂРёРё<br />
-<select id="cat" name="cat_id"> 
+<select id="cat" name="cat_id">
 <option value='0'>Р’СЃРµ РёРјРµСЋС‰РёРµСЃСЏ</option>
 {{ options }}
-</select> 
+</select>
 <br />
-</label> 
+</label>
 
 <label class="conl">РџРѕРёСЃРє РІ<br />
-<select name="search_in"> 
+<select name="search_in">
 <option value='all' selected>Р’ С‚РµРєСЃС‚Рµ РѕР±СЉСЏРІР»РµРЅРёСЏ Рё Р·Р°РіРѕР»РѕРІРєРµ</option>
 <option value='text'>РўРѕР»СЊРєРѕ РІ С‚РµРєСЃС‚Рµ РѕР±СЉСЏРІР»РµРЅРёСЏ</option>
 <option value='title'>РўРѕР»СЊРєРѕ РІ Р·Р°РіРѕР»РѕРІРєРµ</option>
-</select> 
+</select>
 <br />
 </label>
 <br /><br /><br />
 
 <input type="submit" name="submit" value="РћС‚РїСЂР°РІРёС‚СЊ" accesskey="s" />
-</form> 
+</form>
 
 </div>
 </div>

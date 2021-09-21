@@ -7,11 +7,11 @@ class VideoThumbFilter extends NewsFilter {
 
 	function addNewsForm(&$tvars) {
 		//$perm = checkPermission(array('plugin' => '#admin', 'item' => 'news'), null, array('personal.publish', 'personal.unpublish', 'other.publish', 'other.unpublish'));
-		
+
 		//var_dump( $_SERVER['PHP_SELF'] );
 
 		$tvars['plugin']['videothumb_form']  = '
-				<input type="text" id="videoThumb_url" name="videoThumb_url" size="60" placeholder="Ссылка на видео с youTube" />
+				<input type="text" class="form-control" id="videoThumb_url" name="videoThumb_url" size="60" placeholder="Ссылка на видео с youTube" />
 				<input type="button" value="Отправить" class="videothumb-button" onclick="videothumb();" />
 				<a id="videoThumb_clear" href="#" class="btn" style="display:none">Очистить</a>
 				<div id="videoThumb_response">
@@ -20,10 +20,10 @@ class VideoThumbFilter extends NewsFilter {
 				<input type="hidden" id="vt_img" name="vt_img" value="" />
 				<input type="hidden" id="vt_url" name="vt_url" value="" />
 		';
-		
+
 		return 1;
 	}
-	
+
 	function addNews(&$tvars, &$SQL) {
 	global $mysql, $parse;
 
@@ -37,15 +37,15 @@ class VideoThumbFilter extends NewsFilter {
 		return 1;
 
 	}
-	
-	
+
+
 	function editNewsForm($newsID, $SQLold, &$tvars) {
 	        global $tpl;
-		
+
 		if(isset($SQLold["videothumb_img"]) && $SQLold["videothumb_img"] != '') $findImage = "<img src=".$SQLold["videothumb_img"]." width='320' />";
-		
+
 		$tvars['plugin']['videothumb_form']  = '
-				<input type="text" id="videoThumb_url" name="videoThumb_url" size="60" placeholder="Ссылка на видео с youTube" value="'.$SQLold["videothumb_link"].'" />
+				<input type="text" class="form-control" id="videoThumb_url" name="videoThumb_url" size="60" placeholder="Ссылка на видео с youTube" value="'.$SQLold["videothumb_link"].'" />
 				<input type="button" value="Отправить" class="videothumb-button" onclick="videothumb();" />
 				<a id="videoThumb_clear" href="#" class="btn" style="display:none">Очистить</a>
 				<div id="outImg">'.$findImage.'</div>
@@ -55,13 +55,13 @@ class VideoThumbFilter extends NewsFilter {
 				<input type="hidden" id="vt_img" name="vt_img" value="'.$SQLold["videothumb_img"].'" />
 				<input type="hidden" id="vt_url" name="vt_url" value="'.$SQLold["videothumb_link"].'" />
 		';
-		
+
 		return 1;
 	}
-	
+
 	function editNews($newsID, $SQLold, &$SQLnew, &$tvars) {
 
-	
+
 		$vt_img = $_REQUEST['vt_img'];
 		$vt_url = $_REQUEST['vt_url'];
 
@@ -71,7 +71,7 @@ class VideoThumbFilter extends NewsFilter {
 
 		return 1;
 	}
-	
+
 	// Show news call :: processor (call after all processing is finished and before show)
 	function showNews($newsID, $SQLnews, &$tvars, $mode = array()) {
 		global $mysql, $config, $twigLoader, $twig, $PFILTERS, $twig, $twigLoader, $parse;
@@ -79,7 +79,7 @@ class VideoThumbFilter extends NewsFilter {
 		$tvars['vars']['p']['videothumb']['img']['value'] = "<img src=".$SQLnews['videothumb_img']." title=".$SQLnews['title']." title=".$SQLnews['alt']." />";
 		$tvars['vars']['p']['videothumb']['img_src']['value'] = $SQLnews['videothumb_img'];
 		$tvars['vars']['p']['videothumb']['link']['value'] = $SQLnews['videothumb_link'];
-	
+
 	}
 
 }

@@ -41,35 +41,35 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>номер перевода:</label>
-	<input type="text" name="tranid" value="2"/>
+	<input type="text" class="form-control" name="tranid" value="2"/>
 	<br/>
 
 	<label>номер кошелька с которого выполняется перевод (отправитель):</label>
-	<input type="text" name="pursesrc" value=""/>
+	<input type="text" class="form-control" name="pursesrc" value=""/>
 	<br/>
 
 	<label>номер кошелька, но который выполняется перевод (получатель):</label>
-	<input type="text" name="pursedest" value=""/>
+	<input type="text" class="form-control" name="pursedest" value=""/>
 	<br/>
 
 	<label>переводимая сумма:</label>
-	<input type="text" name="amount" value="0.01"/>
+	<input type="text" class="form-control" name="amount" value="0.01"/>
 	<br/>
 
 	<label>срок протекции сделки в днях:</label>
-	<input type="text" name="period" value="0"/>
+	<input type="text" class="form-control" name="period" value="0"/>
 	<br/>
 
 	<label>код протекции сделки:</label>
-	<input type="text" name="pcode" value=""/>
+	<input type="text" class="form-control" name="pcode" value=""/>
 	<br/>
 
 	<label>описание оплачиваемого товара или услуги:</label>
-	<input type="text" name="desc" value="тестирование X2 wmxi"/>
+	<input type="text" class="form-control" name="desc" value="тестирование X2 wmxi"/>
 	<br/>
 
 	<label>номер счета (в системе WebMoney), по которому выполняется перевод:</label>
-	<input type="text" name="wminvid" value="0"/>
+	<input type="text" class="form-control" name="wminvid" value="0"/>
 	<br/>
 
 	<input type="submit" value="отправить перевод"/>

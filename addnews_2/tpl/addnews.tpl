@@ -44,11 +44,11 @@ function changeActive(name) {
 				<table border="0" width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td width="200" style="padding-left: 15px;">Заголовок</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="title" value="{title}" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="title" value="{title}" /></td>
 					</tr>
 					<tr>
 						<td width="200" style="padding-left: 15px;">Альт. имя:</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="alt_name" value="{alt_name}" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="alt_name" value="{alt_name}" /></td>
 					</tr>
                     <tr>
 						<td width="200" style="padding-left: 15px;">Категории</td>
@@ -70,11 +70,11 @@ function changeActive(name) {
 					[meta]
 					<tr>
 						<td width="200" style="padding-left: 15px;">Описание</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="description" value="{description}" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="description" value="{description}" /></td>
 					</tr>
 					<tr>
 						<td width="200" style="padding-left: 15px;">Ключевые слова</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="keywords" value="{keywords}" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="keywords" value="{keywords}" /></td>
 					</tr>
 					[/meta]
 					<tr>
@@ -93,7 +93,7 @@ function changeActive(name) {
 						<td style="padding: 5px;"><input class="important" type="text" name="result" maxlength="10" size="30" /></td>
 					</tr>
 					[/protec_bot]
-					
+
 					<span class="f15">Список приложенных файлов:</span>
 					<table width="98%" cellspacing="1" cellpadding="2" border="0" id="attachFilelist">
 					<thead>

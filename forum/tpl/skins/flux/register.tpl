@@ -18,7 +18,7 @@
 					<legend>Введите имя пользователя длиной от 2 до 25 символов</legend>
 					<div class="infldset">
 						<input type="hidden" name="form_sent" value="1"/>
-						<label><strong>Имя</strong><br/><input type="text" name="name" maxlength="30" value="{{ name }}"/><br/></label>
+						<label><strong>Имя</strong><br/><input type="text" class="form-control" name="name" maxlength="30" value="{{ name }}"/><br/></label>
 						{{ error.name.print }}
 					</div>
 				</fieldset>
@@ -27,9 +27,9 @@
 				<fieldset>
 					<legend>Введите и подтвердите свой пароль</legend>
 					<div class="infldset">
-						<label class="conl"><strong>Пароль</strong><br/><input type="text" name="password" maxlength="30" value=""/><br/></label>
+						<label class="conl"><strong>Пароль</strong><br/><input type="text" class="form-control" name="password" maxlength="30" value=""/><br/></label>
 						<label class="conl"><strong>Подтвердите
-								пароль</strong><br/><input type="text" name="confirm" maxlength="30" value=""/><br/></label>
+								пароль</strong><br/><input type="text" class="form-control" name="confirm" maxlength="30" value=""/><br/></label>
 						<p class="clearb">Пароль должен быть не менее 4 и не более 16 символов в длину. Пароль
 							чувствителен к регистру символов.</p>
 						{{ error.password.print }}
@@ -41,7 +41,7 @@
 					<legend>Введите правильный e-mail адрес</legend>
 					<div class="infldset">
 						<label><strong>E-mail</strong><br/>
-							<input type="text" name="mail" maxlength="60" value="{{ mail }}"/><br/></label>
+							<input type="text" class="form-control" name="mail" maxlength="60" value="{{ mail }}"/><br/></label>
 						{{ error.mail.print }}
 					</div>
 				</fieldset>
@@ -51,7 +51,7 @@
 					<legend>Введите цифры с картинки</legend>
 					<div class="infldset">
 						<label><strong>Капча</strong><br/>
-							<input type="text" name="captcha" maxlength="5" size="30"/><img src="{{ url_captcha }}"/><br/></label>
+							<input type="text" class="form-control" name="captcha" maxlength="5" size="30"/><img src="{{ url_captcha }}"/><br/></label>
 						{{ error.captcha.print }}
 					</div>
 				</fieldset>
@@ -78,4 +78,4 @@
 			<p><input type="submit" name="submit" value="Регистрация"/></p>
 		</form>
 	</div>
-</div> 
+</div>

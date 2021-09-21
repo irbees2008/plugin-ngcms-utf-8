@@ -18,7 +18,7 @@ function clx(val) {
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:description}<br /><small>{l_blokmanager:description_d}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="description"[edit] value="{description}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="description"[edit] value="{description}"[/edit] /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:type}<br /><small>{l_blokmanager:type_d}</small></td>
@@ -45,7 +45,7 @@ function clx(val) {
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:start_viewperiod}<br /><small> {l_blokmanager:start_viewperiod_d} </small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="60" name="start_viewperiod"[edit]    value="{start_viewperiod}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="60" name="start_viewperiod"[edit]    value="{start_viewperiod}"[/edit] /></td>
 </tr>
 <tr>
 <td width="100%" colspan="2" class="contentEntry1">{l_blokmanager:changeinfo}<br /><small>{l_blokmanager:changeinfo_d}</small></td></tr>
@@ -76,11 +76,11 @@ AjexFileManager.init({
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:start_view}<br /><small>{l_blokmanager:start_view_d}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="start_view"[edit] value="{start_view}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="start_view"[edit] value="{start_view}"[/edit] /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:end_view}<br /><small>{l_blokmanager:end_view_d}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="end_view"[edit] value="{end_view}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="end_view"[edit] value="{end_view}"[/edit] /></td>
 </tr>
 </table>
 [editcontent]

@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <td>Код</td>
-                                <td><input type="text" size="40" name="code" value="{code}" /></td>
+                                <td><input type="text" class="form-control" size="40" name="code" value="{code}" /></td>
                             </tr>
                             <tr>
                                 <td>Статическая страница</td>

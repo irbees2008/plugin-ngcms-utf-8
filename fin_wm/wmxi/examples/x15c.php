@@ -44,47 +44,47 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>master WMID:</label>
-	<input type="text" name="masterwmid" value=""/>
+	<input type="text" class="form-control" name="masterwmid" value=""/>
 	<br/>
 
 	<label>slave WMID:</label>
-	<input type="text" name="slavewmid" value=""/>
+	<input type="text" class="form-control" name="slavewmid" value=""/>
 	<br/>
 
 	<label>кошелек:</label>
-	<input type="text" name="purse" value=""/>
+	<input type="text" class="form-control" name="purse" value=""/>
 	<br/>
 
 	<label>inv:</label>
-	<input type="text" name="ainv" value="1"/>
+	<input type="text" class="form-control" name="ainv" value="1"/>
 	<br/>
 
 	<label>trans:</label>
-	<input type="text" name="atrans" value="1"/>
+	<input type="text" class="form-control" name="atrans" value="1"/>
 	<br/>
 
 	<label>purse:</label>
-	<input type="text" name="apurse" value="1"/>
+	<input type="text" class="form-control" name="apurse" value="1"/>
 	<br/>
 
 	<label>transhist:</label>
-	<input type="text" name="atranshist" value="1"/>
+	<input type="text" class="form-control" name="atranshist" value="1"/>
 	<br/>
 
 	<label>суточный лимит:</label>
-	<input type="text" name="limit" value="0"/>
+	<input type="text" class="form-control" name="limit" value="0"/>
 	<br/>
 
 	<label>дневной лимит:</label>
-	<input type="text" name="daylimit" value="0"/>
+	<input type="text" class="form-control" name="daylimit" value="0"/>
 	<br/>
 
 	<label>недельный лимит:</label>
-	<input type="text" name="weeklimit" value="0"/>
+	<input type="text" class="form-control" name="weeklimit" value="0"/>
 	<br/>
 
 	<label>месячный лимит:</label>
-	<input type="text" name="monthlimit" value="0"/>
+	<input type="text" class="form-control" name="monthlimit" value="0"/>
 	<br/>
 
 	<input type="submit" value="установить доверие"/>

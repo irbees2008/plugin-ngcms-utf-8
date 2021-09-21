@@ -35,11 +35,11 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>уникальный номер платежа в системе учета WebMoney:</label>
-	<input type="text" name="wmtranid" value="0"/>
+	<input type="text" class="form-control" name="wmtranid" value="0"/>
 	<br/>
 
 	<label>код протекции сделки:</label>
-	<input type="text" name="pcode" value="0"/>
+	<input type="text" class="form-control" name="pcode" value="0"/>
 	<br/>
 
 	<input type="submit" value="ввести код"/>

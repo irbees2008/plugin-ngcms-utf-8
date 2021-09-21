@@ -34,7 +34,7 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WMID:</label>
-	<input type="text" name="wmid" value=""/>
+	<input type="text" class="form-control" name="wmid" value=""/>
 	<br/>
 
 	<input type="submit" value="получить данные"/>

@@ -10,8 +10,8 @@
 		<link rel="stylesheet" href="{{ tpl_url }}/css/reset.css">
 		<link rel="stylesheet" href="{{ tpl_url }}/css/mangguo.css">
 	<!--	<link rel="stylesheet" href="{{ tpl_url }}/css/style0.css"> -->
-		
-		
+
+
 		{% if pluginIsActive('rss_export') %}<link href="{{ home }}/rss.xml" rel="alternate" type="application/rss+xml" title="RSS" />{% endif %}
 		<script src="{{ tpl_url }}/js/jquery.js"></script>
 		<script type="text/javascript" src="{{ scriptLibrary }}/functions.js"></script>
@@ -21,7 +21,7 @@
 	</head>
 	<body>
 		<div id="loading-layer"><img src="{{ tpl_url }}/img/loading.gif" alt="" /></div>
-	
+
 	<div class="page">
 <div class="header">
 	<h1 class="logo"><a href="{{home}}">{{ home_title }}</a></h1>
@@ -54,7 +54,7 @@
 	<div class="search">
 		<div class="message">Все полимеры просраны! <a href="http://ngcms.ru/forum/viewtopic.php?id=3412" target="_blank">>>></a></div>
 		<form action="{{home}}/zboard/search/" method="get" class="searchform clearfix">
-			<span class="s"><input type="text" name="keywords" id="keywords" value=""></span><span class="searchsubmit"><button type="submit" name="submit"></button></span>
+			<span class="s"><input type="text" class="form-control" name="keywords" id="keywords" value=""></span><span class="searchsubmit"><button type="submit" name="submit"></button></span>
 		</form>
 	</div>
 
@@ -68,7 +68,7 @@
 {% endif %}
 		</ul>
 	</div>
-	
+
 	<div class="quick-link">
 
 		<div class="clearfix">
@@ -78,18 +78,18 @@
 {% endif %}
 
 	<div class="grid-m0s5 clearfix">
-	
-	
+
+
 		<div class="col-main">
 			<div class="main-wrap">
 				{{mainblock}}
 			</div>
 		</div>
 
-		
+
 	<div class="col-sub">
 		<div class="sidebar">
-		
+
 		{% if isHandler('news') %}
 			<div class="random-post">
 				<div class="hd">Категории</div>
@@ -100,7 +100,7 @@
 				</div>
 			</div>
 		{% endif %}
-		
+
 		{% if pluginIsActive('zboard') and isHandler('zboard') %}
 			<div class="random-post">
 				<div class="hd">Категории объявлений</div>
@@ -108,7 +108,7 @@
 					{{ callPlugin('zboard.show_catz_tree') }}
 				</div>
 			</div>
-		
+
 			<div class="latest-comment">
 				<div class="hd">Последние добавленные</div>
 				<div class="bd">
@@ -117,8 +117,8 @@
 					</ul>
 				</div>
 			</div>
-			
-			
+
+
 			<div class="latest-comment">
 				<div class="hd">Самые просматриваемые</div>
 				<div class="bd">
@@ -128,10 +128,10 @@
 				</div>
 			</div>
 		{% endif %}
-		
+
 		</div>
 	</div>
-		
+
 
 	</div>
 </div>

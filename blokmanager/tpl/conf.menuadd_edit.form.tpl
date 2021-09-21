@@ -4,10 +4,10 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 [add]<tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:id} <small>{l_blokmanager:id_d}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="5" name="id"/></td></tr>[/add]
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="5" name="id"/></td></tr>[/add]
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:menuname}<br /><small>{l_blokmanager:menuname_d}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="menuname"[edit] value="{menuname}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="menuname"[edit] value="{menuname}"[/edit] /></td>
 </tr>
 </table>
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -17,7 +17,7 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_blokmanager:menulevel}<br /><small>{l_blokmanager:menulevel_sd}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="4" name="menulevel" [edit] value="{menulevel}"[/edit] /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="4" name="menulevel" [edit] value="{menulevel}"[/edit] /></td>
 </tr>
 </table>
 <table border="0" width="100%" cellspacing="0" cellpadding="0">

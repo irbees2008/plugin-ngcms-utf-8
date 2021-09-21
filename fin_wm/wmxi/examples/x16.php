@@ -36,15 +36,15 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WMID кошелька:</label>
-	<input type="text" name="wmid" value=""/>
+	<input type="text" class="form-control" name="wmid" value=""/>
 	<br/>
 
 	<label>тип кошелька:</label>
-	<input type="text" name="pursetype" value="Z"/>
+	<input type="text" class="form-control" name="pursetype" value="Z"/>
 	<br/>
 
 	<label>название кошелька:</label>
-	<input type="text" name="desc" value="wmz"/>
+	<input type="text" class="form-control" name="desc" value="wmz"/>
 	<br/>
 
 	<input type="submit" value="создать кошелёк"/>

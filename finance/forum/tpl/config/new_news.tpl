@@ -11,7 +11,7 @@
 	<table border="0" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td width="50%" class="contentEntry1">Название новости<br /><small></small></td>
-			<td width="50%" class="contentEntry2"><input type="text" size="40" name="title" value="{{ title }}"  /></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="title" value="{{ title }}"  /></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Описание новости<br /><small></small></td>
@@ -35,7 +35,7 @@
 </form>
 <script>
 	var myOpt = {
-		buttons: 'bold,italic,underline,strike|,-|,link,myimg,|,smilebox,|,bullist,numlist,quotes, |,codephp, ,|,quote_name', 
+		buttons: 'bold,italic,underline,strike|,-|,link,myimg,|,smilebox,|,bullist,numlist,quotes, |,codephp, ,|,quote_name',
 		allButtons: {
 			myimg: {
 				title: 'Изображение',
@@ -58,7 +58,7 @@
 			codephp: {
 				title: CURLANG.code,
 				buttonText:"[code]",
-				transform:{ 
+				transform:{
 					'<div class="codewrap"><div class="codetop">Код: PHP</div><div class="codemain">{SELTEXT}</div></div>':"[code=PHP]{SELTEXT}[/code]"
 				}
 			},quotes:{

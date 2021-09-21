@@ -51,8 +51,8 @@
                     <tr>
                         <td>
                             <label>Дата</label>
-                            с:&nbsp; <input type="text" id="dr1" name="dr1" value="{{ fDateStart }}" class="bfdate"/>&nbsp;&nbsp;
-                            по&nbsp;&nbsp; <input type="text" id="dr2" name="dr2" value="{{ fDateEnd }}"
+                            с:&nbsp; <input type="text" class="form-control" id="dr1" name="dr1" value="{{ fDateStart }}" class="bfdate"/>&nbsp;&nbsp;
+                            по&nbsp;&nbsp; <input type="text" class="form-control" id="dr2" name="dr2" value="{{ fDateEnd }}"
                                                   class="bfdate"/>
                         </td>
                     </tr>

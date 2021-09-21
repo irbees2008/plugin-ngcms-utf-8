@@ -10,7 +10,7 @@
    </tr>
    <tr>
     <td>Название опроса:<br/></td>
-    <td><input type="text" style="width: 300px;" name="nvtitle" value="{title}" /></td>
+    <td><input type="text" class="form-control" style="width: 300px;" name="nvtitle" value="{title}" /></td>
    </tr>
    <tr>
     <td>Ответы:<br/></td>

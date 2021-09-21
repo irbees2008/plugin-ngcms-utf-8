@@ -18,7 +18,7 @@
 <input type="hidden" name="redirect" value="{redirect}"/>
 	<div class="label pull-left">
 		<label for="logn">Р›РѕРіРёРЅ:</label>
-		<input type="text" type="text" name="username" class="input">
+		<input type="text" class="form-control" type="text" name="username" class="input">
 	</div><br/><br/>
 	<div class="label pull-right">
 		<label for="pass">РџР°СЂРѕР»СЊ:</label>

@@ -638,27 +638,27 @@ function edit_product()
             array_push(
                 $sOpts,
                 '<tr>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][0]" value="'.htmlspecialchars(
+                <td><input type="text" class="form-control" size="12" name="so_data['.($fNum).'][0]" value="'.htmlspecialchars(
                     $v['sku'],
                     ENT_COMPAT | ENT_HTML401,
                     'cp1251'
                 ).'"/></td>
-                <td><input type="text" size="45" name="so_data['.($fNum).'][1]" value="'.htmlspecialchars(
+                <td><input type="text" class="form-control" size="45" name="so_data['.($fNum).'][1]" value="'.htmlspecialchars(
                     $v['name'],
                     ENT_COMPAT | ENT_HTML401,
                     'cp1251'
                 ).'"/></td>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][2]" value="'.htmlspecialchars(
+                <td><input type="text" class="form-control" size="12" name="so_data['.($fNum).'][2]" value="'.htmlspecialchars(
                     $v['price'],
                     ENT_COMPAT | ENT_HTML401,
                     'cp1251'
                 ).'"/></td>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][3]" value="'.htmlspecialchars(
+                <td><input type="text" class="form-control" size="12" name="so_data['.($fNum).'][3]" value="'.htmlspecialchars(
                     $v['compare_price'],
                     ENT_COMPAT | ENT_HTML401,
                     'cp1251'
                 ).'"/></td>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][4]" value="'.htmlspecialchars(
+                <td><input type="text" class="form-control" size="12" name="so_data['.($fNum).'][4]" value="'.htmlspecialchars(
                     $v['amount'],
                     ENT_COMPAT | ENT_HTML401,
                     'cp1251'
@@ -1276,8 +1276,8 @@ function add_cat()
 
         if (empty($error_text)) {
             $mysql->query(
-                'INSERT INTO '.prefix.'_eshop_categories (name, description, url, meta_title, meta_keywords,  meta_description, parent_id, position, image, active) 
-                VALUES 
+                'INSERT INTO '.prefix.'_eshop_categories (name, description, url, meta_title, meta_keywords,  meta_description, parent_id, position, image, active)
+                VALUES
                 ('.db_squote($cat_name).',
                     '.db_squote($description).',
                     '.db_squote($url).',
@@ -1415,9 +1415,9 @@ function edit_cat()
         if (empty($error_text)) {
 
             $mysql->query(
-                'UPDATE '.prefix.'_eshop_categories SET  
+                'UPDATE '.prefix.'_eshop_categories SET
                 name = '.db_squote($cat_name).',
-                description = '.db_squote($description).', 
+                description = '.db_squote($description).',
                 url = '.db_squote($url).',
                 meta_title = '.db_squote($meta_title).',
                 meta_keywords = '.db_squote($meta_keywords).',
@@ -1621,7 +1621,7 @@ function get_prefix($CategoryID)
     $ParentID = $mysql->result('SELECT parent_id FROM '.prefix.'_eshop_categories WHERE id = '.$CategoryID.' ');
 
     $prefixed[$CategoryID]['f'] .= '&nbsp;&nbsp;&nbsp;';
-    #$add_prefix .= '&nbsp;&nbsp;&nbsp;'; 
+    #$add_prefix .= '&nbsp;&nbsp;&nbsp;';
     {
         if ($ParentID == 0) {
             $add_prefix .= '';
@@ -1754,8 +1754,8 @@ function add_feature()
 
             foreach ($ids as $id) {
                 $mysql->query(
-                    'INSERT INTO '.prefix.'_eshop_categories_features (category_id, feature_id) 
-                VALUES 
+                    'INSERT INTO '.prefix.'_eshop_categories_features (category_id, feature_id)
+                VALUES
                 ('.db_squote($id).',
                  '.db_squote($rowID).'
                 )
@@ -1882,8 +1882,8 @@ function edit_feature()
 
             foreach ($ids as $id_x) {
                 $mysql->query(
-                    'INSERT INTO '.prefix.'_eshop_categories_features (category_id, feature_id) 
-                VALUES 
+                    'INSERT INTO '.prefix.'_eshop_categories_features (category_id, feature_id)
+                VALUES
                 ('.db_squote($id_x).',
                  '.db_squote($id).'
                 )
@@ -1934,7 +1934,7 @@ function edit_feature()
                         $k,
                         ENT_COMPAT | ENT_HTML401,
                         'cp1251'
-                    ) : '').'"/></td><td><input type="text" size="55" name="so_data['.($fNum).'][1]" value="'.iconv(
+                    ) : '').'"/></td><td><input type="text" class="form-control" size="55" name="so_data['.($fNum).'][1]" value="'.iconv(
                         "utf-8",
                         "windows-1251",
                         $v
@@ -1947,7 +1947,7 @@ function edit_feature()
     if (!count($sOpts)) {
         array_push(
             $sOpts,
-            '<tr><td><input size="12" name="so_data[1][0]" type="text" value=""/></td><td><input type="text" size="55" name="so_data[1][1]" value=""/></td><td><a href="#" onclick="return false;"><img src="'.skins_url.'/images/delete.gif" alt="DEL" width="12" height="12" /></a></td></tr>'
+            '<tr><td><input size="12" name="so_data[1][0]" type="text" value=""/></td><td><input type="text" class="form-control" size="55" name="so_data[1][1]" value=""/></td><td><a href="#" onclick="return false;"><img src="'.skins_url.'/images/delete.gif" alt="DEL" width="12" height="12" /></a></td></tr>'
         );
     }
 
@@ -2201,7 +2201,7 @@ function edit_order()
         if (empty($error_text)) {
 
             $mysql->query(
-                'UPDATE '.prefix.'_eshop_orders SET  
+                'UPDATE '.prefix.'_eshop_orders SET
                 name = '.db_squote($name).',
                 email = '.db_squote($email).',
                 phone = '.db_squote($phone).',

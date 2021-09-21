@@ -4,32 +4,32 @@
 <div class="hd">Поиск</div>
 <div class="bd">
 
-<form id="search" method="post" action=""> 
+<form id="search" method="post" action="">
 <label class="conl">Ключевые слова<br />
-<input type="text" name="keywords" size="40" maxlength="100" />
+<input type="text" class="form-control" name="keywords" size="40" maxlength="100" />
 <br />
-</label> 
+</label>
 
 <label class="conl">Категории<br />
-<select id="cat" name="cat_id"> 
+<select id="cat" name="cat_id">
 <option value='0'>Все имеющиеся</option>
 {{ options }}
-</select> 
+</select>
 <br />
-</label> 
+</label>
 
 <label class="conl">Поиск в<br />
-<select name="search_in"> 
+<select name="search_in">
 <option value='all' selected>В тексте объявления и заголовке</option>
 <option value='text'>Только в тексте объявления</option>
 <option value='title'>Только в заголовке</option>
-</select> 
+</select>
 <br />
 </label>
 <br /><br /><br />
 
 <input type="submit" name="submit" value="Отправить" accesskey="s" />
-</form> 
+</form>
 
 </div>
 </div>

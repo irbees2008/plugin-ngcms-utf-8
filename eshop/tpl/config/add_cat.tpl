@@ -5,21 +5,21 @@
             <td width="50%" class="contentEntry1">Имя<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="cat_name"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="cat_name"
                                                          value="{{ entries.cat_name }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Описание<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="description"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="description"
                                                          value="{{ entries.description }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">URL<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="url" value="{{ entries.url }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="url" value="{{ entries.url }}"/>
             </td>
         </tr>
 
@@ -27,21 +27,21 @@
             <td width="50%" class="contentEntry1">Meta title<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_title"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_title"
                                                          value="{{ entries.meta_title }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Meta keywords<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_keywords"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_keywords"
                                                          value="{{ entries.meta_keywords }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Meta description<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_description"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_description"
                                                          value="{{ entries.meta_description }}"/></td>
         </tr>
 
@@ -61,7 +61,7 @@
             <td width="50%" class="contentEntry1">Позиция<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="position"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="position"
                                                          value="{{ entries.position }}"/></td>
         </tr>
 

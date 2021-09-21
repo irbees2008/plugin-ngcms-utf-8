@@ -18,16 +18,16 @@ var currentInputAreaID = 'content_description';
 <form method="post" action="" class="comment-form" name="form" enctype="multipart/form-data">
 <ul class="comment-author">
 <li class="item clearfix">
-<input type="text" name="announce_name" value="{{announce_name}}" tabindex="1">
+<input type="text" class="form-control" name="announce_name" value="{{announce_name}}" tabindex="1">
 <label>Заголовок объявления <i>(*)</i></label>
 </li>
 <li class="item clearfix">
-<input type="text" name="author" value="{{author}}" tabindex="1">
+<input type="text" class="form-control" name="author" value="{{author}}" tabindex="1">
 <label>Автор <i>(*)</i></label>
 </li>
 {% if not(global.flags.isLogged) %}
 <li class="item clearfix">
-<input type="text" name="author_email" value="{{author_email}}" tabindex="1">
+<input type="text" class="form-control" name="author_email" value="{{author_email}}" tabindex="1">
 <label>Email <i>(*)</i></label>
 </li>
 {% endif %}

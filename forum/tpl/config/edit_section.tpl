@@ -7,7 +7,7 @@
 			<td width="50%" class="contentEntry1">Название форума:<br/>
 				<small></small>
 			</td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ name }}"/></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ name }}"/></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Описание форума<br/>

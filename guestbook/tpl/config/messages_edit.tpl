@@ -11,7 +11,7 @@
 		<table class="content" border="0" cellspacing="0" cellpadding="0" align="center">
 			<tr class="contRow1">
 				<td><label>{{ lang['gbconfig']['message_date'] }}</label></td>
-				<td><input type="text" id="cdate" name="cdate" value="{{ postdate|date('j.m.Y H:i') }}"/></td>
+				<td><input type="text" class="form-control" id="cdate" name="cdate" value="{{ postdate|date('j.m.Y H:i') }}"/></td>
 			</tr>
 			<tr class="contRow1">
 				<td><label>{{ lang['gbconfig']['message_ip'] }}</label></td>
@@ -20,7 +20,7 @@
 			<tr class="contRow1">
 				<td><label>{{ lang['gbconfig']['message_author'] }}
 						<b style="color:red">{{ lang['gbconfig']['message_required'] }}</b></label></td>
-				<td><input type="text" name="author" value="{{ author }}"/></td>
+				<td><input type="text" class="form-control" name="author" value="{{ author }}"/></td>
 			</tr>
 			{% for field in fields %}
 				<tr class="contRow1">
@@ -28,7 +28,7 @@
 								<b style="color:red">{{ lang['gbconfig']['message_required'] }}</b>{% endif %}</label>
 					</td>
 					<td>
-						<input type="text" name="{{ field.id }}" value="{{ field.value }}" {% if field.required %}required{% endif %} />
+						<input type="text" class="form-control" name="{{ field.id }}" value="{{ field.value }}" {% if field.required %}required{% endif %} />
 					</td>
 				</tr>
 			{% endfor %}

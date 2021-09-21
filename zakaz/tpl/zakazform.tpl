@@ -18,7 +18,7 @@
 		<input id="attach" name="attach" size="1" style="width: 190px;" type="file" value="{attach}" /></p>
 		<p>
 		Введите код подтверждения::<br />
-		<input type="text" name="vcode" size="8"/> <img id="img_captcha" onclick="this.src='{captcha_url}&rand='+Math.random();" src="{captcha_url}&rand={rand}" alt="captcha" /></p>
+		<input type="text" class="form-control" name="vcode" size="8"/> <img id="img_captcha" onclick="this.src='{captcha_url}&rand='+Math.random();" src="{captcha_url}&rand={rand}" alt="captcha" /></p>
 	<p>
 		<input name="smb" type="submit" value="Отправить" /></p>[/isform]
 		[issend]<h3>Сообщение успешно отправлено! Ожидайте ответа<table width="100%" cellspacing="1" cellpadding="1">
@@ -28,4 +28,3 @@
 <tr><td width="35%" style="font-weight: bold;">Заказ</td><td style="font-weight: bold;">{zakazmes}</td></tr>
 </table></h3>[/issend]
 </form>
-

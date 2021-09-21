@@ -8,7 +8,7 @@
 						<legend>Укажите критерий для поиска</legend>
 						<div class="infldset">
 							<label class="conl">Ключевые
-								слова<br/><input type="text" name="keywords" size="40" maxlength="100"/><br/></label>
+								слова<br/><input type="text" class="form-control" name="keywords" size="40" maxlength="100"/><br/></label>
 						</div>
 					</fieldset>
 				</div>

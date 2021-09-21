@@ -86,11 +86,11 @@
 		</tr>
 		<tr>
 			<td>{{ lang.editnews['title'] }}:</td>
-			<td><input type="text" name="title" class="input" value="{{ title }}"/></td>
+			<td><input type="text" class="form-control" name="title" class="input" value="{{ title }}"/></td>
 		</tr>
 		<tr>
 			<td>{{ lang.editnews['alt_name'] }}:</td>
-			<td><input type="text" name="alt_name" class="input" value="{{ alt_name }}"/></td>
+			<td><input type="text" class="form-control" name="alt_name" class="input" value="{{ alt_name }}"/></td>
 		</tr>
 		<tr>
 			<td>{{ lang.editnews['category'] }}:</td>

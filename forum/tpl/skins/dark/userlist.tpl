@@ -6,7 +6,7 @@
 			<fieldset>
 				<legend>Поиск и сортировка пользователей</legend>
 				<div class="infldset">
-					<label class="conl">Имя<br /><input type="text" name="username" value="{{ username }}" size="25" maxlength="25" /><br /></label>
+					<label class="conl">Имя<br /><input type="text" class="form-control" name="username" value="{{ username }}" size="25" maxlength="25" /><br /></label>
 					<label class="conl">Группа
 					<br /><select name="show_group">
 						<option value="-1" {% if (show_group_) %}selected{% endif %}>Все пользователи</option>
@@ -37,49 +37,49 @@
 	</form>
 	</div>
 </div>
-<div class="linkst"> 
-	<div class="inbox"> 
-		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p> 
-		<div class="clearer"></div> 
-	</div> 
+<div class="linkst">
+	<div class="inbox">
+		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p>
+		<div class="clearer"></div>
+	</div>
 </div>
-<div id="users1" class="blocktable"> 
-	<h2><span>Пользователи</span></h2> 
-	<div class="box"> 
-		<div class="inbox"> 
-			<table cellspacing="0"> 
-				<thead> 
-					<tr> 
-						<th class="tcl" scope="col">Имя</th> 
-						<th class="tc2" scope="col">Статус</th> 
-						<th class="tc3" scope="col">Сообщений</th> 
-						<th class="tcr" scope="col">Зарегистрирован</th> 
-					</tr> 
-				</thead> 
+<div id="users1" class="blocktable">
+	<h2><span>Пользователи</span></h2>
+	<div class="box">
+		<div class="inbox">
+			<table cellspacing="0">
+				<thead>
+					<tr>
+						<th class="tcl" scope="col">Имя</th>
+						<th class="tc2" scope="col">Статус</th>
+						<th class="tc3" scope="col">Сообщений</th>
+						<th class="tcr" scope="col">Зарегистрирован</th>
+					</tr>
+				</thead>
 				<tbody>
 				{% for entry in entries %}
-					<tr> 
-						<td class="tcl"><a href='{{ entry.profile_link }}'>{{ entry.profile }}</a></td> 
-						<td class="tc2">{{ entry.status }}</td> 
-						<td class="tc3">{{ entry.num_post }}</td> 
-						<td class="tcr">{{ entry.date|date("d-m-Y") }}</td> 
+					<tr>
+						<td class="tcl"><a href='{{ entry.profile_link }}'>{{ entry.profile }}</a></td>
+						<td class="tc2">{{ entry.status }}</td>
+						<td class="tc3">{{ entry.num_post }}</td>
+						<td class="tcr">{{ entry.date|date("d-m-Y") }}</td>
 					</tr>
 				{% else %}
-					<tr> 
-						<td class="tcl">По вашему запросу ничего не найдено.</td> 
-						<td class="tc2"></td> 
-						<td class="tc3"></td> 
-						<td class="tcr"></td> 
+					<tr>
+						<td class="tcl">По вашему запросу ничего не найдено.</td>
+						<td class="tc2"></td>
+						<td class="tc3"></td>
+						<td class="tcr"></td>
 					</tr>
 				{% endfor %}
-				</tbody> 
-			</table> 
-		</div> 
-	</div> 
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
-<div class="linkst"> 
-	<div class="inbox"> 
-		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p> 
-		<div class="clearer"></div> 
-	</div> 
+<div class="linkst">
+	<div class="inbox">
+		<p class="pagelink conl">{% if (pages.true) %}{% if (prevlink.true) %}{{ prevlink.link }}{% endif %}{{ pages.print }}{% if (nextlink.true) %}{{ nextlink.link }}{% endif %}{% endif %}</p>
+		<div class="clearer"></div>
+	</div>
 </div>

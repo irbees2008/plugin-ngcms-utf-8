@@ -36,12 +36,12 @@ function changeActive(name) {
 				<table border="0" width="100%" cellpadding="0" cellspacing="0">
 					<tr>
 						<td width="200" style="padding-left: 15px;">{l_addnews:title}</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="title" value="" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="title" value="" /></td>
 					</tr>
 					[altname]
 					<tr>
 						<td width="200" style="padding-left: 15px;">{l_addnews:altname}</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="alt_name" value="" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="alt_name" value="" /></td>
 					</tr>
 					[/altname]
                     [categories]
@@ -75,11 +75,11 @@ function changeActive(name) {
 					[meta]
 					<tr>
 						<td width="200" style="padding-left: 15px;">{l_addnews:description}</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="description" value="" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="description" value="" /></td>
 					</tr>
 					<tr>
 						<td width="200" style="padding-left: 15px;">{l_addnews:keywords}</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="keywords" value="" /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="keywords" value="" /></td>
 					</tr>
 					[/meta]
 					<tr>
@@ -89,12 +89,12 @@ function changeActive(name) {
                     [not-logged]
 					<tr>
 						<td width="200" style="padding-left: 15px;">{l_addnews:name}</td>
-						<td style="padding: 5px;"><input type="text" size="30" name="name" value="{savedname}"  /></td>
+						<td style="padding: 5px;"><input type="text" class="form-control" size="30" name="name" value="{savedname}"  /></td>
 					</tr>
 					<tr>
 						<td style="padding-left: 15px;">{l_addnews:password} <small>{l_addnews:ifreg}</small></td>
 						<td style="padding: 5px;"><input class="password" type="password" maxlength="16" size="30" name="password" value="" /></td>
-					</tr>	
+					</tr>
 					[/not-logged]
 					[captcha]
                     <tr>

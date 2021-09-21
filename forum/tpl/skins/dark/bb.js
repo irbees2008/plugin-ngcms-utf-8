@@ -45,7 +45,7 @@ function getSmiles(id) {
 	var container = document.getElementById(id);
 	if (container !== 'undefined') {
 		for (i = 0; i < advsmiles.length; i++) {
-			container.innerHTML = container.innerHTML + '<div><a href="javascript://" onClick="emoticon(\':' + advsmiles[i] + ':\');"><img src="/sys/img/smiles/' 
+			container.innerHTML = container.innerHTML + '<div><a href="javascript://" onClick="emoticon(\':' + advsmiles[i] + ':\');"><img src="/sys/img/smiles/'
 			+ advsmiles[i] + '.gif" /></a></div>';
 		}
 	}
@@ -245,7 +245,7 @@ function storeCaret(textEl) {
 function smile(img) {
 	var txtarea = document.getElementById("sendForm").message;
 	txtarea.focus();
-	
+
 	txtarea.i
 }
 */
@@ -287,27 +287,27 @@ function catchSelection()
 
 // Putting username to the post box
 function putName(name)
-{ 
-	emoticon_wospaces('[b]'+name+'[/b]\n'); 
-	document.getElementById("sendForm").message.focus(); 
-	return; 
+{
+	emoticon_wospaces('[b]'+name+'[/b]\n');
+	document.getElementById("sendForm").message.focus();
+	return;
 }
 
 // Putting selection to the post box
 function quoteSelection(name)
 {
 	if (selection)
-	{ 
-		emoticon_wospaces('[quote="'+name+'"]' + selection + '[/quote]\n'); 
+	{
+		emoticon_wospaces('[quote="'+name+'"]' + selection + '[/quote]\n');
 		selection = '';
-		document.getElementById("sendForm").message.focus(); 
-		return; 
+		document.getElementById("sendForm").message.focus();
+		return;
 	}
 	else
-	{ 
+	{
 		alert(l_no_text_selected);
-		return; 
-	} 
+		return;
+	}
 }
 
 /* add file field */
@@ -342,12 +342,12 @@ function getFile(n){
 			}
 		}
 		if (ok==1){
-			var code='{IMAGE'+n+'}'; 
-			document.getElementById('attachMeta'+n).innerHTML='&nbsp;<input type="text" readonly value="'+code+'" title="Вставьте этот код в любое место сообщения" size="'+(code.length)+'" style="font-family:monospace;color:#FF8E00;" />';
+			var code='{IMAGE'+n+'}';
+			document.getElementById('attachMeta'+n).innerHTML='&nbsp;<input type="text" class="form-control" readonly value="'+code+'" title="Вставьте этот код в любое место сообщения" size="'+(code.length)+'" style="font-family:monospace;color:#FF8E00;" />';
 		} else {
 			document.getElementById('attach'+n).innerHTML='';
 		}
 	} else {
 		document.getElementById('attach'+n).innerHTML='';
 	}
-} 
+}

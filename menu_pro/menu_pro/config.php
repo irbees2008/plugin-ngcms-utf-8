@@ -332,7 +332,7 @@ function add()
 	if (is_array($t_params)) {
 		$t_iter = 1;
 		foreach ($t_params as $key => $val) {
-			$ttvars['vars']['params_list'] .= '<tr><td>' . $t_iter . ': </td><td align="left"><input type="text" name="params[' . $t_iter . '][key]" value="' . $key . '" />' . '<input type="text" name="params[' . $t_iter . '][value]" value="' . $val . '" /></td></tr>';
+			$ttvars['vars']['params_list'] .= '<tr><td>' . $t_iter . ': </td><td align="left"><input type="text" class="form-control" name="params[' . $t_iter . '][key]" value="' . $key . '" />' . '<input type="text" class="form-control" name="params[' . $t_iter . '][value]" value="' . $val . '" /></td></tr>';
 			$t_iter++;
 		}
 	}

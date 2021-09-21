@@ -34,7 +34,7 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>номер транзакции:</label>
-	<input type="text" name="wmtranid" value=""/>
+	<input type="text" class="form-control" name="wmtranid" value=""/>
 	<br/>
 
 	<input type="submit" value="возвратить платёж"/>

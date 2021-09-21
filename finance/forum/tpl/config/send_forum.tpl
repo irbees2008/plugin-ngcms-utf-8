@@ -16,24 +16,24 @@
 													<option value="1" selected="selected">Категория</option> -->
 				</select>
 			</td>
-			
+
 		</tr>
 		{% endif %}
 		<tr>
 			<td width="50%" class="contentEntry1">Название форума:<br /><small></small></td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ Sname }}" /></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ Sname }}" /></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Описание форума<br /><small></small></td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="desc" value="{{ Sdesc }}" /></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="desc" value="{{ Sdesc }}" /></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Ключевые слова<br /><small></small></td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="keyw" value="{{ Skeyw }}" /></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="keyw" value="{{ Skeyw }}" /></td>
 		</tr>
 		<tr>
 			<td width="50%" class="contentEntry1">Модераторы<br /><small>Укажите логины пользователей через запятую</small></td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="moder" value="{{ Smoder }}" /></td>
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="moder" value="{{ Smoder }}" /></td>
 		</tr>
 	</table>
 	<br />

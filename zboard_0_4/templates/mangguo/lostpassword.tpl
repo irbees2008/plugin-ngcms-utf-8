@@ -5,7 +5,7 @@
 	[captcha]
 		<div class="label label-table captcha pull-left">
 			<label>Р’РІРµРґРёС‚Рµ РєРѕРґ Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё:</label>
-			<input type="text" name="vcode" class="input">
+			<input type="text" class="form-control" name="vcode" class="input">
 			<img src="{admin_url}/captcha.php" onclick="reload_captcha();" id="img_captcha" style="cursor: pointer;" alt="Security code"/>
 		</div>
 		<div class="clearfix"></div><br/>
@@ -20,5 +20,5 @@
 		if (captc != null) {
 			captc.src = "{admin_url}/captcha.php?rand="+Math.random();
 		}
-	}   
+	}
 </script>

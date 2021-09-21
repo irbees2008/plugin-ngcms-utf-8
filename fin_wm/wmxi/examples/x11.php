@@ -40,20 +40,20 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WM - идентификатор аттестата :</label>
-	<input type="text" name="passportwmid" value=""/>
+	<input type="text" class="form-control" name="passportwmid" value=""/>
 	<br/>
 
 	<label>отображение "опорного словаря":</label>
-	<input type="text" name="dict" value="0"/>
+	<input type="text" class="form-control" name="dict" value="0"/>
 	<br/>
 
 	<label>отображение персональных данных(паспортные данные + контактная информация) владельца аттестата:</label>
-	<input type="text" name="info" value="1"/>
+	<input type="text" class="form-control" name="info" value="1"/>
 	<br/>
 
 	<label>проверка принадлежности WM идентификатора, подписавшего запрос, списку доверенных идентификаторов для
 		проверяемого аттестата:</label>
-	<input type="text" name="mode" value="0"/>
+	<input type="text" class="form-control" name="mode" value="0"/>
 	<br/>
 
 	<input type="submit" value="проверить"/>

@@ -7,7 +7,7 @@
 <table width="100%" border="0" class="content">
 <tr>
 <td class="contentEntry1" valign=top>&lt;title&gt;&lt;/title&gt; <small>(%home%)</small></td>
-<td class="contentEntry2" valign=top><input type="text" name="titles" value="{titles}" size="60" tabindex="4" /></td>
+<td class="contentEntry2" valign=top><input type="text" class="form-control" name="titles" value="{titles}" size="60" tabindex="4" /></td>
 </tr>
 </table>
 </fieldset>

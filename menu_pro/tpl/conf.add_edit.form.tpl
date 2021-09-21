@@ -7,26 +7,26 @@
 [show_name]
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_name}<br /><small>{l_menu_pro:desc_name}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{name}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{name}" /></td>
 </tr>
 [/show_name]
 [show_title]
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_title}<br /><small>{l_menu_pro:desc_title}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="title" value="{title}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="title" value="{title}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_description}<br /><small>{l_menu_pro:desc_description}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="description" value="{description}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="description" value="{description}" /></td>
 </tr>
 [/show_title]
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_icon}<br /><small>{l_menu_pro:desc_icon}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" id="icon" name="icon" value="{icon}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" id="icon" name="icon" value="{icon}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_skin}<br /><small>{l_menu_pro:desc_skin}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" id="skin" name="skin" value="{skin}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" id="skin" name="skin" value="{skin}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_if_active}<br /><small>{l_menu_pro:desc_if_active}</small></td>
@@ -42,15 +42,15 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_url}<br /><small>{l_menu_pro:desc_url}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="url" value="{url}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="url" value="{url}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_plugin}<br /><small>{l_menu_pro:desc_plugin}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="rep_plugin" id="rep_plugin" value="{plugin}" autocomplete="off" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="rep_plugin" id="rep_plugin" value="{plugin}" autocomplete="off" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_handler}<br /><small>{l_menu_pro:desc_handler}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="80" name="handler" id="rep_handler" value="{handler}" autocomplete="off" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="handler" id="rep_handler" value="{handler}" autocomplete="off" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_menu_pro:label_params}<br /><small>{l_menu_pro:desc_params}</small></td>
@@ -82,9 +82,9 @@ function AddBlok() {
 	cellRight.innerHTML = iteration+': ';
 	cellRight = row.insertCell(1);
 	cellRight.setAttribute('align', 'left');
-	var el = '<input type="text" name="params[' + iteration + '][key]" />';
+	var el = '<input type="text" class="form-control" name="params[' + iteration + '][key]" />';
 	cellRight.innerHTML += el;
-	el = '<input type="text" name="params[' + iteration + '][value]" />';
+	el = '<input type="text" class="form-control" name="params[' + iteration + '][value]" />';
 	cellRight.innerHTML += el;
 }
 function RemoveBlok() {
@@ -105,8 +105,8 @@ function sendData(obj)
 }
 
 function systemInit() {
-	new ngSuggest('rep_plugin', 
-								{ 
+	new ngSuggest('rep_plugin',
+								{
 									'iMinLen'	: 1,
 									'stCols'	: 2,
 									'stColsClass': [ 'cleft', 'cleft' ],
@@ -114,8 +114,8 @@ function systemInit() {
 									'reqMethodName' : 'menu_pro_get_plugin',
 								}
 							);
-	new ngSuggest('icon', 
-								{ 
+	new ngSuggest('icon',
+								{
 									'iMinLen'	: 1,
 									'stCols'	: 1,
 									'stColsClass': [ 'cleft'],
@@ -123,8 +123,8 @@ function systemInit() {
 									'reqMethodName' : 'menu_pro_get_icon',
 								}
 							);
-	new ngSuggest('skin', 
-								{ 
+	new ngSuggest('skin',
+								{
 									'iMinLen'	: 1,
 									'stCols'	: 1,
 									'stColsClass': [ 'cleft'],
@@ -132,8 +132,8 @@ function systemInit() {
 									'reqMethodName' : 'menu_pro_get_skin',
 								}
 							);
-	new ngSuggest('rep_handler', 
-								{ 
+	new ngSuggest('rep_handler',
+								{
 									'iMinLen'	: 1,
 									'stCols'	: 2,
 									'stColsClass': [ 'cleft', 'cleft' ],

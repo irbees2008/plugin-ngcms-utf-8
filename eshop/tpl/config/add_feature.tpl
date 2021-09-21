@@ -20,7 +20,7 @@
             <td width="50%" class="contentEntry1">Название<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.name }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.name }}"/>
             </td>
         </tr>
 
@@ -57,7 +57,7 @@
             <tr class="contRow1">
                 <td width="5%" style="background-color: #EAF0F7; border-left: 1px solid #D1DFEF;">текст</td>
                 <td width="45%">Значение по умолчанию:</td>
-                <td><input type="text" name="text_default"
+                <td><input type="text" class="form-control" name="text_default"
                            value="{% if (entries.ftype == 0) %}{{ entries.fdefault }}{% endif %}" size=40></td>
             </tr>
         </table>
@@ -95,7 +95,7 @@
                         {% if (mode == "add") %}
                             <tr>
                                 <td><input size="12" name="so_data[1][0]" type="text" value=""/></td>
-                                <td><input type="text" size="55" name="so_data[1][1]" value=""/></td>
+                                <td><input type="text" class="form-control" size="55" name="so_data[1][1]" value=""/></td>
                                 <td><a href="#" onclick="return false;"><img
                                                 src="{{ admin_url }}/skins/default/images/delete.gif" alt="DEL"
                                                 width="12" height="12"/></a></td>
@@ -118,7 +118,7 @@
                 <td>Значение по умолчанию: <br/>
                     <small><i>При сохранении кодов</i>: код
                 </td>
-                <td><input type="text" name="select_default"
+                <td><input type="text" class="form-control" name="select_default"
                            value="{% if (entries.ftype == 2) %}{{ entries.fdefault }}{% endif %}" size=40></td>
             </tr>
         </table>
@@ -143,7 +143,7 @@
             <td width="50%" class="contentEntry1">Позиция<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="position"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="position"
                                                          value="{{ entries.position }}"/></td>
         </tr>
 

@@ -8,7 +8,7 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_skin_def}<br /><small>{l_gmanager:desc_skin}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="skin" value="{skin}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="skin" value="{skin}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_if_auto_cash}<br /><small>{l_gmanager:desc_if_auto_cash}</small></td>
@@ -16,7 +16,7 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_cash_time}<br /><small>{l_gmanager:desc_cash_time}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="cash_time" value="{cash_time}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="cash_time" value="{cash_time}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_if_description}<br /><small>{l_gmanager:desc_if_description}</small></td>
@@ -32,11 +32,11 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_cell}<br /><small>{l_gmanager:desc_cell}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="main_cell" value="{main_cell}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="main_cell" value="{main_cell}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_row}<br /><small>{l_gmanager:desc_row}</small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="25" name="main_row" value="{main_row}" /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="25" name="main_row" value="{main_row}" /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">{l_gmanager:label_page}<br /><small>{l_gmanager:desc_page}</small></td>

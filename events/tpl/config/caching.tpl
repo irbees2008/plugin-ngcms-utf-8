@@ -13,7 +13,7 @@
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">Время жизни кэша<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="10" name="time" value="{time}"  /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="10" name="time" value="{time}"  /></td>
 </tr>
 </table>
 </fieldset>

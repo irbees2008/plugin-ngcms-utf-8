@@ -5,7 +5,7 @@
 <div class="block-title">РџРѕРёСЃРє РїРѕ СЃР°Р№С‚Сѓ</div>
 <table border="0" width="100%" cellspacing="0" cellpadding="0" style="margin:20px 0 0 0;">
 	<tr align="center">
-		<td>{l_search.filter.author} <input type="text" name="author" class="input" value="{author}" style="width:130px" /></td>
+		<td>{l_search.filter.author} <input type="text" class="form-control" name="author" class="input" value="{author}" style="width:130px" /></td>
 		<td>{l_search.filter.category} {catlist}</td>
 		<td>{l_search.filter.date} <select name="postdate"><option value=""></option>{datelist}</select></td>
 	</tr>

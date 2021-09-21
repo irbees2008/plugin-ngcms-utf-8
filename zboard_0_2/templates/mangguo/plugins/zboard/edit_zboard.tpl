@@ -18,11 +18,11 @@ var currentInputAreaID = 'content_description';
 <form method="post" action="" class="comment-form" name="form" enctype="multipart/form-data">
 <ul class="comment-author">
 <li class="item clearfix">
-<input type="text" name="announce_name" value="{{announce_name}}" tabindex="1">
+<input type="text" class="form-control" name="announce_name" value="{{announce_name}}" tabindex="1">
 <label>Заголовок объявления <i>(*)</i></label>
 </li>
 <li class="item clearfix">
-<input type="text" name="author" value="{{author}}" tabindex="1">
+<input type="text" class="form-control" name="author" value="{{author}}" tabindex="1">
 <label>Автор <i>(*)</i></label>
 </li>
 <li class="item clearfix">
@@ -72,7 +72,7 @@ $(document).ready(function() {
 			location.reload();
         }
        });
-	   
+
 	   $('#file_upload').fileUploadSettings('scriptData','&des='+$("#txtdes").val());
 
 $('.fix').capty({
@@ -80,8 +80,8 @@ $('.fix').capty({
    height:   36,
    opacity:  .6
  });
-	   
-	   
+
+
 });
 
 

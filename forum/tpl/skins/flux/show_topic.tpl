@@ -18,7 +18,7 @@
 			<div class="inbox">
 				<input type="hidden" name="id" value="{{ tid }}">
 				{% if (not num_page == 1) %}<input type="hidden" name="page" value="{{ num_page }}">{% endif %}
-				<label><input type="text" name="s" size="40" value="{{ search }}" maxlength="100"/><input type="submit" value="Искать" accesskey="s"/><br/></label>
+				<label><input type="text" class="form-control" name="s" size="40" value="{{ search }}" maxlength="100"/><input type="submit" value="Искать" accesskey="s"/><br/></label>
 			</div>
 		</div>
 	</form>

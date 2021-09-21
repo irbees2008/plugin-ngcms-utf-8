@@ -8,9 +8,9 @@
 		var f = document.getElementById('profileForm');
 		// ICQ
 		var icq = f.editicq.value;
-		if ((icq.length > 0)&&(! icq.match(/^\d{4,10}$/))) { 
-			alert("{{ lang.uprofile['wrong_icq'] }}"); 
-			return false; 
+		if ((icq.length > 0)&&(! icq.match(/^\d{4,10}$/))) {
+			alert("{{ lang.uprofile['wrong_icq'] }}");
+			return false;
 		}
 		// Email
 		var email = f.editmail.value;
@@ -22,7 +22,7 @@
 		var about = f.editabout.value;
 		if (({about_sizelimit} > 0) && (about.length > {about_sizelimit})) {
 			alert("{{ info_sizelimit_text }}");
-			return false;	
+			return false;
 		}
 		return true;
 	}
@@ -32,19 +32,19 @@
 <input type="hidden" name="token" value="{{ token }}"/>
 	<div class="label label-table">
 		<label>{{ lang.uprofile['email'] }}:</label>
-		<input type="text" name="editmail" value="{{ user.email }}" class="input" />
+		<input type="text" class="form-control" name="editmail" value="{{ user.email }}" class="input" />
 	</div>
 	<div class="label label-table">
 		<label>{{ lang.uprofile['site'] }}:</label>
-		<input type="text" name="editsite" value="{{ user.site }}" class="input" />
+		<input type="text" class="form-control" name="editsite" value="{{ user.site }}" class="input" />
 	</div>
 	<div class="label label-table">
 		<label>{{ lang.uprofile['icq'] }}:</label>
-		<input type="text" name="editicq" value="{{ user.icq }}" class="input" />
+		<input type="text" class="form-control" name="editicq" value="{{ user.icq }}" class="input" />
 	</div>
 	<div class="label label-table">
 		<label>{{ lang.uprofile['from'] }}:</label>
-		<input type="text" name="editfrom" value="{{ user.from }}" class="input" />
+		<input type="text" class="form-control" name="editfrom" value="{{ user.from }}" class="input" />
 	</div>
 	<div class="label label-table">
 		<label>{{ lang.uprofile['about'] }}: </label>

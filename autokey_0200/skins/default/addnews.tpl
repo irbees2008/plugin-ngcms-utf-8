@@ -51,7 +51,7 @@ function preview(){
   <tr>
    <td width="10"><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td width="100">{l_title}:</td>
-   <td><input type="text" class="important" size="79" name="title" value="" tabindex="1" /></td>
+   <td><input type="text" class="form-control" class="important" size="79" name="title" value="" tabindex="1" /></td>
   </tr>
   <tr>
    <td valign="top" colspan=3>{quicktags}<br /> {smilies}<br />
@@ -60,25 +60,25 @@ function preview(){
   <tr>
    <td><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td>{l_alt_name}:</td>
-   <td><input type="text" name="alt_name" value="" size="60" tabindex="3" /></td>
+   <td><input type="text" class="form-control" name="alt_name" value="" size="60" tabindex="3" /></td>
   </tr>
 [meta]
   <tr>
    <td><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td>{l_description}:</td>
-   <td><input type="text" name="description" value="" size="60" tabindex="4" /></td>
+   <td><input type="text" class="form-control" name="description" value="" size="60" tabindex="4" /></td>
   </tr>
   <tr>
    <td valign="top"><img src="{skins_url}/images/nav.png" hspace="8" alt="" /></td>
    <td valign="top">{l_keywords}:</td>
-   <td valign="top"><input type="text" name="keywords" value="" size="60" tabindex="5" /> 
-   
+   <td valign="top"><input type="text" class="form-control" name="keywords" value="" size="60" tabindex="5" />
+
 
    <input type="submit" value="Get Keywords" name="autokey_keys"  onclick="javascript:SendPOST(); return false;">
-   
+
    <br /><div id="autokey_out"></div>
-   
-   
+
+
    </td>
   </tr>
 [/meta]
@@ -167,11 +167,11 @@ var form = document.getElementById('postForm');
 for (i in jev) {
 // alert(i+' ('+typeof(jev[i])+')');
  if (typeof(jev[i]) == 'object') {
- 	//alert('OBJ'); 
+ 	//alert('OBJ');
  	for (j in jev[i]) {
  		//alert(i+'['+j+'] = '+ jev[i][j]);
  		try { form[i+'['+j+']'].value = jev[i][j]; } catch (err) {;}
- 	}	
+ 	}
  } else {
   try {
    form[i].value = jev[i];
@@ -179,7 +179,3 @@ for (i in jev) {
  }
 }
 </script>
-
-
-
-

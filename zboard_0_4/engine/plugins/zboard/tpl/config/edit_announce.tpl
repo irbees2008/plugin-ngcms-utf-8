@@ -9,11 +9,11 @@
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 <td width="50%" class="contentEntry1">Р—Р°РіРѕР»РѕРІРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="40" name="announce_name" value="{announce_name}"  /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="announce_name" value="{announce_name}"  /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">РђРІС‚РѕСЂ<br /><small></small></td>
-<td width="50%" class="contentEntry2"><input type="text" size="40"  name="author" value="{author}"  /></td>
+<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40"  name="author" value="{author}"  /></td>
 </tr>
 <tr>
 <td width="50%" class="contentEntry1">РџРµСЂРёРѕРґ РѕР±СЉСЏРІР»РµРЅРёСЏ<br /><small></small></td>

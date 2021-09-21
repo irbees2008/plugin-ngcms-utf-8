@@ -8,7 +8,7 @@
 				</small>
 			</td>
 			<td width="50%" class="contentEntry2">
-				<input type="text" size="40" name="title" value="{{ title }}"/><select name="id">{{ options }}</select>
+				<input type="text" class="form-control" size="40" name="title" value="{{ title }}"/><select name="id">{{ options }}</select>
 			</td>
 		</tr>
 	</table>

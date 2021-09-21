@@ -41,13 +41,13 @@
 				{% if entry.type == 'text' %}
 					<tr>
 						<td width="30%">{{ entry.title }}</td>
-						<td width="70%"><input type="text" name="{{ entry.name }}" class="input"/></td>
+						<td width="70%"><input type="text" class="form-control" name="{{ entry.name }}" class="input"/></td>
 					</tr>
 				{% endif %}
 				{% if entry.type == 'email' %}
 					<tr>
 						<td width="30%">{{ entry.title }}</td>
-						<td width="70%"><input type="text" name="{{ entry.name }}" class="input"/></td>
+						<td width="70%"><input type="text" class="form-control" name="{{ entry.name }}" class="input"/></td>
 					</tr>
 				{% endif %}
 				{% if entry.type == 'textarea' %}
@@ -78,7 +78,7 @@
 					<td width="30%">
 						<img id="img_captcha" onclick="this.src='{{ captcha_url }}&rand='+Math.random();" src="{{ captcha_url }}&rand={{ captcha_rand }}" alt="captcha"/>
 					</td>
-					<td width="70%"><input type="text" name="vcode" style="width:80px" class="input"/></td>
+					<td width="70%"><input type="text" class="form-control" name="vcode" style="width:80px" class="input"/></td>
 				</tr>
 			{% endif %}
 			{% if (flags.recipients) %}

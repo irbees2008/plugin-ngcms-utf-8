@@ -5,7 +5,7 @@
             <td width="50%" class="contentEntry1">Название<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.name }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.name }}"/>
             </td>
         </tr>
 
@@ -22,7 +22,7 @@
             <td width="50%" class="contentEntry1">Позиция<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="1" name="position"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="1" name="position"
                                                          value="{{ entries.position }}"/></td>
         </tr>
 

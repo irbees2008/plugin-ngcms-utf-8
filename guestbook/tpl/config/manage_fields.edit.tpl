@@ -8,15 +8,15 @@
 			</tr>
 			<tr class="contRow1">
 				<td width="20%">{{ lang['gbconfig']['f_name'] }}</td>
-				<td><input type="text" name="name" value="{{ field.name }}" size="50"/></td>
+				<td><input type="text" class="form-control" name="name" value="{{ field.name }}" size="50"/></td>
 			</tr>
 			<tr class="contRow1">
 				<td width="20%">{{ lang['gbconfig']['f_placeholder'] }}</td>
-				<td><input type="text" name="placeholder" value="{{ field.placeholder }}" size="50"/></td>
+				<td><input type="text" class="form-control" name="placeholder" value="{{ field.placeholder }}" size="50"/></td>
 			</tr>
 			<tr class="contRow1">
 				<td width="20%">{{ lang['gbconfig']['f_default_value'] }}</td>
-				<td><input type="text" name="default_value" value="{{ field.default_value }}" size="50"/></td>
+				<td><input type="text" class="form-control" name="default_value" value="{{ field.default_value }}" size="50"/></td>
 			</tr>
 			<tr class="contRow1">
 				<td width="20%">{{ lang['gbconfig']['f_required'] }}</td>

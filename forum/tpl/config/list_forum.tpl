@@ -1,6 +1,6 @@
 <tr align="center" class="contRow1">
 	<td>{{ forum_id }}</td>
-	<td><input type="text" name="position[{{ forum_id }}]" value="{{ pos }}" maxlength="5" size="5"/></td>
+	<td><input type="text" class="form-control" name="position[{{ forum_id }}]" value="{{ pos }}" maxlength="5" size="5"/></td>
 	<td>{{ forum_name }}<br/>
 		<small><a href="{{ forum_link }}">{{ home_url }}{{ forum_link }}</a></small>
 	</td>

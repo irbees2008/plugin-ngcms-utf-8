@@ -5,7 +5,7 @@
             <td width="50%" class="contentEntry1">ID<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.id }}"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.id }}"
                                                          disabled="disabled"/></td>
         </tr>
 
@@ -13,7 +13,7 @@
             <td width="50%" class="contentEntry1">Дата<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name"
                                                          value="{{ entries.dt|date('d.m.Y H:i') }}"
                                                          disabled="disabled"/></td>
         </tr>
@@ -22,7 +22,7 @@
             <td width="50%" class="contentEntry1">IP<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.ip }}"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.ip }}"
                                                          disabled="disabled"/></td>
         </tr>
 
@@ -30,7 +30,7 @@
             <td width="50%" class="contentEntry1">Тип<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="type"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="type"
                                                          value="{% if (entries.type == 1) %}Обычный{% elseif (entries.type == 2) %}Купить в один клик{% elseif (entries.type == 3) %}Узнать о наличии{% endif %}"
                                                          disabled="disabled"/></td>
         </tr>
@@ -48,7 +48,7 @@
             <td width="50%" class="contentEntry1">Имя<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.name }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.name }}"/>
             </td>
         </tr>
 
@@ -56,7 +56,7 @@
             <td width="50%" class="contentEntry1">Телефон<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="phone"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="phone"
                                                          value="{{ entries.phone }}"/></td>
         </tr>
 
@@ -64,7 +64,7 @@
             <td width="50%" class="contentEntry1">Email<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="email"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="email"
                                                          value="{{ entries.email }}"/></td>
         </tr>
 
@@ -98,7 +98,7 @@
             <td width="50%" class="contentEntry1">Адрес<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="address"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="address"
                                                          value="{{ entries.address }}"/></td>
         </tr>
 

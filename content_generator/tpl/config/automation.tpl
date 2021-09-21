@@ -19,7 +19,7 @@
 				<div class="card-header">Новости</div>
 				<div class="card-body">
 					<div class="list">
-						Количество: <input type="text" value="10000" name="count">
+						Количество: <input type="text" class="form-control" value="10000" name="count">
 					</div>
 					<div class="list">
 						<div class="progressbar">
@@ -38,7 +38,7 @@
 				<div class="card-header">Статьи</div>
 				<div class="card-body">
 					<div class="list">
-						Количество: <input type="text" value="10000" name="count">
+						Количество: <input type="text" class="form-control" value="10000" name="count">
 					</div>
 					<div class="list">
 						<div class="progressbar">

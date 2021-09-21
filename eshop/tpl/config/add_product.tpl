@@ -41,21 +41,21 @@
             <td width="50%" class="contentEntry1">Название<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{ entries.name }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" value="{{ entries.name }}"/>
             </td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Код<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="code" value="{{ entries.code }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="code" value="{{ entries.code }}"/>
             </td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">URL<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="url" value="{{ entries.url }}"/>
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="url" value="{{ entries.url }}"/>
             </td>
         </tr>
 
@@ -63,21 +63,21 @@
             <td width="50%" class="contentEntry1">Meta title<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_title"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_title"
                                                          value="{{ entries.meta_title }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Meta keywords<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_keywords"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_keywords"
                                                          value="{{ entries.meta_keywords }}"/></td>
         </tr>
         <tr>
             <td width="50%" class="contentEntry1">Meta description<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="meta_description"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="meta_description"
                                                          value="{{ entries.meta_description }}"/></td>
         </tr>
 
@@ -85,7 +85,7 @@
             <td width="50%" class="contentEntry1">Внешний ID<br/>
                 <small></small>
             </td>
-            <td width="50%" class="contentEntry2"><input type="text" size="80" name="external_id"
+            <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="external_id"
                                                          value="{{ entries.external_id }}"/></td>
         </tr>
 
@@ -265,7 +265,7 @@
                 <small></small>
             </td>
             <td width="50%" class="contentEntry2">
-                <input type="text" id="linked-products" name="linked-products"/>
+                <input type="text" class="form-control" id="linked-products" name="linked-products"/>
             </td>
         </tr>
 
@@ -384,7 +384,7 @@
                         <small></small>
                     </td>
                     <td width="50%" class="contentEntry2">
-                        {% if feature.ftype == 0 %}<input type="text" size="80" name="data[features][{{ feature.id }}]"
+                        {% if feature.ftype == 0 %}<input type="text" class="form-control" size="80" name="data[features][{{ feature.id }}]"
                                                           value="{% if not(feature.value) and (entries.mode == 'add') %}{{ feature.fdefault }}{% else %}{{ feature.value }}{% endif %}" >
                         {% elseif feature.ftype == 1 %}<input type="checkbox" name="data[features][{{ feature.id }}]"
                                                               value="1"

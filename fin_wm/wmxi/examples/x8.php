@@ -35,11 +35,11 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>WM-идентфиикатор:</label>
-	<input type="text" name="wmid" value=""/>
+	<input type="text" class="form-control" name="wmid" value=""/>
 	<br/>
 
 	<label>кошелек:</label>
-	<input type="text" name="purse" value=""/>
+	<input type="text" class="form-control" name="purse" value=""/>
 	<br/>
 
 	<input type="submit" value="проверить"/>

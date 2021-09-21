@@ -13,14 +13,14 @@ function clx(mode) {
 <tr>
 <td colspan="2" width=100% class="contentHead"><img src="{skins_url}/images/nav.gif" hspace="8">[add]{l_feedback:field.title.add}[/add][edit]{l_feedback:field.title.edit}[/edit]</td>
 </tr>
-<tr class="contRow1"><td width="50%">{l_feedback:field.id}</td><td width="47%"><input type="text" name="name" value="{name}" size="40" [edit]readonly[/edit]>[edit] &nbsp; &nbsp; {l_feedback:field.noedit}[/edit]</td></tr>
-<tr class="contRow1"><td width="50%">{l_feedback:field.title}</td><td><input type="text" name="title" value="{title}" size="40" /></td></tr>
+<tr class="contRow1"><td width="50%">{l_feedback:field.id}</td><td width="47%"><input type="text" class="form-control" name="name" value="{name}" size="40" [edit]readonly[/edit]>[edit] &nbsp; &nbsp; {l_feedback:field.noedit}[/edit]</td></tr>
+<tr class="contRow1"><td width="50%">{l_feedback:field.title}</td><td><input type="text" class="form-control" name="title" value="{title}" size="40" /></td></tr>
 <tr class="contRow1"><td width="50%">{l_feedback:field.type}</td><td><select name="type" id="type" onclick="clx(this.value);" onchange="clx(this.value);" />{type_opts}</select></td></tr>
 </table>
 
 <div id="type_text">
 <table border="0" cellspacing="1" cellpadding="1" class="content">
-<tr class="contRow1"><td width="5%" style="background-color: #E0FFFF;">{l_feedback:type.text}</td><td width="45%">{l_feedback:field.default}</td><td><input type="text" name="text_default" value="{text_default}" size=40></tr>
+<tr class="contRow1"><td width="5%" style="background-color: #E0FFFF;">{l_feedback:type.text}</td><td width="45%">{l_feedback:field.default}</td><td><input type="text" class="form-control" name="text_default" value="{text_default}" size=40></tr>
 </table>
 </div>
 <div id="type_textarea">
@@ -32,12 +32,12 @@ function clx(mode) {
 <table border="0" cellspacing="1" cellpadding="1" class="content">
 <!-- <tr class="contRow1"><td width="5%" style="background-color: #FFFFE0;">{l_feedback:type.select}</td><td width="45%">{l_feedback:select.storekeys}</td><td><select name="select_storekeys">{storekeys_opts}</select></td></tr> -->
 <tr class="contRow1"><td width="5%" style="background-color: #FFFFE0;">{l_feedback:type.select}</td><td>{l_feedback:select.options}</td><td><textarea cols=70 rows=8 name="select_options">{select_options}</textarea></tr>
-<tr class="contRow1"><td width="5%" style="background-color: #FFFFE0;">{l_feedback:type.select}</td><td>{l_feedback:field.default}</td><td><input type="text" name="select_default" value="{select_default}" size=40></tr>
+<tr class="contRow1"><td width="5%" style="background-color: #FFFFE0;">{l_feedback:type.select}</td><td>{l_feedback:field.default}</td><td><input type="text" class="form-control" name="select_default" value="{select_default}" size=40></tr>
 </table>
 </div>
 <div id="type_date">
 <table border="0" cellspacing="1" cellpadding="1" class="content">
-<tr class="contRow1"><td width="5%" style="background-color: #E0FFFF;">{l_feedback:type.date}</td><td width="45%">{l_feedback:field.default.date}</td><td><input type="text" name="date_default" value="{date_default}" size=10></tr>
+<tr class="contRow1"><td width="5%" style="background-color: #E0FFFF;">{l_feedback:type.date}</td><td width="45%">{l_feedback:field.default.date}</td><td><input type="text" class="form-control" name="date_default" value="{date_default}" size=10></tr>
 </table>
 </div>
 <table border="0" cellspacing="1" cellpadding="1" class="content">

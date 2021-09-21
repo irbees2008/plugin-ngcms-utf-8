@@ -38,23 +38,23 @@ if (count($_POST) > 0) {
 <form action="" method="post">
 
 	<label>номер кошелька для оплаты на который которого выписывался счет :</label>
-	<input type="text" name="purse" value=""/>
+	<input type="text" class="form-control" name="purse" value=""/>
 	<br/>
 
 	<label>номер счета (в системе WebMoney):</label>
-	<input type="text" name="wminvid" value="0"/>
+	<input type="text" class="form-control" name="wminvid" value="0"/>
 	<br/>
 
 	<label>номер счета:</label>
-	<input type="text" name="orderid" value="0"/>
+	<input type="text" class="form-control" name="orderid" value="0"/>
 	<br/>
 
 	<label>минимальное время и дата создания счета:</label>
-	<input type="text" name="datestart" value="20070418 18:00:00"/>
+	<input type="text" class="form-control" name="datestart" value="20070418 18:00:00"/>
 	<br/>
 
 	<label>максимальное время и дата создания счета:</label>
-	<input type="text" name="datefinish" value="20070420 18:00:00"/>
+	<input type="text" class="form-control" name="datefinish" value="20070420 18:00:00"/>
 	<br/>
 
 	<input type="submit" value="получить список"/>

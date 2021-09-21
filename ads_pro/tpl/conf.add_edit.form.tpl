@@ -81,7 +81,7 @@
 			<td width="50%" class="contentEntry1">{l_ads_pro:name}<br/>
 				<small>{l_ads_pro:name_d}</small>
 			</td>
-			<td width="50%" class="contentEntry2"><input type="text" size="80" name="name" [edit] value="{name}" [/edit]
+			<td width="50%" class="contentEntry2"><input type="text" class="form-control" size="80" name="name" [edit] value="{name}" [/edit]
 				/>
 			</td>
 		</tr>
@@ -90,7 +90,7 @@
 				<small>{l_ads_pro:description_d}</small>
 			</td>
 			<td width="50%" class="contentEntry2">
-				<input type="text" size="80" name="description" [edit] value="{description}" [/edit] />
+				<input type="text" class="form-control" size="80" name="description" [edit] value="{description}" [/edit] />
 			</td>
 		</tr>
 		<tr>
@@ -125,7 +125,7 @@
 					<small>{l_ads_pro:start_view_d}</small>
 				</td>
 				<td width="50%" class="contentEntry2">
-					<input type="text" size="80" name="start_view" [edit] value="{start_view}" [/edit] />
+					<input type="text" class="form-control" size="80" name="start_view" [edit] value="{start_view}" [/edit] />
 				</td>
 			</tr>
 			<tr>
@@ -133,7 +133,7 @@
 					<small>{l_ads_pro:end_view_d}</small>
 				</td>
 				<td width="50%" class="contentEntry2">
-					<input type="text" size="80" name="end_view" [edit] value="{end_view}" [/edit] />
+					<input type="text" class="form-control" size="80" name="end_view" [edit] value="{end_view}" [/edit] />
 				</td>
 			</tr>
 		</table>

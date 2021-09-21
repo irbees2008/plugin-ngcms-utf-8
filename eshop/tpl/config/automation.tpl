@@ -43,7 +43,7 @@
                                 <tr id="row">
                                     <br/>
                                     <td>URL:</td>
-                                    <td><input type="text" size="60" name="yml_url"></td>
+                                    <td><input type="text" class="form-control" size="60" name="yml_url"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -239,7 +239,7 @@
                                             <option value="1">Увеличить</option>
                                             <option value="0">Уменьшить</option>
                                         </select>
-                                        <input type="text" size="2" name="change_price_qnt"> %
+                                        <input type="text" class="form-control" size="2" name="change_price_qnt"> %
                                     </td>
                                 </tr>
                                 </tbody>
