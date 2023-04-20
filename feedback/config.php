@@ -285,7 +285,11 @@ function showFormRow()
             $xsel .= '<option value="'.$ts.'"'.(($xRow['type'] == $ts) ? ' selected' : '').'>'.$lang['feedback:field_type_'.$ts];
         }
         $tVars['field']['type']['options'] = $xsel;
-        $tVars['field']['select_options'] = implode("\n", $xRow['options']);
+        if (is_array($xRow['options'])) {
+            $tVars['field']['select_options'] = implode("\n", array_map('strval', $xRow['options']));
+        }
+        
+
         $tVars['field']['required']['options'] = [0, 1];
         $tVars['field']['auto']['options'] = [0, 1, 2, 3];
         $tVars['field']['block']['options'] = [0, 1, 2];
