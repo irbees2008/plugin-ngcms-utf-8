@@ -1,0 +1,192 @@
+# =========================================================================== #
+# NG CMS // Плагины // Интернет магазин                                       #
+# =========================================================================== #
+
+Установка:
+1) Залить плагин в /engine/plugins/.
+2) Залить тестовый шаблон eshop2 в /templates/, выбрать шаблон eshop2 в настройках CMS (не обязательно, если будете использовать свой).
+3) Установить плагин eshop в админке.
+4) Настроить URL'ы, если требуется.
+
+# =========================================================================== #
+
+Работа с валютами:
+1) После установки, уже существует 3 предустановленных валюты (USD, RUB, UAH).
+Основной валютой является - валюта первая по позиции в таблице валют. 
+Основная валюта:
+- эта валюта, в которой ведутся все цены продукции в админке
+- эта валюта, в которой будут отображаться все цены магазина при первом посещении пользователя.
+2) Настоятельно рекомендуется настроить для себя основную валюту до начала добавления продукции и заказов, т.к. в дальнейшем изменение основной валюты затруднительно.
+Если сначала основная валюта была RUB и был продукт с ценой 100, то при смене основной валюты на USD, абсолютное значение данного продукта останется 100, но уже USD.
+Т.е. при смене основной валюты переконвертации цен в продукции и заказах по курсу не происходит.
+
+# =========================================================================== #
+
+После установки плагина и активации и настройки ЧПУ станут доступны страницы:
+/[{alt}/][page/{page}/] - страницы категорий. (Шаблон вывода plugins/eshop/tpl/eshop.tpl)
+/{alt}.html - страницы продукции. (Шаблон вывода plugins/eshop/tpl/show_eshop.tpl)
+/eshop/search/[page/{page}/] - поиск по продукции. (Шаблон вывода plugins/eshop/tpl/search_eshop.tpl)
+/eshop/stocks/[page/{page}/] - страница акциионной продукции. (Шаблон вывода plugins/eshop/tpl/stocks_eshop.tpl)
+/eshop/compare/ - страница сравнения продукции. (Шаблон вывода plugins/eshop/tpl/compare_eshop.tpl)
+/eshop/yml_export/ - страница вывода продукции в XML. (Шаблон вывода plugins/eshop/tpl/yml_export_eshop.tpl)
+/eshop/ebasket_list/ - страница вывода корзины и формы заказа. (Шаблон вывода plugins/eshop/tpl/ebasket/list.tpl)
+/eshop/order/?id={id}&uniqid={uniqid} - страница существуюшего заказа. (Шаблон вывода plugins/eshop/tpl/order_eshop.tpl)
+/eshop/currency/?id={id} - страница смены валюты.
+
+plugins/eshop/tpl/variables.ini - отвечает за переменные для постраничной навигации.
+plugins/eshop/tpl/comments.form_eshop.tpl - шаблон вывода формы для добавления отзывов на странице продукта.
+plugins/eshop/tpl/comments.show_eshop.tpl - о шаблон вывода списка отзывов на странице продукта.
+plugins/eshop/tpl/viewed_block_eshop.tpl -  шаблон вывода просмотренных товаров.
+plugins/eshop/tpl/likes_eshop.tpl -  шаблон вывода блока кнопки - лайк (+1).
+plugins/eshop/tpl/mail/lfeedback.tpl -  шаблон вывода письма о добавлении нового заказа.
+plugins/eshop/tpl/mail/lfeedback_comment.tpl -  шаблон вывода письма о добавлении нового отзыва.
+
+Наличие той или иной переменной в шаблоне всегда можно посмотреть через {{ debugContext(0) }}, {{ debugValue(varName) }}
+
+# =========================================================================== #
+
+Переменные, доступные в main.tpl:
+1. {{ callPlugin('eshop.show', {'number' : 10, 'mode' : 'stocked', 'template': 'block_eshop'}) }} - выводит блок товаров на главной.
+Доступные параметры:
+- number - число товаров для отображения
+- mode - режим вывода, доступны (last - самые новые, stocked - те что отмечены "Акционный", featured - те что отмечены "Рекомендованный")
+- template - шаблон вывода, например если block_eshop, то это plugins/eshop/tpl/block/block_eshop.tpl (если не используется, то по-умолчанию block_eshop)
+- cat - категории из которых выводить товары (если не используется, то по-умолчанию все категории).
+- cacheExpire - время жизни кеша в секундах (если не используется, то по-умолчанию без кеша).
+
+2. {{ callPlugin('eshop.show_catz_tree', {'template': 'block_cats_tree'}) }} - выводит дерево категорий. Шаблон вывода: plugins/eshop/tpl/cats_tree.tpl
+Доступные параметры:
+- template - шаблон вывода, например если block_cats_tree, то это plugins/eshop/tpl/block/block_cats_tree.tpl (если не используется, то по-умолчанию block_cats_tree)
+
+3. {{ eshop_ebasket }} - выводит блок корзины с количеством и ценой. Шаблон вывода: plugins/eshop/tpl/ebasket/total.tpl
+
+4. {{ eshop_ebasket_notify }} - выводит блоки, связанные с добавлением заказов (добавление в корзину, заказ в один клик, и.т.д).  Шаблон вывода: plugins/eshop/tpl/ebasket/notify.tpl
+
+5. {{ eshop_compare }} - выводит блок количества добавленных к сравнению продуктов. Шаблон вывода: plugins/eshop/tpl/compare_block_eshop.tpl
+
+6. Также в main.tpl поддерживаются страндартные TWIG блоки, которые позволяют выводить/скрывать определенные блоки в зависимости от страницы на которой находится посетитель.
+- {% if pluginIsActive('eshop') %}XXX{% endif %} - выводится если плагин eshop активирован.
+- {% if isHandler('eshop') %}XXX{% endif %} - выводится только на всех страницах плагина eshop, но не выводится на других страницах.
+- {% if isHandler('eshop:show') %}XXX{% endif %} - выводится только на всех страницах продукции плагина eshop.
+- {% if isHandler('eshop:search') %}XXX{% endif %} - выводится только на на странице /eshop/ плагина eshop.
+- {% if isHandler('eshop:stocks') %}XXX{% endif %} - выводится только на на странице /stocks/ плагина eshop.
+- {% if isHandler('eshop:compare') %}XXX{% endif %} - выводится только на на странице /compare/ плагина eshop.
+- {% if isHandler('eshop:ebasket_list') %}XXX{% endif %} - выводится только на на странице /ebasket_list/ плагина eshop.
+- {% if isHandler('eshop:order') %}XXX{% endif %} - выводится только на на странице /order/ плагина eshop.
+- {% if (handler.pluginName == 'eshop') and (handler.handlerName == '') %}XXX{% endif %} - выводится только на всех категорий.
+- {% if (handler.pluginName == 'eshop') and (handler.handlerName == 'show') and (handler.params.alt == 'alt-name-product') %}XXX{% endif %} - выводится только на странице продукта с altname = alt-name-product.
+- {% if (handler.pluginName == 'eshop') and (handler.handlerName == '') and (handler.params.alt == 'alt-name-cat') %}XXX{% endif %} - выводится только на странице категории с altname = alt-name-cat.
+
+# =========================================================================== #
+
+Переменные, доступные в шаблоне profile.tpl (плагин uprofile):
+
+1. {{ debugValue(shop.orders) }} - массив с заказами текущего пользователя.
+Пример вывода блока:
+{% for order in eshop.orders %}
+    {{ order.id }}
+    {{ order.order_link }}
+    {{ order.dt|date("d.m.Y H:i") }}
+    {{ (order.total_price * system_flags.eshop.current_currency.rate_from)|number_format(2, '.', '') }}</span> {{ system_flags.eshop.current_currency.sign }}
+    {% if (order.paid == 0) %}Не оплачен{% else %}Оплачен{% endif %}
+{% endfor %}
+
+# =========================================================================== #
+
+Переменные, доступные в любых шаблонах:
+
+1. {{ debugValue(system_flags.eshop.currency) }} - массив с валютами. {{ debugValue(system_flags.eshop.current_currency) }} - массив с текущей (выбранной) валютой.
+Пример вывода блока со списком валют:
+{% for cc in system_flags.eshop.currency %}
+    <li{% if (system_flags.eshop.current_currency.id == cc.id) %} class="active"{% endif %}><a href="{{ cc.currency_link }}">{{ cc.code }}</a></li>
+{% endfor %}
+
+2. {{ system_flags.eshop.description_order }} - блок описания покупки (берется из админки), {{ system_flags.eshop.description_delivery }} - блок описания доставки (берется из админки), {{ system_flags.eshop.description_phones }} - блок телефоны магазина (берется из админки)
+
+# =========================================================================== #
+
+Часть функционала использует RPC запросы для взаимодействия клиент-сервер:
+
+1) Добавление продукции в корзину:
+rpcEshopRequest('eshop_ebasket_manage', {'action': 'add', 'ds':1, 'id':id, 'count':count }, function (resTX) {
+    document.getElementById('tinyBask').innerHTML = resTX['update'];
+});
+
+
+2) Удаление продукции из заказа (корзины):
+rpcEshopRequest('eshop_ebasket_manage', {'action': 'delete', 'id':id, 'linked_ds':linked_ds, 'linked_id':linked_id }, function (resTX) {
+    location.reload();
+});
+
+
+3) Обновление количества продукции в заказе (корзине):
+rpcEshopRequest('eshop_ebasket_manage', {'action': 'update_count',  'id':id, 'linked_ds':linked_ds, 'linked_id':linked_id,'count':count }, function (resTX) {
+    click_this.val(count);
+    
+    var total = parseFloat(count * price).toFixed(2);
+    click_this.parent().parent().parent().parent().parent().parent().find("td[class='frame-cur-sum-price frame-sum']").find("span[class='price']").text(total);
+
+    var sum = 0;
+    $("td[class='frame-cur-sum-price frame-sum'").each(function() {
+        sum = sum + parseFloat($(this).find("span[class='price']").text());
+    });
+    $("#finalAmount").text(sum.toFixed(2));
+});
+
+
+4) Добавление быстрого заказа:
+rpcEshopRequest('eshop_ebasket_manage', {'action': 'add_fast', 'ds':1, 'id':id, 'count':count, 'type': '2', 'name': name, 'phone': phone, 'address': address}, function (resTX) {
+    $("div#fastorder-frame").html("<label><div align='center'>Заказ добавлен. В ближайшее время вам перезвонит наш манеджер.</div></label>");
+});
+
+Добавление заказа с кнопки "Узнать о наличии":
+rpcEshopRequest('eshop_ebasket_manage', {'action': 'add_fast', 'ds':1, 'id':id, 'count':count, 'type': '3', 'name': name, 'phone': phone, 'address': address}, function (resTX) {
+    $("div#fastprice-frame").html("<label><div align='center'>Спасибо. В ближайшее время вам перезвонит наш манеджер.</div></label>");
+});
+
+
+5) Добавление / удаление продукции к сравнению:
+rpcEshopRequest('eshop_compare', {'action': 'add', 'id':id }, function (resTX) {
+    $('.compare-button').html(resTX['update']);
+});
+
+rpcEshopRequest('eshop_compare', {'action': 'remove', 'id':id }, function (resTX) {
+    $('.compare-button').html(resTX['update']);
+});
+
+6) Лайк продукции:
+rpcEshopRequest('eshop_likes_result', {'action': 'do_like', 'id' : id }, function (resTX) {
+    $(".ratebox2").html(resTX['update']);
+});
+
+
+7) Вывод блока просмотренной продукции:
+var page_stack = br.storage.get('page_stack');
+if(page_stack != null) {
+    page_stack_str = page_stack.join(",");
+    rpcEshopRequest('eshop_viewed', {'action': 'show', 'page_stack':page_stack_str }, function (resTX) {
+        $('#ViewedProducts').html(resTX['update']);
+    });
+}
+
+На странице продукции (Шаблон вывода plugins/eshop/tpl/show_eshop.tpl) должено быть объявлено добавление ID продукции в localStorage:
+br.storage.prependUnique('page_stack', {{ id }}, 25);
+
+
+8) Добавление отзыва:
+rpcEshopRequest('eshop_comments_add', { 'comment_author' : $('#comment_author').val(), 'comment_email' : $('#comment_email').val(), 'comment_text' : $('#comment_text').val(), 'product_id' : {{id}} }, function (resTX) {
+    if ((resTX['data']['eshop_comments']>0)&&(resTX['data']['eshop_comments'] < 100)) {
+        $(".error_text").html("<div class='msg js-msg'><div class='error error'><span class='icon_info'></span><div class='text-el'><p>"+resTX['data']['eshop_comments_text']+"</p></div></div></div>");
+        $(".product-comment").html(""+resTX['data']['eshop_comments_show']+"");
+    } else {
+        $(".error_text").html("");
+        $("#comment_text").val("");
+        $(".product-comment").html(""+resTX['data']['eshop_comments_show']+"");
+    }
+});
+
+9) Вывод списка отзывов:
+rpcEshopRequest('eshop_comments_show', {'product_id' : {{id}}}, function (resTX) {
+    $(".error_text").html("");
+    $(".product-comment").html(""+resTX['data']['eshop_comments_show']+"");
+});

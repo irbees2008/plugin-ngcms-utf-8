@@ -171,26 +171,42 @@ function plugin_rss_yandex_mk_header($xcat) {
 	$feedTitleFormat = pluginGetVariable('rss_yandex', 'feed_title') ? pluginGetVariable('rss_yandex', 'feed_title') : '{{siteTitle}}';
 	// Generate RSS header
 	$line = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
-	$line .= ' <rss xmlns:yandex="http://news.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">' . "\n";
-	$line .= " <channel>\n";
-	// Channel title
-	$line .= "  <title><![CDATA[" . iconv("UTF-8", "windows-1251", ($twigString->render($feedTitleFormat, array('siteTitle' => iconv("windows-1251", "UTF-8", $config['home_title']))))) . "]]></title>\n";
-	// LINK
-	$line .= "  <link><![CDATA[" . $config['home_url'] . "]]></link>\n";
-	// Description
-	$line .= "  <description><![CDATA[" . $config['description'] . "]]></description>\n";
-	// Image
-	$imgInfo = array(
-		'url'   => pluginGetVariable('rss_yandex', 'feed_image_url') ? pluginGetVariable('rss_yandex', 'feed_image_url') : 'http://ngcms.ru/templates/ngcms2/images/logo.png',
-		'title' => pluginGetVariable('rss_yandex', 'feed_image_title') ? pluginGetVariable('rss_yandex', 'feed_image_title') : 'Next generation CMS demo RSS feed',
-		'link'  => pluginGetVariable('rss_yandex', 'feed_image_link') ? pluginGetVariable('rss_yandex', 'feed_image_link') : 'http://ngcms.ru/',
-	);
-	$line .= " <image>\n";
-	$line .= "  <url>" . $imgInfo['url'] . "</url>\n";
-	$line .= "  <title><![CDATA[" . $imgInfo['title'] . "]]></title>\n";
-	$line .= "  <link>" . $imgInfo['link'] . "</link>\n";
-	$line .= " </image>\n";
-	$line .= "  <generator><![CDATA[Plugin rss_yandex (0.01) // Next Generation CMS (" . engineVersion . ")]]></generator>\n";
+$line .= ' <rss xmlns:yandex="http://news.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/" version="2.0">' . "\n";
+    $line .= " <channel>\n";
+        // Channel title
+        $line .= " <title>
+            <![CDATA[" . iconv("UTF-8", "windows-1251", ($twigString->render($feedTitleFormat, array('siteTitle' => iconv("windows-1251", "UTF-8", $config['home_title']))))) . "]]>
+        </title>\n";
+        // LINK
+        $line .= "
+        <link>
+        <![CDATA[" . $config['home_url'] . "]]>
+        </link>\n";
+        // Description
+        $line .= " <description>
+            <![CDATA[" . $config['description'] . "]]>
+        </description>\n";
+        // Image
+        $imgInfo = array(
+        'url' => pluginGetVariable('rss_yandex', 'feed_image_url') ? pluginGetVariable('rss_yandex', 'feed_image_url') :
+        'http://ngcms.ru/templates/ngcms2/images/logo.png',
+        'title' => pluginGetVariable('rss_yandex', 'feed_image_title') ? pluginGetVariable('rss_yandex',
+        'feed_image_title') : 'Next generation CMS demo RSS feed',
+        'link' => pluginGetVariable('rss_yandex', 'feed_image_link') ? pluginGetVariable('rss_yandex',
+        'feed_image_link') : 'http://ngcms.ru/',
+        );
+        $line .= " <image>\n";
+            $line .= " <url>" . $imgInfo['url'] . "</url>\n";
+            $line .= " <title>
+                <![CDATA[" . $imgInfo['title'] . "]]>
+            </title>\n";
+            $line .= "
+            <link>" . $imgInfo['link'] . "</link>\n";
+            $line .= "
+        </image>\n";
+        $line .= " <generator>
+            <![CDATA[Plugin rss_yandex (0.01) // Next Generation CMS (" . engineVersion . ")]]>
+        </generator>\n";
 
-	return $line;
-}
+        return $line;
+        }

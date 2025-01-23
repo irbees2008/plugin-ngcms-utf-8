@@ -6,7 +6,7 @@ if (!defined('NGCMS')) {
 }
 
 // Подгрузка библиотек-файлов плагина.
-plugins_load_config();
+pluginsLoadConfig();
 LoadPluginLang($plugin, 'install', '', '', ':');
 include_once extras_dir . '/turbo_yandex/lib/helpers.php';
 

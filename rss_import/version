@@ -3,15 +3,19 @@
 ;
 
 ID: rss_import
-Name: RSS news importer
-Version: 0.01
-Acts: index, ppages 
+Name: Экспорт RSS потока для Яndex
+Name_EN: RSS export for Yandex
+Version: 0.02
+Acts: ppages
 File: rss_import.php
 Config: config.php
 Type: plugin
-Description: Импорт новостей через RSS
-Author:  Dzmitry Khadorkin
-Title: RSS news importer
-Information: Импорт новостей через RSS
+Description: Экспорт RSS потока для Яndex
+Description_EN: News export for Yandex
+Author: Vitaly A. Ponomarev
+Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-rss-square fa-2x'></i>
+Preinstall_vars: feed_title_format="site_title"; news_title="1"; news_count="30"; use_hide="1"
+Title: Экспорт RSS потока для Яndex
 Preinstall: default_no
-Preinstall_vars: cache="1"; cacheExpire="3600";
+Information: Генерирует специальный RSS поток для поисковика Яndex

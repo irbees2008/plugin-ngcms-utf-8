@@ -128,9 +128,11 @@ function plugin_rss_export_generate($catname = '') {
 		$output .= "   <description><![CDATA[" . $content . "]]></description>\n";
 		// Output enclosure URL (if configured & set
 		if ($enclosure != '')
-			$output .= '   <enclosure url="' . $enclosure . '" />' . "\n";
+			$rs = fopen($enclosure, "r");
+			while(($str = fread($rs, 1024)) != null) $imgsize += strlen($str);
+			$output .= '   <enclosure url="' . $enclosure . '" type="image/'.pathinfo($enclosure, PATHINFO_EXTENSION).'" length="' .$imgsize.'" />' . "\n";
 		$output .= "   <category>" . GetCategories($row['catid'], true) . "</category>\n";
-		$output .= "   <guid isPermaLink=\"false\">" . home . "?id=" . $row['id'] . "</guid>\n";
+		$output .= "   <guid isPermaLink=\"true\">" . home . "?id=" . $row['id'] . "</guid>\n";
 		$output .= "   <pubDate>" . gmstrftime('%a, %d %b %Y %H:%M:%S GMT', $row['postdate']) . "</pubDate>\n";
 		$output .= "  </item>\n";
 	}
@@ -146,20 +148,25 @@ function plugin_rss_export_generate($catname = '') {
 function plugin_rss_export_mk_header($xcat) {
 
 	global $config;
-	$line = '<?xml version="1.0" encoding="windows-1251"?>' . "\n";
-	$line .= ' <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/">' . "\n";
-	$line .= " <channel>\n";
-	if (pluginGetVariable('rss_export', 'feed_title_format') == 'handy') {
-		$line .= "  <title><![CDATA[" . pluginGetVariable('rss_export', 'feed_title_value') . "]]></title>\n";
-	} else if ((pluginGetVariable('rss_export', 'feed_title_format') == 'site_title') && is_array($xcat)) {
-		$line .= "  <title><![CDATA[" . $config['home_title'] . (is_array($xcat) ? ' :: ' . $xcat['name'] : '') . "]]></title>\n";
-	} else {
-		$line .= "  <title><![CDATA[" . $config['home_title'] . "]]></title>\n";
-	}
-	$line .= "  <link><![CDATA[" . $config['home_url'] . "]]></link>\n";
-	$line .= "  <language>ru</language>\n";
-	$line .= "  <description><![CDATA[" . $config['description'] . "]]></description>\n";
-	$line .= "  <generator><![CDATA[Plugin RSS_EXPORT (0.07) // Next Generation CMS (" . engineVersion . ")]]></generator>\n";
+	$line = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+$line .= ' <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";
 
-	return $line;
-}
+    $line .= " <channel>\n";
+        $line .= '
+        <atom:link href="https://naraione.org/rss.xml" rel="self" type="application/rss+xml" />'. " \n"; if
+        (pluginGetVariable('rss_export', 'feed_title_format' )=='handy' ) { $line .=" <title>
+            <![CDATA[" . pluginGetVariable('rss_export', 'feed_title_value' ) . "]]>
+        </title>\n" ; } else if ((pluginGetVariable('rss_export', 'feed_title_format' )=='site_title' ) &&
+        is_array($xcat)) { $line .=" <title>
+            <![CDATA[" . $config['home_title'] . (is_array($xcat) ? ' :: ' . $xcat['name'] : '' ) . "]]>
+        </title>\n" ; } else { $line .=" <title>
+            <![CDATA[" . $config['home_title'] . "]]>
+        </title>\n" ; } $line .="
+        <link>
+        <![CDATA[" . $config['home_url'] . "]]>
+        </link>\n" ; $line .=" <language>RU</language>\n" ; $line .=" <description>
+            <![CDATA[" . $config['description'] . "]]>
+        </description>\n" ; $line .=" <generator>
+            <![CDATA[Plugin RSS_EXPORT (0.07) // Next Generation CMS (" . engineVersion . ")]]>
+        </generator>\n" ; return $line; }

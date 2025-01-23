@@ -10,7 +10,7 @@ $plugin = 'turbo_yandex';
 $pluginLink = generatePluginLink($plugin, null, ['page' => 1], [], true, true);
 
 // Подгрузка библиотек-файлов плагина.
-plugins_load_config();
+pluginsLoadConfig();
 LoadPluginLang($plugin, 'config', '', '', ':');
 loadPluginLibrary($plugin, 'helpers');
 
