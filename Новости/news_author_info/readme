@@ -1,0 +1,58 @@
+# =========================================================================== #
+# NG CMS // Плагины // Информация об авторе новости                                   #
+# =========================================================================== #
+
+Плагин  позволяет выводить информацию из профиля пользователя автора новости на страницах новостей
+
+Переменные, доступные в шаблонах news.short.tpl, news.full.tpl:
+----------------------------------------
+// Для наглядности (и понимания списка доступных переменных) можно использовать TWIG функцию debugValue,
+// например так: {{ debugValue(p.news_author_info) }} - будут выведены все доступные доп. поля и их параметры/значения
+
+Общая струтура массива, выглядит так:
+'news_author_info' =>
+    array (
+    'info' =>
+        array (
+          'id' => '1',
+          'name' => 'admin',
+          'mail' => 'admin@test003.ru',
+          'news' => '1',
+          'status' => '1',
+          'last' => '1505172285',
+          'reg' => '1504953353',
+          'site' => '',
+          'icq' => '',
+          'where_from' => '',
+          'info' => '',
+          'avatar' => '',
+          'photo' => '',
+          'ip' => '127.0.0.1',
+          'xfields' => 'SER|a:1:{s:7:"uftest1";s:4:"Тест";}',
+        ),
+    'photo' =>
+        array (
+          0 => 0,
+          1 => 'http://test003.ru/templates/default/img/user.png',
+          2 => 'http://test003.ru/templates/default/img/user.png',
+        ),
+    'avatar' =>
+        array (
+          0 => 0,
+          1 => 'http://test003.ru/templates/default/img/user.png',
+        ),
+    'xfields' =>
+        array (
+          'uftest1' =>
+          array (
+            'value' => 'Тест',
+          ),
+        ),
+    )
+
+Так, например, чтобы вывести данные из xfields дополнительного поля с ID uftest1, нужно использовать блок:
+{% if pluginIsActive('news_author_info') %}
+    {% if(p.news_author_info.xfields.uftest1.value) %}
+       {{ p.news_author_info.xfields.uftest1.value }}
+    {% endif %}
+{% endif %}
