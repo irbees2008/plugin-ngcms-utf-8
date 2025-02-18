@@ -1,3 +1,0 @@
-/*! Select2 4.0.0 | https://github.com/select2/select2/blob/master/LICENSE.md */
-
-(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/zh-CN",[],function(){return{errorLoading:function(){return"ж— жі•иЅЅе…Ґз»“жћњгЂ‚"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="иЇ·е€ й™¤"+t+"дёЄе­—з¬¦";return n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="иЇ·е†Ќиѕ“е…Ґи‡іе°‘"+t+"дёЄе­—з¬¦";return n},loadingMore:function(){return"иЅЅе…Ґж›ґе¤љз»“жћњвЂ¦"},maximumSelected:function(e){var t="жњЂе¤љеЏЄиѓЅйЂ‰ж‹©"+e.maximum+"дёЄйЎ№з›®";return t},noResults:function(){return"жњЄж‰ѕе€°з»“жћњ"},searching:function(){return"жђњзґўдё­вЂ¦"}}}),{define:e.define,require:e.require}})();
