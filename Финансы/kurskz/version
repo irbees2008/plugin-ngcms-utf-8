@@ -1,0 +1,12 @@
+;
+; Module definition
+;
+
+ID:kurskz
+Name: kurskz
+Version: 0.1
+Acts: index 
+File: kurskz.php
+Type: plugin
+Description: Вывод в сайдбаре информации из другого движка, в данном случае из каталога vkaragande
+Author:  t3s

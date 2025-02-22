@@ -6,7 +6,7 @@
 				<small>Текст поля &lt;title&gt;&lt;/title&gt; статической страницы (разрешено %home% и %static%)</small>
 			</td>
 			<td width="50%" class="contentEntry2">
-				<input type="text" class="form-control" size="40" name="title" value="{{ title }}"/><select name="id">{{ options }}</select>
+				<input type="text" size="40" name="title" value="{{ title }}"/><select name="id">{{ options }}</select>
 			</td>
 		</tr>
 	</table>
