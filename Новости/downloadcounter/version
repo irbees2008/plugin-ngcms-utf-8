@@ -3,7 +3,7 @@
 ;
 
 ID: downloadcounter
-Name: Счетчик загрузок файлов
+Name: РЎС‡РµС‚С‡РёРє Р·Р°РіСЂСѓР·РѕРє С„Р°Р№Р»РѕРІ
 Version: 0.3
 Acts: news:show, ppages 
 File: downloadcounter.php
@@ -11,9 +11,10 @@ Install: install.php
 Deinstall: uninstall.php
 Config: config.php
 Type: plugin
-Description: Добавляет поддержку BB-тега [COUNTER]
+Description: Р”РѕР±Р°РІР»СЏРµС‚ РїРѕРґРґРµСЂР¶РєСѓ BB-С‚РµРіР° [COUNTER]
 Author:  Alexey N. Zhukov (Wolverine)
 Author_URI: http://digitalplace.ru/
-Title: Счетчик загрузок файлов
-Information: Плагин добавляет возможность подсчета количества загрузок файлов
+Title: РЎС‡РµС‚С‡РёРє Р·Р°РіСЂСѓР·РѕРє С„Р°Р№Р»РѕРІ
+Information: РџР»Р°РіРёРЅ РґРѕР±Р°РІР»СЏРµС‚ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїРѕРґСЃС‡РµС‚Р° РєРѕР»РёС‡РµСЃС‚РІР° Р·Р°РіСЂСѓР·РѕРє С„Р°Р№Р»РѕРІ
 Preinstall: default_no
+MinEngineBuild: 3740369

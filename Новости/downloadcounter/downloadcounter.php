@@ -35,7 +35,9 @@ $name = $_REQUEST['name'];
 $folder = $_REQUEST['folder'];
 
 if($name && $folder)
-$row = $mysql->result("SELECT COUNT(id) FROM ".prefix."_files WHERE name='".$name."' AND folder='".$folder."'");
+//$row = $mysql->result('select count(id) from '.prefix.'_files where name='.db_squote($name).' and folder='.db_squote($folder).'');
+$row = $mysql->record('select * from '.prefix.'_files where name='.db_squote($name).'');
+
 else msg(array("type" => "error", "text" => '<META HTTP-EQUIV="refresh" CONTENT="0;URL=/">'));
 
 if($row){
@@ -56,23 +58,21 @@ class downloadcounterFilter extends NewsFilter {
 	global $config, $parse, $mysql, $tpl, $twig;
 
 	foreach (array('short', 'full') as $varKeyName) {
-			//if (!isset($tvars['vars'][$varKeyName])) { continue; }
-			if (!isset($tvars['vars']['news'][$varKeyName])) { continue; }
+
+		if (!isset($tvars['vars']['news'][$varKeyName])) { continue; }
 
 		$parsed = parse_url(home);
 		
-		if (preg_match_all("/(http:\/\/(".$parsed['host'].")[\w\.\/\-=?#]+)/", $tvars['vars']['news'][$varKeyName], $pcatch, PREG_SET_ORDER)) {
+		if (preg_match_all("/((http|https):\/\/(".$parsed['host'].")[\w\.\/\-=?#]+)/", $tvars['vars']['news'][$varKeyName], $pcatch, PREG_SET_ORDER)) {
 		
-						
 			$dom_document = new DOMDocument();      
 			$dom_document->loadHTML($tvars['vars']['news'][$varKeyName]);
 
 			$links = $dom_document->getElementsByTagName('a'); 
-			foreach ($links as $tag)
-					{
-					
-					$ret[$tag->getAttribute('href')] = $tag->childNodes->item(0)->nodeValue;
-					}
+			
+			foreach ($links as $tag){
+				$ret[$tag->getAttribute('href')] = $tag->childNodes->item(0)->nodeValue;
+			}
 		
 			$rsrc = array();
 			$rdest = array();
@@ -80,42 +80,24 @@ class downloadcounterFilter extends NewsFilter {
 			$altdest = array();
 		
 			foreach ($pcatch as $catch) {
+				
 				if (strpos($catch[0],'dsn') !== false) {
 				// Init variables
 				list ($line, $null, $paramLine, $alt) = $catch;
 				array_push($rsrc, $line);
 				array_push($altsrc, $ret[$line]);
 
-
-					$pathd = pathinfo(str_replace(home."/uploads/dsn/", "", $catch[0]));
-					$folder = $pathd['dirname'];
-					$name = $pathd['basename'];
-
+				$pathd = pathinfo(str_replace(home."/uploads/dsn/", "", $catch[0]));
+				$folder = $pathd['dirname'];
+				$name = $pathd['basename'];
+				
 				$urlREF = $config['home_url'].generatePluginLink('downloadcounter', null, array('folder' => $folder, 'name' => $name));
 				$flag = 1;
-
-							
-				$downloadcounter = $mysql->result("SELECT downloadcounter FROM ".prefix."_files WHERE name='".$name."' AND folder='".$folder."' LIMIT 1");
+		
+				$downloadcounter = $mysql->result("select downloadcounter from ".prefix."_files WHERE name='".$name."' AND folder='".$folder."' LIMIT 1 ");
 				
 				// Now let's compose a resulting URL
 				$outkeys = $urlREF;
-
-				// Now parse allowed tags and add it into output line
-				/*
-				foreach ($keys as $kn => $kv) {
-					switch ($kn) {
-						case 'class':
-						case 'target':
-							$v = str_replace(array(ord(0), ord(9), ord(10), ord(13), ' ', "'", "\"", ";", ":", '<', '>', '&'),'',$kv);
-							$outkeys [] = $kn.'="'.$v.'"';
-							break;
-						case 'title':
-							$v = str_replace(array("\"", ord(0), ord(9), ord(10), ord(13), ":", '<', '>', '&'),array("'",''),$kv);
-							$outkeys [] = $kn.'="'.$v.'"';
-							break;
-					}
-				}
-				*/
 				
 				if($flag == 1){
 					$tpath = locatePluginTemplates(array('downloadcounter'), 'downloadcounter', pluginGetVariable('downloadcounter', 'localsource'));
@@ -126,11 +108,8 @@ class downloadcounterFilter extends NewsFilter {
 					);
 
 					$str = $xt->render($pVars);
-				}
-				else
-				$str = '';
-				
-				
+				} else $str = '';
+
 				// Fill an output replacing array
 				array_push($rdest, $outkeys);
 				// Fill an output replacing array
@@ -139,15 +118,14 @@ class downloadcounterFilter extends NewsFilter {
 				}
 			
 			}
-		//var_dump($rdest);
-		$tvars['vars']['news'][$varKeyName] = str_replace($rsrc, $rdest, $tvars['vars']['news'][$varKeyName]);
-		$tvars['vars']['news'][$varKeyName] = str_replace($altsrc, $altdest, $tvars['vars']['news'][$varKeyName]);
+			//var_dump($rdest);
+			$tvars['vars']['news'][$varKeyName] = str_replace($rsrc, $rdest, $tvars['vars']['news'][$varKeyName]);
+			$tvars['vars']['news'][$varKeyName] = str_replace($altsrc, $altdest, $tvars['vars']['news'][$varKeyName]);
 
 		}
 			
 		if (preg_match_all("#\[counter(\=| *)(.*?)\](.*?)\[\/counter\]#is", $tvars['vars']['news'][$varKeyName], $pcatch, PREG_SET_ORDER)) {
 		
-
 			$rsrc = array();
 			$rdest = array();
 			// Scan all URL tags
@@ -189,8 +167,6 @@ class downloadcounterFilter extends NewsFilter {
 					// No params to scan
 					$keys = array();
 				}
-				
-				
 
 				// Return an error if BB code is bad
 				if (!is_array($keys)) {
@@ -212,18 +188,14 @@ class downloadcounterFilter extends NewsFilter {
 				$folder = $name[count($name)-2]; 
 				$name = $name[count($name)-1];
 				
-
-				
 				$flag = 0;
 				if(strstr($urlREF, $config['files_url'])){
-				$urlREF = $config['home_url'].generatePluginLink('downloadcounter', null, array('folder' => $folder, 'name' => $name));
-				$flag = 1;
+					$urlREF = $config['home_url'].generatePluginLink('downloadcounter', null, array('folder' => $folder, 'name' => $name));
+					$flag = 1;
 				}
-				
-				
-							
-				$downloadcounter = $mysql->result("SELECT downloadcounter FROM ".prefix."_files WHERE name='".$name."' AND folder='".$folder."' LIMIT 1");
-				
+
+				$downloadcounter = $mysql->result("select downloadcounter from ".prefix."_files WHERE name='".$name."' AND folder='".$folder."' LIMIT 1");
+
 				// Now let's compose a resulting URL
 				$outkeys [] = 'href="'.$urlREF.'"';
 
@@ -255,7 +227,6 @@ class downloadcounterFilter extends NewsFilter {
 				else
 				$str = '';
 				
-				
 				// Fill an output replacing array
 				array_push($rdest, "<a ".(implode(" ", $outkeys)).">".$alt.'</a>'.$str);
 
@@ -263,7 +234,6 @@ class downloadcounterFilter extends NewsFilter {
 			//$tvars['vars'][$varKeyName] = str_replace($rsrc, $rdest, $tvars['vars'][$varKeyName]);
 			$tvars['vars']['news'][$varKeyName] = str_replace($rsrc, $rdest, $tvars['vars']['news'][$varKeyName]);
 
-			
 		} // preg_match end
 	} //foreach end
 	}// showNews end
