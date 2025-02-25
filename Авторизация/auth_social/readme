@@ -2,7 +2,7 @@
 # NG CMS // Плагины // auth_social - авторизация через соцсети                #
 # =========================================================================== #
 
-Плагин не является самостоятельным модулем авторизации, а работает лишь, как
+Плагин не является самостоятельным модулем авторизации, а работает лишь, как 
 дополнение к одному из уже работающих плагинов, например auth_basic.
 В данный момент поддерживается авторизация через vk, odnoklassniki, mailru, yandex, google, facebook, twitter, steam
 
@@ -78,9 +78,9 @@ http://sitename.ru/plugin/auth_social/?provider=twitch
 Пример вывода:
 <div class="label label-table">
     <label>Пол:</label>
-    <input type="text" class="form-control" name="editsex" value="{{ userRec.sex }}" class="input" />
+    <input type="text" name="editsex" value="{{ userRec.sex }}" class="input" />
 </div>
 <div class="label label-table">
     <label>Дата рождения:</label>
-    <input type="text" class="form-control" name="editbirthday" value="{{ userRec.birthday }}" class="input" />
+    <input type="text" name="editbirthday" value="{{ userRec.birthday }}" class="input" />
 </div>

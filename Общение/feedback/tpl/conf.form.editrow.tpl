@@ -14,7 +14,7 @@
 					<td width="50%" colspan="2">{{ lang['feedback:field_id'] }}</td>
 					<td width="50%">
 						<div class="input-group">
-							<input type="text" class="form-control" name="name" value="{{ field.name }}" class="form-control" {{ not(flags.addField) ? 'readonly' : ''}} />
+							<input type="text" name="name" value="{{ field.name }}" class="form-control" {{ not(flags.addField) ? 'readonly' : ''}} />
 							<div class="input-group-append">
 								<a class="btn btn-outline-primary" data-toggle="popover" data-placement="left" data-trigger="focus" data-html="true" data-content="{{ lang['feedback:field_id#descr'] }}" tabindex="0">
 									<i class="fa fa-question"></i>
@@ -27,7 +27,7 @@
 				<tr>
 					<td width="50%" colspan="2">{{ lang['feedback:field_title'] }}</td>
 					<td width="50%">
-						<input type="text" class="form-control" name="title" value="{{ field.title }}" class="form-control" />
+						<input type="text" name="title" value="{{ field.title }}" class="form-control" />
 					</td>
 				</tr>
 				<tr>
@@ -44,7 +44,7 @@
 			<tbody id="type_text" class="bg-light">
 				<tr>
 					<td colspan="2">{{ lang['feedback:default_value'] }}</td>
-					<td><input type="text" class="form-control" name="text_default" value="{{ field.text_default }}" class="form-control" />
+					<td><input type="text" name="text_default" value="{{ field.text_default }}" class="form-control" />
 				</tr>
 			</tbody>
 
@@ -89,7 +89,7 @@
 				<tr>
 					<td colspan="2">{{ lang['feedback:default_value'] }}</td>
 					<td width="50%">
-						<input type="text" class="form-control" name="select_default" value="{{ field.select_default }}" class="form-control" />
+						<input type="text" name="select_default" value="{{ field.select_default }}" class="form-control" />
 					</td>
 				</tr>
 			</tbody>
@@ -99,7 +99,7 @@
 				<tr>
 					<td colspan="2">{{ lang['feedback:default_date_value'] }}</td>
 					<td width="50%">
-						<input type="text" class="form-control" name="date_default" value="{{ field.date_default }}" class="form-control" />
+						<input type="text" name="date_default" value="{{ field.date_default }}" class="form-control" />
 					</td>
 				</tr>
 			</tbody>

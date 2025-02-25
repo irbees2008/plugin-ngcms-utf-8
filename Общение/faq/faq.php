@@ -1,9 +1,8 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die('HAL');
+if (!defined('NGCMS')) die ('HAL');
 register_plugin_page('faq', '', 'plugin_faq');
-function plugin_faq()
-{
+function plugin_faq() {
 
 	global $catz, $twig, $catmap, $mysql, $config, $userROW, $tpl, $parse, $template, $lang, $PFILTERS, $SYSTEM_FLAGS, $CurrentHandler;
 	$title_plg = 'Вопросы и ответы';
@@ -26,8 +25,7 @@ function plugin_faq()
 	$template['vars']['mainblock'] = $xt->render($tVars);
 }
 
-function plug_faq($maxnum, $overrideTemplateName, $order, $cacheExpire)
-{
+function plug_faq($maxnum, $overrideTemplateName, $order, $cacheExpire) {
 
 	global $config, $mysql, $tpl, $template, $twig, $twigLoader, $langMonths, $lang;
 	if (($maxnum < 1) || ($maxnum > 50)) $maxnum = 12;
@@ -49,7 +47,7 @@ function plug_faq($maxnum, $overrideTemplateName, $order, $cacheExpire)
 		}
 	}
 	foreach ($mysql->select("SELECT * FROM " . prefix . "_faq WHERE active = '1' ORDER BY id " . $order . " limit $maxnum") as $row) {
-		$tEntries[] = array(
+		$tEntries [] = array(
 			'id'       => $row['cnt'],
 			'question' => $row['question'],
 			'answer'   => $row['answer'],
@@ -72,12 +70,11 @@ function plug_faq($maxnum, $overrideTemplateName, $order, $cacheExpire)
 // * maxnum		- Max num entries
 // * template	- Personal template for plugin
 // * cacheExpire		- age of cache [in seconds]
-function plugin_faq_showTwig($params)
-{
+function plugin_faq_showTwig($params) {
 
-
+	global $CurrentHandler, $config;
 
 	return plug_faq($params['maxnum'], isset($params['template']) ? $params['template'] : false, isset($params['order']) ? $params['order'] : 'DESC', isset($params['cacheExpire']) ? $params['cacheExpire'] : 0);
 }
 
-twigRegisterFunction('faq', 'show', plugin_faq_showTwig);
+twigRegisterFunction('faq', 'show', 'plugin_faq_showTwig');

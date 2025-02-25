@@ -98,7 +98,7 @@
 								<tr>
 									<td style="padding: 5px;" class="entry">{{ lang.uprofile.email }}</td>
 									<td style="padding: 5px;" class="entry">
-										<input type="text" class="form-control" class="email" name="editmail" value="{{ user.email }}" size="40"/>
+										<input type="text" class="email" name="editmail" value="{{ user.email }}" size="40"/>
 									</td>
 								</tr>
 								<tr>
@@ -106,19 +106,19 @@
 										{{ lang.uprofile.site }}
 									</td>
 									<td style="padding: 5px; background-color: #f9fafb;" class="entry">
-										<input type="text" class="form-control" name="editsite" value="{{ user.site }}" size="40"/></td>
+										<input type="text" name="editsite" value="{{ user.site }}" size="40"/></td>
 								</tr>
 								<tr>
 									<td style="padding: 5px;" class="entry">{{ lang.uprofile.icq }}</td>
 									<td style="padding: 5px;" class="entry">
-										<input type="text" class="form-control" name="editicq" value="{{ user.icq }}" size="40" maxlength="10"/></td>
+										<input type="text" name="editicq" value="{{ user.icq }}" size="40" maxlength="10"/></td>
 								</tr>
 								<tr>
 									<td style="padding: 5px; background-color: #f9fafb;" class="entry">
 										{{ lang.uprofile.from }}
 									</td>
 									<td style="padding: 5px; background-color: #f9fafb;" class="entry">
-										<input type="text" class="form-control" name="editfrom" value="{{ user.from }}" size="40" maxlength="60"/>
+										<input type="text" name="editfrom" value="{{ user.from }}" size="40" maxlength="60"/>
 									</td>
 								</tr>
 								<tr>

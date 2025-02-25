@@ -87,7 +87,7 @@
 								<table width="100%">[not-logged]
 									<tr>
 										<td colspan="2" align="left">
-											<input type="text" class="form-control" name="name" value="{l_jchat:input.username}" onfocus="if(!jChatInputUsernameDefault){this.value='';jChatInputUsernameDefault=1;}"/>
+											<input type="text" name="name" value="{l_jchat:input.username}" onfocus="if(!jChatInputUsernameDefault){this.value='';jChatInputUsernameDefault=1;}"/>
 										</td>
 									</tr>
 									[/not-logged]

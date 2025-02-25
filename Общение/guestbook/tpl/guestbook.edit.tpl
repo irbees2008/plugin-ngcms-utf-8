@@ -11,7 +11,7 @@
 			<div class="row">
 				<label for="{{ field.id }}">{{ field.name }} {% if field.required %}
 						<b style="color:red">*</b>{% endif %}</label>
-				<input type="text" class="form-control" id="{{ field.id }}" name="{{ field.id }}" value="{{ field.value }}" {% if field.required %}required{% endif %} />
+				<input type="text" id="{{ field.id }}" name="{{ field.id }}" value="{{ field.value }}" {% if field.required %}required{% endif %} />
 			</div>
 		{% endfor %}
 		<div class="row">

@@ -84,11 +84,11 @@
 		</tr>
 		<tr>
 			<td>Заголовок:</td>
-			<td><input type="text" class="form-control" name="title" class="input" value=""/></td>
+			<td><input type="text" name="title" class="input" value=""/></td>
 		</tr>
 		<tr>
 			<td>Альт. имя:</td>
-			<td><input type="text" class="form-control" name="alt_name" class="input" value=""/></td>
+			<td><input type="text" name="alt_name" class="input" value=""/></td>
 		</tr>
 		<tr>
 			<td>Категория:</td>

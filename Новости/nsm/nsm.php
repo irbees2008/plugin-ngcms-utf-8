@@ -294,7 +294,7 @@ function plugin_nsm_addForm($tpl_name = 'news.add', $retry = '') {
 						$xfEntry['input'] = $val;
 						break;
 					case 'text'  :
-						$val = '<input type="text" class="form-control" id="form_xfields_' . $id . '" name="xfields[' . $id . ']" title="' . $data['title'] . '" value="' . secure_html($data['default']) . '"/>';
+						$val = '<input type="text" id="form_xfields_' . $id . '" name="xfields[' . $id . ']" title="' . $data['title'] . '" value="' . secure_html($data['default']) . '"/>';
 						$xfEntry['input'] = $val;
 						break;
 					case 'select':
@@ -331,7 +331,7 @@ function plugin_nsm_addForm($tpl_name = 'news.add', $retry = '') {
 						$xfEntry['input'] = $val;
 						break;
 					default:
-						continue;
+						continue(2);
 				}
 				$xfEntries[intval($data['area'])][] = $xfEntry;
 				$xfList[$id] = $xfEntry;
@@ -537,7 +537,7 @@ function plugin_nsm_editForm($tpl_name = 'news.edit', $retry = '') {
 					$xfEntries[intval($data['area'])][] = $xfEntry;
 					break;
 				case 'text'  :
-					$val = '<input type="text" class="form-control" name="xfields[' . $id . ']"  id="form_xfields_' . $id . '" title="' . $data['title'] . '" value="' . secure_html($xdata[$id]) . '" />';
+					$val = '<input type="text" name="xfields[' . $id . ']"  id="form_xfields_' . $id . '" title="' . $data['title'] . '" value="' . secure_html($xdata[$id]) . '" />';
 					$xfEntry['input'] = $val;
 					$xfEntry['value'] = $xdata[$id];
 					$xfEntries[intval($data['area'])][] = $xfEntry;
@@ -729,7 +729,7 @@ function plugin_nsm_editForm($tpl_name = 'news.edit', $retry = '') {
 			generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('name' => $row['author'], 'id' => $row['author_id'])),
 		'smilies'     => $config['use_smilies'] ? InsertSmilies('', 20, 'currentInputAreaID') : '',
 		'quicktags'   => $config['use_bbcodes'] ? BBCodes('ng_news_content') : '',
-		'approve'     => $row['approve'],
+		'approve'     => $row['approve'], 
 		'flags'       => array(
 			'edit_split'          => $config['news.edit.split'] ? true : false,
 			'meta'                => $config['meta'] ? true : false,
@@ -834,3 +834,4 @@ function plugin_nsm_del() {
 	// Show again list of news
 	plugin_nsm();
 }
+

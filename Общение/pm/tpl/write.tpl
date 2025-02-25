@@ -25,7 +25,7 @@
 			<tr>
 				<td width=50% class="contentEntry1">{{ lang['pm:subject'] }}</td>
 				<td width=50% class="contentEntry2">
-					<input type="text" class="form-control" class="pm" size="40" name="title" tabindex="2" maxlength="50"/></td>
+					<input type="text" class="pm" size="40" name="title" tabindex="2" maxlength="50"/></td>
 			</tr>
 
 			<tr>
@@ -33,7 +33,7 @@
 					<small>{{ lang['pm:to'] }}</small>
 				</td>
 				<td width="50%" class="contentEntry2">
-					<input type="text" class="form-control" class="pm" name="to_username" id="to_username" size="40" tabindex="3" autocomplete="off" maxlength="70" value="{{ username }}"/><span id="suggestLoader" style="width: 20px; visibility: hidden;"><img src="{{ skins_url }}/images/loading.gif"/></span>
+					<input type="text" class="pm" name="to_username" id="to_username" size="40" tabindex="3" autocomplete="off" maxlength="70" value="{{ username }}"/><span id="suggestLoader" style="width: 20px; visibility: hidden;"><img src="{{ skins_url }}/images/loading.gif"/></span>
 				</td>
 			</tr>
 		</table>

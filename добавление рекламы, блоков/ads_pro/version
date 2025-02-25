@@ -1,6 +1,6 @@
 ID: ads_pro
 Name: ADS manager pro
-Version: 0.6
+Version: 0.9
 Actions: core; ads_pro.php
 Config: config.php
 Install: install.php
@@ -12,3 +12,5 @@ Information: Позволяет редактировать часто измен
 Author: Ivan Litvinenko (Amarelius)
 Author_URI: http://arnit.com.ua/
 preinstall: no
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-info fa-3x" aria-hidden="true"></i>

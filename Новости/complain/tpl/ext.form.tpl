@@ -40,7 +40,7 @@
 		<div class="texth">
 			<u>Сообщить об ошибке:</u><br/><br/>
 			Тип ошибки: <select name="error" class="error" id="errorSelect">{errorlist}</select><br/><br/>
-			[email]Ваш e-mail: <input type="text" class="form-control" name="mail"/><br/>[/email]
+			[email]Ваш e-mail: <input type="text" name="mail"/><br/>[/email]
 			[notify]<input type="checkbox" name="notify" value="1"/> информировать о решении проблемы <br/>[/notify]
 			[text]Детальное описание проблемы:<br/><textarea cols="80" rows="4" name="error_text"></textarea><br/>[/text]
 			<input type="submit" class="report" onclick="if (document.getElementById('errorSelect').value==''){alert('Необходимо выбрать тип ошибки!'); return false;};" value="Отправить"/>
