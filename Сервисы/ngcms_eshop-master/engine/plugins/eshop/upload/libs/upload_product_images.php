@@ -25,6 +25,8 @@ try {
     }
 
     echo "1";
+    
+    $pre_quality = pluginGetVariable('eshop', 'pre_quality');
 
     // CREATE THUMBNAIL
     if ($extension == "jpg" || $extension == "jpeg") {
@@ -49,7 +51,7 @@ try {
         unlink ( $thumbname );
     }
 
-    imagejpeg ( $tmp, $thumbname, 100 );
+    imagejpeg ( $tmp, $thumbname, ($pre_quality>=10 && $pre_quality<=100)?$pre_quality:100  );
 
     imagedestroy ( $src );
     imagedestroy ( $tmp );
@@ -76,14 +78,23 @@ try {
             unlink ( $thumbname );
         }
         
-        imagejpeg ( $tmp, $thumbname, 100 );
+        imagejpeg ( $tmp, $thumbname, ($pre_quality>=10 && $pre_quality<=100)?$pre_quality:100 );
         
         imagedestroy ( $src );
         imagedestroy ( $tmp );
             
     }
     else {
+        if ($extension == "jpg" || $extension == "jpeg") {
+            $src = imagecreatefromjpeg ( $tempFile );
+        } else if ($extension == "png") {
+            $src = imagecreatefrompng ( $tempFile );
+        } else {
+            $src = imagecreatefromgif ( $tempFile );
+        }
+        imagejpeg ( $src, $tempFile, ($pre_quality>=10 && $pre_quality<=100)?$pre_quality:100 );
         move_uploaded_file($tempFile, $targetFile);
+        imagedestroy ( $src );
     }
 
 } catch (Exception $ex) {

@@ -1,34 +1,65 @@
-<script type="text/javascript" src="{{home}}/engine/includes/js/ajax.js"></script>
-<script type="text/javascript" src="{{home}}/engine/includes/js/admin.js"></script>
-<script type="text/javascript" src="{{home}}/engine/includes/js/libsuggest.js"></script>
-<div style="text-align : left;">
-<table class="content" border="0" cellspacing="0" cellpadding="0" align="center">
-<tr>
-<td width="100%" colspan="2" class="contentHead"><img src="{{skins_url}}/images/nav.gif" hspace="8" alt="" /><a href="{{admin_url}}/admin.php?mod=extras" title="Управление плагинами">Управление плагинами</a> &#8594; <a href="{{admin_url}}/admin.php?mod=extra-config&plugin=eshop">Интернет магазин</a> &#8594; {{current_title}}</td>
-</tr>
-</table>
+<div class="container-fluid">
+	<div
+		class="row mb-2">
+		<!-- Р›РµРІР°СЏ С‡Р°СЃС‚СЊ Р·Р°РіРѕР»РѕРІРєР° -->
+		<div class="col-sm-6 d-none d-md-block">
+			<h1 class="m-0 text-dark">eshop</h1>
+		</div>
+		<!-- РџСЂР°РІР°СЏ С‡Р°СЃС‚СЊ: С…Р»РµР±РЅС‹Рµ РєСЂРѕС€РєРё -->
+		<div class="col-sm-6">
+			<ol class="breadcrumb float-sm-right">
+				<li class="breadcrumb-item">
+					<a href="admin.php">
+						<i class="fa fa-home"></i>
+					</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="admin.php?mod=extras">РЈРїСЂР°РІР»РµРЅРёРµ РїР»Р°РіРёРЅР°РјРё</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="{{ admin_url }}/admin.php?mod=extra-config&plugin=eshop">РРЅС‚РµСЂРЅРµС‚ РјР°РіР°Р·РёРЅ</a>
+					в†’
+					{{ current_title }}
+				</li>
+			</ol>
+		</div>
+	</div>
+</div>
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%">
-<tr align="center">
-<td width="100%" class="contentNav" align="center" style="background-repeat: no-repeat; background-position: left;">
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}'" value="Продукция" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_cat'" value="Категории" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_feature'" value="Свойства" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_order'" value="Заказы" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=options'" value="Настройки" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_currencies'" value="Валюты" class="navbutton" />
-<!--
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_delivery'" value="Доставка" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_payment'" value="Оплата" class="navbutton" />
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_promocode'" value="Купоны" class="navbutton" />
--->
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=list_comment'" value="Комментарии" class="navbutton" />
+<!-- РџР°РЅРµР»СЊ РЅР°РІРёРіР°С†РёРё СЃ РєРЅРѕРїРєР°РјРё -->
+<div class="container-fluid mt-3">
+	<div class="btn-toolbar justify-content-center" role="toolbar">
+		<div class="btn-group mr-2" role="group">
+			<a href="{{ plugin_url }}" class="btn btn-outline-success">РџСЂРѕРґСѓРєС†РёСЏ</a>
+			<a href="{{ plugin_url }}&action=list_cat" class="btn btn-outline-success">РљР°С‚РµРіРѕСЂРёРё</a>
+			<a href="{{ plugin_url }}&action=list_feature" class="btn btn-outline-success">РЎРІРѕР№СЃС‚РІР°</a>
+			<a href="{{ plugin_url }}&action=list_order" class="btn btn-outline-success">Р—Р°РєР°Р·С‹</a>
+			<a href="{{ plugin_url }}&action=options" class="btn btn-outline-success">РќР°СЃС‚СЂРѕР№РєРё</a>
+			<a href="{{ plugin_url }}&action=list_currencies" class="btn btn-outline-success">Р’Р°Р»СЋС‚С‹</a>
+		</div>
+		<div class="btn-group mr-2" role="group">
+			<a href="{{ plugin_url }}&action=list_comment" class="btn btn-outline-success">РљРѕРјРјРµРЅС‚Р°СЂРёРё</a>
+			<a href="{{ plugin_url }}&action=automation" class="btn btn-outline-success">РђРІС‚РѕРјР°С‚РёР·Р°С†РёСЏ</a>
+			<a href="{{ plugin_url }}&action=list_payment" class="btn btn-outline-success">РЎРёСЃС‚РµРјС‹ РѕРїР»Р°С‚С‹</a>
+			<a href="{{ plugin_url }}&action=list_payment_type" class="btn btn-outline-success">РЎРїРѕСЃРѕР±С‹ РѕРїР»Р°С‚С‹</a>
+			<a href="{{ plugin_url }}&action=list_delivery_type" class="btn btn-outline-success">РЎРїРѕСЃРѕР±С‹ РґРѕСЃС‚Р°РІРєРё</a>
+		</div>
+		<div class="btn-group" role="group">
+			<a href="{{ plugin_url }}&action=urls" class="btn btn-outline-success">Р§РџРЈ</a>
+			<a href="{{ plugin_url }}&action=list_api" class="btn btn-outline-success">API</a>
+		</div>
+	</div>
+</div>
 
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=automation'" value="Автоматизация" class="navbutton" />
-
-<input type="button" onmousedown="javascript:window.location.href='{{plugin_url}}&action=urls'" value="ЧПУ" class="navbutton" />
-</td>
-</tr>
-</table>
-{{entries}}
+<!-- РћСЃРЅРѕРІРЅРѕР№ РєРѕРЅС‚РµРЅС‚ -->
+{{ error }}
+<div class="container-fluid mt-4">
+	<div class="card">
+		<div class="card-header">
+			<h5 class="mb-0">{{ current_title }}</h5>
+		</div>
+		<div class="card-body">
+			{{ entries }}
+		</div>
+	</div>
 </div>

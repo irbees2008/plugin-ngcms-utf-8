@@ -1,150 +1,204 @@
 <script type="text/javascript" src="{{ admin_url }}/plugins/eshop/tpl/js/eshop.js"></script>
 
-<form action="{{php_self}}" method="post" name="options_bar">
-<table width="1000" border="0" cellspacing="0" cellpadding="0" class="editfilter">
-  <tr>
-<!--Block 1--><td rowspan="2">
-<table border="0" cellspacing="0" cellpadding="0" class="filterblock">
-  <tr>
-    <td valign="top">
-    <label>Название</label>
-    <input name="fname" id="fname" class="bfname" type="text" value="{{fname}}" size="53"/></span>
-    </td>
-  </tr>
-  <tr>
-    <td>
-    <label>На странице</label>
-    <input name="rpp" value="{{rpp}}" type="text" size="3" />
-    </td>
-  </tr>
-</table>
+<div class="card mb-4">
+	<div class="card-body">
+		<form action="{{ php_self }}" method="post" name="options_bar">
 
-</td><!--/Block 1-->
+			<div class="row">
+				<!--Block 1-->
+				<div class="col-lg-4">
+					<div class="form-group">
+						<label>РќР°Р·РІР°РЅРёРµ</label>
+						<div class="input-group mb-3">
+							<input name="fname" id="fname" class="form-control" type="text" value="{{ fname }}"size="53"/>
+						</div>
+					</div>
 
-<!--Block 2-->
-<td valign="top" >
-<table border="0" cellspacing="0" cellpadding="0" class="filterblock2">
-  <tr>
-    <td colspan="2">
-    <label class="left">Категория</label>&nbsp;&nbsp;
-    <select name="fcategory">
-        <option value="0">Выберите категорию</option>
-        {{filter_cats}}
-    </select>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    <label class="left">Статус</label>&nbsp;&nbsp;
-    <select name="fstatus" class="bfstatus">
-        <option value="-1" {% if fstatus  == '-1' %}selected{% endif %}>- Все -</option>
-        <option value="0" {% if fstatus == '0' %}selected{% endif %}>Не акивен</option>
-        <option value="1" {% if fstatus == '1' %}selected{% endif %}>Активен</option>
-    </select>
-    </td>
-  </tr>
+					<div class="form-group">
+						<label>РќР° СЃС‚СЂР°РЅРёС†Рµ</label>
+						<input name="rpp" value="{{ rpp }}" type="text" class="form-control" size="3"/>
+					</div>
+				</div>
 
-</table>
+				<!--Block 2-->
+				<div class="col-lg-4">
+					<div class="form-group">
+						<label>РљР°С‚РµРіРѕСЂРёСЏ</label>
+						<div class="input-group mb-3">
+                            <select name="fcategory" class="form-control">
+                                <option value="0">Р’С‹Р±РµСЂРёС‚Рµ РєР°С‚РµРіРѕСЂРёСЋ</option>
+                                {{ filter_cats }}
+                            </select>
+						</div>
+					</div>
 
-</td>
-<!--/Block 2-->
+					<div class="form-group">
+						<label>РЎС‚Р°С‚СѓСЃ</label>
+                            <select name="fstatus" class="form-control">
+                                <option value="-1" {% if fstatus  == '-1' %}selected{% endif %}>- Р’СЃРµ -</option>
+                                <option value="0" {% if fstatus == '0' %}selected{% endif %}>РќРµ Р°РєРёРІРµРЅ</option>
+                                <option value="1" {% if fstatus == '1' %}selected{% endif %}>РђРєС‚РёРІРµРЅ</option>
+                            </select>
+					</div>
+				</div>
 
-<!--Block 3-->
-<td rowspan="2">
-<table border="0" cellspacing="0" cellpadding="0" class="filterblock">
-</table>
-</td>
+				<!--Block 3-->
+				<div class="col-lg-4">
+					<div class="form-group">
+						<label>ID</label>
+						<input name="fid" id="fid" class="form-control" type="text" value="{{ fid }}" size="40"/>
+					</div>
 
-  </tr>
-  <tr>
-    <td><input type="submit" value="Показать" class="filterbutton"  /></td>
-  </tr>
-</table>
-</form>
-<!-- Конец блока фильтрации -->
-
+					<div class="form-group">
+						<label>РљРѕРґ</label>
+						<input name="fcode" id="fcode" class="form-control" type="text" value="{{ fcode }}"size="40"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<button type="submit" class="btn btn-block btn-outline-primary">РџРѕРєР°Р·Р°С‚СЊ</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+	
+<!-- РљРѕРЅРµС† Р±Р»РѕРєР° С„РёР»СЊС‚СЂР°С†РёРё -->
 
 <form action="/engine/admin.php?mod=extra-config&plugin=eshop&action=modify_product" method="post" name="check_product">
-<table border="0" cellspacing="0" cellpadding="0" class="content" align="center">
-<tr  class="contHead" align="left">
-<td width="5%">ID</td>
-<td width="15%">Изображение</td>
-<td width="30%">Название</td>
-<td width="15%">Категория</td>
-<td width="10%">Текущая цена</td>
-<td width="10%">Старая цена</td>
-<td width="10%">Статус</td>
-<td width="5%"><input class="check" type="checkbox" name="master_box" title="Выбрать все" onclick="javascript:check_uncheck_all(check_product)" /></td>
-</tr>
-{% for entry in entries %}
-<tr align="left">
-<td width="5%" class="contentEntry1">{{ entry.id }}</td>
-<td width="15%" class="contentEntry1"><a href="{{ entry.edit_link }}" ><img src="{% if (entry.images[0].filepath) %}{{home}}/uploads/eshop/products/thumb/{{entry.images[0].filepath}}{% else %}{{home}}/engine/plugins/eshop/tpl/img/img_none.jpg{% endif %}" width="100" height="100"></a></td>
-<td width="30%" class="contentEntry1">
-    <div style="float: left; margin: 0px;">
-        <a href="{{ entry.edit_link }}" >{{ entry.name }}</a><br/>
-        <small>
-            <a href="{{ home }}{{ entry.view_link }}" target="_blank">{{ home }}{{ entry.view_link }}</a>
-        </small>&nbsp;
-    </div>
-</td>
-<td width="15%" class="contentEntry1">{{ entry.category }}</td>
-<td width="10%" class="contentEntry1"><input size="3" type="text" autocomplete="off" class="price_input" value="{{ entry.variants[0].price }}" data-id="{{ entry.id }}">&nbsp;{{ system_flags.eshop.currency[0].sign }} &nbsp;</td>
-<td width="10%" class="contentEntry1"><input size="3" type="text" autocomplete="off" class="compare_price_input" value="{{ entry.variants[0].compare_price }}" data-id="{{ entry.id }}">&nbsp;{{ system_flags.eshop.currency[0].sign }} &nbsp;</td>
-<td width="10%" class="contentEntry1"><img src="{{home}}/engine/skins/default/images/{% if (entry.active == 1) %}yes.png{% else %}no.png{% endif %}" alt=""></td>
-<td width="5%" class="contentEntry1"><input name="selected_product[]" value="{{ entry.id }}" class="check" type="checkbox" /></td>
-</tr>
-{% else %}
-<tr align="left">
-<td colspan="8" class="contentEntry1">По вашему запросу ничего не найдено.</td>
-</tr>
-{% endfor %}
-<tr>
-<td width="100%" colspan="8">&nbsp;</td>
-</tr>
-<tr align="center">
-<td colspan="8" class="contentEdit" align="right" valign="top">
-<div style="text-align: left;">
-Действие: <select name="subaction" style="font: 12px Verdana, Courier, Arial; width: 230px;">
-<option value="">-- Действие --</option>
-<option value="mass_delete">Удалить</option>
-<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
-<option value="mass_active_add">Опубликовать</option>
-<option value="mass_active_remove">Запретить публикацию</option>
-<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
-<option value="mass_featured_add">Добавить в рекомендованные</option>
-<option value="mass_featured_remove">Убрать из рекомендованных</option>
-<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
-<option value="mass_stocked_add">Добавить в акционные</option>
-<option value="mass_stocked_remove">Убрать из акционных</option>
-</select>
-<input type="submit" value="Выполнить.." class="button" />
 
-<input class="button" style="float:right; width: 95px;" onmousedown="javascript:window.location.href='{{ admin_url }}/admin.php?mod=extra-config&plugin=eshop&action=add_product'" value="Добавить продукт" />
-</div>
-</td>
-</tr>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
+					<tr class="contHead" align="left">
+						<td width="5%">ID</td>
+						<td width="15%">РР·РѕР±СЂР°Р¶РµРЅРёРµ</td>
+						<td width="30%">РќР°Р·РІР°РЅРёРµ</td>
+						<td width="15%">РљР°С‚РµРіРѕСЂРёСЏ</td>
+						<td width="10%">Р’Р°СЂРёР°РЅС‚</td>
+						<td width="10%">Р¦РµРЅР°</td>
+						<td width="10%">РЎС‚Р°СЂР°СЏ С†РµРЅР°</td>
+						<td width="10%">РљРѕР»РёС‡РµСЃС‚РІРѕ</td>
+						<td width="10%">РЎС‚Р°С‚СѓСЃ</td>
+						<td width="5%"><input class="check" type="checkbox" name="master_box" title="Р’С‹Р±СЂР°С‚СЊ РІСЃРµ" onclick="javascript:check_uncheck_all(check_product)"/></td>
+					</tr>
+                </thead>
+                <tbody>
+				{% for entry in entries %}
+				<tr align="left">
+					<td width="5%" class="contentEntry1">{{ entry.id }}</td>
+					<td width="15%" class="contentEntry1">
+						<a href="{{ entry.edit_link }}">
+							<img src="{% if (entry.images[0].filepath) %}{{ home }}/uploads/eshop/products/{{ entry.id }}/thumb/{{ entry.images[0].filepath }}{% else %}{{ home }}/engine/plugins/eshop/tpl/img/img_none.jpg{% endif %}" width="100" height="100">
+						</a>
+					</td>
+					<td width="30%" class="contentEntry1">
+						<div style="float: left; margin: 0px;">
+							<a href="{{ entry.edit_link }}">{{ entry.name }}</a><br/>
+							<small>
+								<a href="{{ home }}{{ entry.view_link }}" target="_blank">{{ home }}{{ entry.view_link }}</a>
+							</small>&nbsp;
+						</div>
+					</td>
+					<td width="15%" class="contentEntry1">{{ entry.category }}</td>
+					<td width="10%" class="contentEntry1">{% for variant in entry.variants %}{{ variant.name }}&nbsp;<br/><br/>{% endfor %}</td>
+					<td width="5%" class="contentEntry1">
+						{% for variant in entry.variants %}
+							<input size="3" type="text" autocomplete="off"class="price_input"value="{{ variant.price }}"data-id="{{ variant.id }}"> &nbsp;{{ system_flags.eshop.currency[0].sign }} &nbsp;
+						<br/><br/>
+						{% endfor %}
+					</td>
+					<td width="5%" class="contentEntry1">
+						{% for variant in entry.variants %}
+							<input size="3" type="text" autocomplete="off" class="compare_price_input" value="{{ variant.compare_price }}" data-id="{{ variant.id }}">
+							 &nbsp;{{ system_flags.eshop.currency[0].sign }} &nbsp;
+							<br/><br/>
+						{% endfor %}
+					</td>
+					<td width="5%" class="contentEntry1">
+					{% for variant in entry.variants %}
+						<input size="3" type="text"  autocomplete="off" class="compare_amount_input" value="{{ variant.amount }}" data-id="{{ variant.id }}">
+						&nbsp;
+						<br/><br/>
+					{% endfor %}
+					</td>
+					<td width="10%" class="contentEntry1">
+						<img src="{{ home }}/engine/skins/default/images/{% if (entry.active == 1) %}yes.png{% else %}no.png{% endif %}" alt="">
+					</td>
+					<td width="5%" class="contentEntry1">
+						<input name="selected_product[]" value="{{ entry.id }}" class="check" type="checkbox"/>
+					</td>
+				</tr>
+				{% else %}
+				<tr align="left">
+					<td colspan="10" class="contentEntry1">РџРѕ РІР°С€РµРјСѓ Р·Р°РїСЂРѕСЃСѓ РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ.</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+            </table>
 
-<tr>
-<td align="center" colspan="10" class="contentHead">{{ pagesss }}</td>
-</tr>
-</table>
+        </div>
+	
+			<div class="card-footer">
+				<div class="row">
+					<div class="col-lg-6 mb-2 mb-lg-0">{{ pagesss }}</div>
+
+					<div class="col-lg-6">
+						<div class="input-group">
+						<!-- Р”РµР№СЃС‚РІРёРµ: -->
+							<select name="subaction" class="custom-select">
+								<option value="">-- Р”РµР№СЃС‚РІРёРµ --</option>
+								<option value="mass_delete">РЈРґР°Р»РёС‚СЊ</option>
+								<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
+								<option value="mass_active_add">РћРїСѓР±Р»РёРєРѕРІР°С‚СЊ</option>
+								<option value="mass_active_remove">Р—Р°РїСЂРµС‚РёС‚СЊ РїСѓР±Р»РёРєР°С†РёСЋ</option>
+								<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
+								<option value="mass_featured_add">Р”РѕР±Р°РІРёС‚СЊ РІ СЂРµРєРѕРјРµРЅРґРѕРІР°РЅРЅС‹Рµ</option>
+								<option value="mass_featured_remove">РЈР±СЂР°С‚СЊ РёР· СЂРµРєРѕРјРµРЅРґРѕРІР°РЅРЅС‹С…</option>
+								<option value="" style="background-color: #E0E0E0;" disabled="disabled">===================</option>
+								<option value="mass_stocked_add">Р”РѕР±Р°РІРёС‚СЊ РІ Р°РєС†РёРѕРЅРЅС‹Рµ</option>
+								<option value="mass_stocked_remove">РЈР±СЂР°С‚СЊ РёР· Р°РєС†РёРѕРЅРЅС‹С…</option>
+							</select>
+
+							<div class="input-group-append">
+								<button type="submit" class="btn btn-outline-warning">Р’С‹РїРѕР»РЅРёС‚СЊ..</button>
+								<a href="{{ admin_url }}/admin.php?mod=extra-config&plugin=eshop&action=add_product" class="btn btn-outline-success">Р”РѕР±Р°РІРёС‚СЊ РїСЂРѕРґСѓРєС‚</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 </form>
 
 <script>
-$(document).ready(function(){
-    $(document).on('change', '.price_input',  function(e) {
-        var id = $(this).attr("data-id");
-        var mode = "price";
-        var price = $(this).val();
-        rpcEshopRequest('eshop_change_price', {'id':id, 'mode':mode, 'price':price}, function (resTX) {});
+    $(document).ready(function () {
+        $(document).on('change', '.price_input', function (e) {
+            var id = $(this).attr("data-id");
+            var mode = "price";
+            var value = $(this).val();
+            rpcEshopRequest('eshop_change_variant', {'id': id, 'mode': mode, 'value': value}, function (resTX) {
+                eshop_indication('success', 'РўРѕРІР°СЂ СЃРѕС…СЂР°РЅРµРЅ');
+            });
+        });
+
+        $(document).on('change', '.compare_price_input', function (e) {
+            var id = $(this).attr("data-id");
+            var mode = "compare_price";
+            var value = $(this).val();
+            rpcEshopRequest('eshop_change_variant', {'id': id, 'mode': mode, 'value': value}, function (resTX) {
+                eshop_indication('success', 'РўРѕРІР°СЂ СЃРѕС…СЂР°РЅРµРЅ');
+            });
+        });
+
+        $(document).on('change', '.compare_amount_input', function (e) {
+            var id = $(this).attr("data-id");
+            var mode = "amount";
+            var value = $(this).val();
+            rpcEshopRequest('eshop_change_variant', {'id': id, 'mode': mode, 'value': value}, function (resTX) {
+                eshop_indication('success', 'РўРѕРІР°СЂ СЃРѕС…СЂР°РЅРµРЅ');
+            });
+        });
+
     });
-    
-    $(document).on('change', '.compare_price_input',  function(e) {
-        var id = $(this).attr("data-id");
-        var mode = "compare_price";
-        var price = $(this).val();
-        rpcEshopRequest('eshop_change_price', {'id':id, 'mode':mode, 'price':price}, function (resTX) {});
-    });
-});
+
 </script>

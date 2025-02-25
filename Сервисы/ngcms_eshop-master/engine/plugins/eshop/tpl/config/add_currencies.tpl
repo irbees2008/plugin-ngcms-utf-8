@@ -1,41 +1,57 @@
-{{entries.error}}
+{{ entries.error }}
 <form method="post" action="" enctype="multipart/form-data">
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-        <td width="50%" class="contentEntry1">Название валюты<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{entries.name}}" /></td>
-    </tr>
-    <tr>
-        <td width="50%" class="contentEntry1">Знак<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="sign" value="{{entries.sign}}" /></td>
-    </tr>
-    <tr>
-        <td width="50%" class="contentEntry1">Код ISO<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="code" value="{{entries.code}}" /></td>
-    </tr>
 
-    <tr>
-        <td width="50%" class="contentEntry1">Конверсия<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="6" name="rate_from" value="{{entries.rate_from}}" /> $ = <input type="text" size="6" name="rate_to" value="1.00"  disabled="disabled" /></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Позиция<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="1" name="position" value="{{entries.position}}" /></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Включена?<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="checkbox" name="enabled" {% if entries.mode == 'add' %}checked{% else %}{% if entries.enabled == '1' %}checked{% endif %}{% endif %} value="1" ></td>
-    </tr>
-    
-</table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-<tr><td width="100%" colspan="2">&nbsp;</td></tr>
-<tr>
-<td width="100%" colspan="2" class="contentEdit" align="center">
-<input type="submit" name="submit" value="Сохранить" class="button" />
-</td>
-</tr>
-</table>
+	<div class="card-body">
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РќР°Р·РІР°РЅРёРµ РІР°Р»СЋС‚С‹</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="name" value="{{ entries.name }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">Р—РЅР°Рє</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="sign" value="{{ entries.sign }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РљРѕРґ ISO</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="code" value="{{ entries.code }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РљРѕРЅРІРµСЂСЃРёСЏ</label>
+			<div class="col-lg-9">
+				<div class="input-group mb-3">
+				<input type="text" size="6" name="rate_from" value="{{ entries.rate_from }}" class="form-control"/>
+				<div class="input-group-prepend input-group-append">
+					<label class="input-group-text">$ =</label>
+				</div>
+				<input type="text" size="6" name="rate_to" value="1.00" disabled="disabled" class="form-control"/>
+			</div></div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РџРѕР·РёС†РёСЏ</label>
+			<div class="col-lg-9">
+				<input type="text" size="1" name="position" value="{{ entries.position }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РџРѕР·РёС†РёСЏ</label>
+			<div class="col-lg-9">
+				<input type="checkbox" name="enabled" {% if entries.mode == 'add' %}checked{% else %}{% if entries.enabled == '1' %}checked{% endif %}{% endif %} value="1">
+			</div>
+		</div>
+		
+	</div>
+	
+			<div class="card-footer">
+				<div class="row">
+					<div class="col-lg-6 mb-2 mb-lg-0"></div>
+					<div class="col-lg-6">
+						<input type="submit" name="submit" value="РЎРѕС…СЂР°РЅРёС‚СЊ" class="btn btn-outline-success"/>
+					</div>
+				</div>
+			</div>
 </form>

@@ -1,110 +1,167 @@
-{{entries.error}}
+{{ entries.error }}
 <form method="post" action="">
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-        <td width="50%" class="contentEntry1">ID<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{entries.id}}" disabled="disabled"/></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Дата<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{entries.dt|date('d.m.Y H:i')}}" disabled="disabled"/></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">IP<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{entries.ip}}" disabled="disabled"/></td>
-    </tr>
+	<div class="card-body">
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">ID</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="id" value="{{ entries.id }}" disabled="disabled" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">Р”Р°С‚Р°</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="dt" value="{{ entries.dt|date('d.m.Y H:i') }}" disabled="disabled" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">IP</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="ip" value="{{ entries.ip }}" disabled="disabled" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РўРёРї</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="type" value="{% if (entries.type == 1) %}РћР±С‹С‡РЅС‹Р№{% elseif (entries.type == 2) %}РљСѓРїРёС‚СЊ РІ РѕРґРёРЅ РєР»РёРє{% elseif (entries.type == 3) %}РЈР·РЅР°С‚СЊ Рѕ РЅР°Р»РёС‡РёРё{% endif %}" disabled="disabled" class="form-control"/>
+			</div>
+		</div>	
+		{% if (entries.author_id) %}
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ</label>
+			<div class="col-lg-9">
+				<a href="{{ entries.profile_link }}">{{ entries.author }}</a>
+			</div>
+		</div>	
+		{% endif %}
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РРјСЏ</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="name" value="{{ entries.name }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РўРµР»РµС„РѕРЅ</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="phone" value="{{ entries.phone }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">Email</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="email" value="{{ entries.email }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РЎРїРѕСЃРѕР± РѕРїР»Р°С‚С‹</label>
+			<div class="col-lg-9">
+                <select name="payment_type_id" class="form-control">
+                    {% for v in entries.entriesPaymentTypes %}
+                        <option value="{{ v.id }}" {% if (entries.payment_type_id == v.id) %}selected{% endif %}>{{ v.name }}</option>
+                    {% endfor %}
+                </select>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РЎРїРѕСЃРѕР± РґРѕСЃС‚Р°РІРєРё</label>
+			<div class="col-lg-9">
+                <select name="delivery_type_id" class="form-control">
+                    {% for v in entries.entriesDeliveryTypes %}
+                        <option value="{{ v.id }}" {% if (entries.delivery_type_id == v.id) %}selected{% endif %}>{{ v.name }}</option>
+                    {% endfor %}
+                </select>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РђРґСЂРµСЃ</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="address" value="{{ entries.address }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РљРѕРјРјРµРЅС‚Р°СЂРёР№</label>
+			<div class="col-lg-9">
+				<input type="text" size="80" name="comment" value="{{ entries.comment }}" class="form-control"/>
+			</div>
+		</div>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">РћРїР»Р°С‡РµРЅ?</label>
+			<div class="col-lg-9">
+                <select name="paid" class="form-control"/>
+                    <option value="0" {% if (entries.paid == 0) %}selected="selected"{% endif %}>РќРµС‚</option>
+                    <option value="1" {% if (entries.paid == 1) %}selected="selected"{% endif %}>Р”Р°</option>
+                </select>
+			</div>
+		</div>
+		
+	</div>
+		
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped">
+			<thead class="thead-dark">
+                <tr class="contHead" align="left">
+                    <td width="5%">ID</td>
+                    <td width="15%">РР·РѕР±СЂР°Р¶РµРЅРёРµ</td>
+                    <td width="40%">РќР°Р·РІР°РЅРёРµ</td>
+                    <td width="20%">Р’Р°СЂРёР°РЅС‚</td>
+                    <td width="10%">РљРѕР»РёС‡РµСЃС‚РІРѕ</td>
+                    <td width="10%">РўРµРєСѓС‰Р°СЏ С†РµРЅР°</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries.basket %}
+                    <tr align="left">
+                        <td width="5%" class="contentEntry1">{{ entry.id }}</td>
+                        <td width="15%" class="contentEntry1">
+							<a href="{{ entry.xfields.item.view_link }}">
+								<img alt="" src="{% if (entry.xfields.item.image_filepath) %}{{ home }}/uploads/eshop/products/{{ entry.xfields.item.id }}/thumb/{{ entry.xfields.item.image_filepath }}{% else %}{{ home }}/engine/plugins/eshop/tpl/img/img_none.jpg{% endif %}" width="100" height="100">
+							</a>
+                        </td>
+                        <td width="40%" class="contentEntry1"><a href="{{ entry.xfields.item.view_link }}">{{ entry.title }}</a></td>
+                        <td width="10%" class="contentEntry1">{{ entry.xfields.item.v_name }}</td>
+                        <td width="10%" class="contentEntry1">{{ entry.count }} С€С‚.</td>
+                        <td width="10%" class="contentEntry1">{{ entry.price }} {{ system_flags.eshop.currency[0].sign }}</td>
+                    </tr>
+                {% endfor %}
+			</tbody>
+		</table>
+	</div>
 
-    <tr>
-        <td width="50%" class="contentEntry1">Тип<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="type" value="{% if (entries.type == 1) %}Обычный{% elseif (entries.type == 2) %}Купить в один клик{% elseif (entries.type == 3) %}Узнать о наличии{% endif %}" disabled="disabled"/></td>
-    </tr>
-
-    {% if (entries.author_id) %}
-    <tr>
-        <td width="50%" class="contentEntry1">Пользователь<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><a href="{{ entries.profile_link }}">{{ entries.author }}</a></td>
-    </tr>
+		<div class="form-row mb-3">
+			<label class="col-lg-3 col-form-label">CС‚РѕРёРјРѕСЃС‚СЊ С‚РѕРІР°СЂРѕРІ:</label>
+			<div class="col-lg-9">
+				{{ entries.basket_total|number_format(2, '.', '') }} {{ system_flags.eshop.currency[0].sign }}
+			</div>
+		</div>
+		
+    {% if (entries.purchases) %}
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped">
+			<thead class="thead-dark">
+                <tr class="contHead" align="left">
+                   <td width="10%">ID РѕРїР»Р°С‚С‹</td>
+                   <td width="15%">Р”Р°С‚Р° РѕРїР»Р°С‚С‹</td>
+                   <td width="75%">РРЅС„РѕСЂРјР°С†РёСЏ</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for purchase in entries.purchases %}
+                <tr align="left">
+                   <td width="5%" class="contentEntry1">{{ purchase.id }}</td>
+                   <td width="15%" class="contentEntry1">{{ purchase.dt|date('d.m.Y H:i') }}</td>
+                   <td width="80%" class="contentEntry1">{{ purchase.info_string }}</td>
+                </tr>
+            {% endfor %}
+			</tbody>
+		</table>
+	</div>
     {% endif %}
 
-    <tr>
-        <td width="50%" class="contentEntry1">Имя<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="name" value="{{entries.name}}" /></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Телефон<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="phone" value="{{entries.phone}}" /></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Email<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="email" value="{{entries.email}}" /></td>
-    </tr>
-
-    <tr>
-        <td width="50%" class="contentEntry1">Адрес<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><input type="text" size="80" name="address" value="{{entries.address}}" /></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Комментарий<br /><small></small></td>
-        <td width="50%" class="contentEntry2"><textarea rows="10" cols="45" name="comment">{{entries.comment}}</textarea></td>
-    </tr>
-    
-    <tr>
-        <td width="50%" class="contentEntry1">Оплачен?<br /><small></small></td>
-        <td width="50%" class="contentEntry2">
-        <select name="paid" style="font: 12px Verdana, Courier, Arial; width: 230px;">
-            <option value="0" {% if (entries.paid == 0) %}selected="selected"{% endif %}>Нет</option>
-            <option value="1" {% if (entries.paid == 1) %}selected="selected"{% endif %}>Да</option>
-        </select>
-        </td>
-    </tr>
-
-    <tr>
-        
-        <table border="0" cellspacing="0" cellpadding="0" class="content" align="center">
-            <tr  class="contHead" align="left">
-            <td width="5%">ID</td>
-            <td width="15%">Изображение</td>
-            <td width="60%">Название</td>
-            <td width="10%">Количество</td>
-            <td width="10%">Текущая цена</td>
-            </tr>
-            {% for entry in entries.basket %}
-            <tr align="left">
-            <td width="5%" class="contentEntry1">{{ entry.id }}</td>
-            <td width="15%" class="contentEntry1"><a href="{{entry.xfields.item.view_link}}"><img alt="" src="{% if (entry.xfields.item.image_filepath) %}{{home}}/uploads/eshop/products/thumb/{{entry.xfields.item.image_filepath}}{% else %}{{home}}/engine/plugins/eshop/tpl/img/img_none.jpg{% endif %}"  width="100" height="100"></a></td>
-            <td width="60%" class="contentEntry1"><a href="{{entry.xfields.item.view_link}}">{{ entry.title }}</a></td>
-            <td width="10%" class="contentEntry1">{{ entry.count }} шт.</td>
-            <td width="10%" class="contentEntry1">{{ entry.price }} {{ system_flags.eshop.currency[0].sign }}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-            <td width="100%" colspan="8">&nbsp;</td>
-            </tr>
-            
-            <tr align="center">
-            <td colspan="9" class="contentEdit" align="right" valign="top">
-            <div style="text-align: left;">
-            Cтоимость товаров: {{ entries.basket_total|number_format(2, '.', '') }} {{ system_flags.eshop.currency[0].sign }}
-            </div>
-            </td>
-            </tr>
-
-        </table>
-
-    </tr>
-    
-</table>
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-<tr><td width="100%" colspan="2">&nbsp;</td></tr>
-<tr>
-<td width="100%" colspan="2" class="contentEdit" align="center">
-<input type="submit" name="submit" value="Сохранить" class="button" />
-</td>
-</tr>
-</table>
+			<div class="card-footer">
+				<div class="row">
+					<div class="col-lg-6 mb-2 mb-lg-0"></div>
+					<div class="col-lg-6">
+						<input type="submit" name="submit" value="РЎРѕС…СЂР°РЅРёС‚СЊ" class="btn btn-outline-success"/>
+					</div>
+				</div>
+			</div>
 </form>

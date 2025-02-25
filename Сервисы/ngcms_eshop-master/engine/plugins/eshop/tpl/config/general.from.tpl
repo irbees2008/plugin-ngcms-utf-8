@@ -1,164 +1,230 @@
-<form method="post" action="admin.php?mod=extra-config&plugin=eshop&action=options">
-<tr>
-<td colspan=2>
-<fieldset class="admGroup">
-<legend class="title">Настройки</legend>
-<table width="100%" border="0" class="content">
-<tr>
-<td class="contentEntry1" valign=top>Количество продуктов на странице<br /></td>
-<td class="contentEntry2" valign=top><input name="count" type="text" title="Количество продуктов на странице" size="4" value="{{entries.count}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Количество продуктов на странице поиска<br /></td>
-<td class="contentEntry2" valign=top><input name="count_search" type="text" title="Количество продуктов на странице поиска" size="4" value="{{entries.count_search}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Количество продуктов на странице c акциями<br /></td>
-<td class="contentEntry2" valign=top><input name="count_stocks" type="text" title="Количество продуктов на странице c акциями" size="4" value="{{entries.count_stocks}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Учёт просмотра объявлений?<br /></td>
-<td class="contentEntry2" valign=top><select name="views_count" >{{entries.views_count}}</select></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Двухсторонние связанные товары?<br /></td>
-<td class="contentEntry2" valign=top><select name="bidirect_linked_products" >{{entries.bidirect_linked_products}}</select></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Премодерация отзывов?<br /></td>
-<td class="contentEntry2" valign=top><select name="approve_comments" >{{entries.approve_comments}}</select></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Порядок сортировки отзывов?<br /></td>
-<td class="contentEntry2" valign=top><select name="sort_comments" >{{entries.sort_comments}}</select></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Добавлять страницы категорий и продукции в GSMG?<br /></td>
-<td class="contentEntry2" valign=top><select name="integrate_gsmg" >{{entries.integrate_gsmg}}</select></td>
-</tr>
-</table>
-</fieldset>
-</td>
-</tr>
+<form method="post" action="">
+    <tr>
+        <td colspan=2>
+            <fieldset class="admGroup">
+                <legend class="title">РќР°СЃС‚СЂРѕР№РєРё</legend>
+                <table width="100%" border="0" class="content table table-sm">
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р’С‹Р±РµСЂРёС‚Рµ РєР°С‚Р°Р»РѕРі РёР· РєРѕС‚РѕСЂРѕРіРѕ РїР»Р°РіРёРЅ Р±СѓРґРµС‚ Р±СЂР°С‚СЊ С€Р°Р±Р»РѕРЅС‹ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ<br/>
+						<span class="text-muted text-size-small hidden-xs"><b>РЁР°Р±Р»РѕРЅ СЃР°Р№С‚Р°</b> - РїР»Р°РіРёРЅ Р±СѓРґРµС‚ РїС‹С‚Р°С‚СЊСЃСЏ РІР·СЏС‚СЊ С€Р°Р±Р»РѕРЅС‹ РёР· РѕР±С‰РµРіРѕ С€Р°Р±Р»РѕРЅР° СЃР°Р№С‚Р°; РІ СЃР»СѓС‡Р°Рµ РЅРµРґРѕСЃС‚СѓРїРЅРѕСЃС‚Рё - С€Р°Р±Р»РѕРЅС‹ Р±СѓРґСѓС‚ РІР·СЏС‚С‹ РёР· СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РєР°С‚Р°Р»РѕРіР° РїР»Р°РіРёРЅР°<br /><b>РџР»Р°РіРёРЅ</b> - С€Р°Р±Р»РѕРЅС‹ Р±СѓРґСѓС‚ Р±СЂР°С‚СЊСЃСЏ РёР· СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ РєР°С‚Р°Р»РѕРіР° РїР»Р°РіРёРЅР°</span>
+						</td>
+                        <td class="contentEntry2" valign=top>{{ entries.localsource }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р’С‹Р±РµСЂРёС‚Рµ Р°РєС‚РёРІРЅС‹Р№ СЃРєРёРЅ<br/>
+						<span class="text-muted text-size-small hidden-xs">Р’С‹Р±СЂР°РЅРЅС‹Р№ СЃРєРёРЅ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ <b>РџР»Р°РіРёРЅ</b> РІ РїСЂРµРґС‹РґСѓС‰РµРј РїРѕР»Рµ</span>
+						</td>
+                        <td class="contentEntry2" valign=top>{{ entries.localskin }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р’С‹Р±РµСЂР°С‚СЊ РІРµСЂСЃРёСЋ MySQL<br/>
+						<span class="text-muted text-size-small hidden-xs"><b>РќРµС‚</b> - Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РІРµСЂСЃРёСЏ 5.С…<br/><b>Р”Р°</b> - Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ 8.С…</span>
+						</td>
+                        <td class="contentEntry2" valign=top>{{ entries.mysql }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїРёСЃРєР° РєР°С‚РµРіРѕСЂРёР№ РІ Р°РґРјРёРЅРєРё<br/>
+						<span class="text-muted text-size-small hidden-xs"><b>РќРµС‚</b> - Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РІС‹РІРѕРґ С‚Р°Р±Р»РёС†РµР№<br/><b>Р”Р°</b> - Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґРµСЂРµРІРѕРІРёРґРЅС‹Р№ РІС‹РІРѕРґ РєР°С‚РµРіРѕСЂРёР№ (СЃ Р·Р°РїРѕРјРёРЅР°РЅРµРј РїРѕСЃР»РµРґРЅРµРіРѕ РґРµР№СЃС‚РІРёСЏ)</span>
+						</td>
+                        <td class="contentEntry2" valign=top>{{ entries.cat_tree }}</td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ<br/></td>
+                        <td class="contentEntry2" valign=top><input name="count" type="text"
+                                                                    title="РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ" size="4"
+                                                                    value="{{ entries.count }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕРёСЃРєР°<br/></td>
+                        <td class="contentEntry2" valign=top><input name="count_search" type="text"
+                                                                    title="РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕРёСЃРєР°"
+                                                                    size="4" value="{{ entries.count_search }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ c Р°РєС†РёСЏРјРё<br/></td>
+                        <td class="contentEntry2" valign=top><input name="count_stocks" type="text"
+                                                                    title="РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРґСѓРєС‚РѕРІ РЅР° СЃС‚СЂР°РЅРёС†Рµ c Р°РєС†РёСЏРјРё"
+                                                                    size="4" value="{{ entries.count_stocks }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РЈС‡С‘С‚ РїСЂРѕСЃРјРѕС‚СЂР° РѕР±СЉСЏРІР»РµРЅРёР№?<br/></td>
+                        <td class="contentEntry2" valign=top><select
+                                    name="views_count" class="custom-select">{{ entries.views_count }}</select></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р”РІСѓС…СЃС‚РѕСЂРѕРЅРЅРёРµ СЃРІСЏР·Р°РЅРЅС‹Рµ С‚РѕРІР°СЂС‹?<br/></td>
+                        <td class="contentEntry2" valign=top><select
+                                    name="bidirect_linked_products" class="custom-select">{{ entries.bidirect_linked_products }}</select></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РџСЂРµРјРѕРґРµСЂР°С†РёСЏ РѕС‚Р·С‹РІРѕРІ?<br/></td>
+                        <td class="contentEntry2" valign=top><select
+                                    name="approve_comments" class="custom-select">>{{ entries.approve_comments }}</select></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РџРѕСЂСЏРґРѕРє СЃРѕСЂС‚РёСЂРѕРІРєРё РѕС‚Р·С‹РІРѕРІ?<br/></td>
+                        <td class="contentEntry2" valign=top><select
+                                    name="sort_comments" class="custom-select">{{ entries.sort_comments }}</select></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р”РѕР±Р°РІР»СЏС‚СЊ СЃС‚СЂР°РЅРёС†С‹ РєР°С‚РµРіРѕСЂРёР№ Рё РїСЂРѕРґСѓРєС†РёРё РІ GSMG?<br/></td>
+                        <td class="contentEntry2" valign=top><select
+                                    name="integrate_gsmg" class="custom-select">{{ entries.integrate_gsmg }}</select></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
 
+    <tr>
+        <td colspan=2>
+            <fieldset class="admGroup">
+                <legend class="title">РР·РѕР±СЂР°Р¶РµРЅРёСЏ С‚РѕРІР°СЂРѕРІ</legend>
+                <table width="100%" border="0" class="content">
+                    <tr>
+                        <td class="contentEntry1" valign=top>РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё<br/></td>
+                        <td class="contentEntry2" valign=top><input name="width_thumb" type="text"
+                                                                    title="РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё" size="20"
+                                                                    value="{{ entries.width_thumb }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№<br/>
+                            <small>Р¤РѕСЂРјР°С‚ Р·Р°РїРёСЃРё <b>jpg, jpeg, gif, png</b></small>
+                        </td>
+                        <td class="contentEntry2" valign=top><input name="ext_image" type="text"
+                                                                    title="Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°Р·С€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№"
+                                                                    size="50" value="{{ entries.ext_image }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РЁРёСЂРёРЅР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ<br/></td>
+                        <td class="contentEntry2" valign=top><input name="pre_width" type="text"
+                                                                    title="РЁРёСЂРёРЅР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ" size="20"
+                                                                    value="{{ entries.pre_width }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РљР°С‡РµСЃС‚РІРѕ РїСЂРё Р·Р°РіСЂСѓР·РєРµ<br/></td>
+                        <td class="contentEntry2" valign=top><input name="pre_quality" type="text"
+                                                                    title="РљР°С‡РµСЃС‚РІРѕ РїСЂРё Р·Р°РіСЂСѓР·РєРµ" size="20"
+                                                                    value="{{ entries.pre_quality }}"/></td>
+                    </tr>
+                    <!--
 <tr>
-<td colspan=2>
-<fieldset class="admGroup">
-<legend class="title">Изображения товаров</legend>
-<table width="100%" border="0" class="content">
-<tr>
-<td class="contentEntry1" valign=top>Ширина уменьшенной копии<br /></td>
-<td class="contentEntry2" valign=top><input name="width_thumb" type="text" title="Ширина уменьшенной копии" size="20" value="{{entries.width_thumb}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>Р Р°Р·РјРµСЂ РІ РјРµРіР°Р±Р°Р№С‚Р°С…</small></td>
+<td class="contentEntry2" valign=top><input name="max_image_size" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.max_image_size }}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Разрешенные расширения для изображений<br /><small>Формат записи <b>jpg, jpeg, gif, png</b></small></td>
-<td class="contentEntry2" valign=top><input name="ext_image" type="text" title="Разрешенные разширения для изображений" size="50" value="{{entries.ext_image}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
+<td class="contentEntry2" valign=top><input name="width" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.width }}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Ширина при загрузке<br /></td>
-<td class="contentEntry2" valign=top><input name="pre_width" type="text" title="Ширина при загрузке" size="20" value="{{entries.pre_width}}" /></td>
-</tr>
-<!--
-<tr>
-<td class="contentEntry1" valign=top>Максимальный размер загружаемого изображения<br /><small>Размер в мегабайтах</small></td>
-<td class="contentEntry2" valign=top><input name="max_image_size" type="text" title="Максимальный размер загружаемого изображения" size="20" value="{{entries.max_image_size}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Максимальный ширина загружаемого изображения<br /><small>Указывается в пикселях</small></td>
-<td class="contentEntry2" valign=top><input name="width" type="text" title="Максимальный ширина загружаемого изображения" size="20" value="{{entries.width}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Максимальный высота загружаемого изображения<br /><small>Указывается в пикселях</small></td>
-<td class="contentEntry2" valign=top><input name="height" type="text" title="Максимальный высота загружаемого изображения" size="20" value="{{entries.height}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
+<td class="contentEntry2" valign=top><input name="height" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.height }}" /></td>
 </tr>
 -->
-</table>
-</fieldset>
-</td>
-</tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
 
+    <tr>
+        <td colspan=2>
+            <fieldset class="admGroup">
+                <legend class="title">РР·РѕР±СЂР°Р¶РµРЅРёСЏ РєР°С‚РµРіРѕСЂРёР№</legend>
+                <table width="100%" border="0" class="content">
+                    <tr>
+                        <td class="contentEntry1" valign=top>РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё<br/></td>
+                        <td class="contentEntry2" valign=top><input name="catz_width_thumb" type="text"
+                                                                    title="РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё" size="20"
+                                                                    value="{{ entries.catz_width_thumb }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№<br/>
+                            <small>Р¤РѕСЂРјР°С‚ Р·Р°РїРёСЃРё <b>jpg, jpeg, gif, png</b></small>
+                        </td>
+                        <td class="contentEntry2" valign=top><input name="catz_ext_image" type="text"
+                                                                    title="Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°Р·С€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№"
+                                                                    size="50" value="{{ entries.catz_ext_image }}"/>
+                        </td>
+                    </tr>
+                    <!--
 <tr>
-<td colspan=2>
-<fieldset class="admGroup">
-<legend class="title">Изображения категорий</legend>
-<table width="100%" border="0" class="content">
-<tr>
-<td class="contentEntry1" valign=top>Ширина уменьшенной копии<br /></td>
-<td class="contentEntry2" valign=top><input name="catz_width_thumb" type="text" title="Ширина уменьшенной копии" size="20" value="{{entries.catz_width_thumb}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>Р Р°Р·РјРµСЂ РІ РјРµРіР°Р±Р°Р№С‚Р°С…</small></td>
+<td class="contentEntry2" valign=top><input name="catz_max_image_size" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.catz_max_image_size }}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Разрешенные расширения для изображений<br /><small>Формат записи <b>jpg, jpeg, gif, png</b></small></td>
-<td class="contentEntry2" valign=top><input name="catz_ext_image" type="text" title="Разрешенные разширения для изображений" size="50" value="{{entries.catz_ext_image}}" /></td>
-</tr>
-<!--
-<tr>
-<td class="contentEntry1" valign=top>Максимальный размер загружаемого изображения<br /><small>Размер в мегабайтах</small></td>
-<td class="contentEntry2" valign=top><input name="catz_max_image_size" type="text" title="Максимальный размер загружаемого изображения" size="20" value="{{entries.catz_max_image_size}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
+<td class="contentEntry2" valign=top><input name="catz_width" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.catz_width }}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Максимальный ширина загружаемого изображения<br /><small>Указывается в пикселях</small></td>
-<td class="contentEntry2" valign=top><input name="catz_width" type="text" title="Максимальный ширина загружаемого изображения" size="20" value="{{entries.catz_width}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Максимальный высота загружаемого изображения<br /><small>Указывается в пикселях</small></td>
-<td class="contentEntry2" valign=top><input name="catz_height" type="text" title="Максимальный высота загружаемого изображения" size="20" value="{{entries.catz_height}}" /></td>
+<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
+<td class="contentEntry2" valign=top><input name="catz_height" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{{ entries.catz_height }}" /></td>
 </tr>
 -->
-</table>
-</fieldset>
-</td>
-</tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
 
-<tr>
-<td colspan=2>
-<fieldset class="admGroup">
-<legend class="title">Оповещения</legend>
-<table width="100%" border="0" class="content">
-<tr>
-<td class="contentEntry1" valign=top>Оповещение о заказах<br /></td>
-<td class="contentEntry2" valign=top><input name="email_notify_orders" type="text" title="Оповещение о заказах" size="100" value="{{entries.email_notify_orders}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Оповещение о комментариях<br /></td>
-<td class="contentEntry2" valign=top><input name="email_notify_comments" type="text" title="Оповещение о комментариях" size="100" value="{{entries.email_notify_comments}}" /></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Обратный адрес оповещений<br /></td>
-<td class="contentEntry2" valign=top><input name="email_notify_back" type="text" title="Обратный адрес оповещений" size="100" value="{{entries.email_notify_back}}" /></td>
-</tr>
-</table>
-</fieldset>
-</td>
-</tr>
+    <tr>
+        <td colspan=2>
+            <fieldset class="admGroup">
+                <legend class="title">РћРїРѕРІРµС‰РµРЅРёСЏ</legend>
+                <table width="100%" border="0" class="content">
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћРїРѕРІРµС‰РµРЅРёРµ Рѕ Р·Р°РєР°Р·Р°С…<br/></td>
+                        <td class="contentEntry2" valign=top><input name="email_notify_orders" type="text"
+                                                                    title="РћРїРѕРІРµС‰РµРЅРёРµ Рѕ Р·Р°РєР°Р·Р°С…" size="100"
+                                                                    value="{{ entries.email_notify_orders }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћРїРѕРІРµС‰РµРЅРёРµ Рѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…<br/></td>
+                        <td class="contentEntry2" valign=top><input name="email_notify_comments" type="text"
+                                                                    title="РћРїРѕРІРµС‰РµРЅРёРµ Рѕ РєРѕРјРјРµРЅС‚Р°СЂРёСЏС…" size="100"
+                                                                    value="{{ entries.email_notify_comments }}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћР±СЂР°С‚РЅС‹Р№ Р°РґСЂРµСЃ РѕРїРѕРІРµС‰РµРЅРёР№<br/></td>
+                        <td class="contentEntry2" valign=top><input name="email_notify_back" type="text"
+                                                                    title="РћР±СЂР°С‚РЅС‹Р№ Р°РґСЂРµСЃ РѕРїРѕРІРµС‰РµРЅРёР№" size="100"
+                                                                    value="{{ entries.email_notify_back }}"/></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
 
-<tr>
-<td colspan=2>
-<fieldset class="admGroup">
-<legend class="title">Описания</legend>
-<table width="100%" border="0" class="content">
-<tr>
-<td class="contentEntry1" valign=top>Описание доставки<br /></td>
-<td class="contentEntry2" valign=top><textarea rows="10" cols="45" name="description_delivery">{{entries.description_delivery}}</textarea></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Описание покупки<br /></td>
-<td class="contentEntry2" valign=top><textarea rows="10" cols="45" name="description_order">{{entries.description_order}}</textarea></td>
-</tr>
-<tr>
-<td class="contentEntry1" valign=top>Телефоны магазина<br /></td>
-<td class="contentEntry2" valign=top><textarea rows="10" cols="45" name="description_phones">{{entries.description_phones}}</textarea></td>
-</tr>
-</table>
-</fieldset>
-</td>
-</tr>
-    
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
-<tr><td width="100%" colspan="2">&nbsp;</td></tr>
-<tr>
-<td width="100%" colspan="2" class="contentEdit" align="center">
-<input name="submit" type="submit"  value="Сохранить" class="button" />
-</td>
-</tr>
-</table>
+    <tr>
+        <td colspan=2>
+            <fieldset class="admGroup">
+                <legend class="title">РћРїРёСЃР°РЅРёСЏ</legend>
+                <table width="100%" border="0" class="content">
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћРїРёСЃР°РЅРёРµ РґРѕСЃС‚Р°РІРєРё<br/></td>
+                        <td class="contentEntry2" valign=top><textarea rows="10" cols="45"
+                                                                       name="description_delivery">{{ entries.description_delivery }}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РћРїРёСЃР°РЅРёРµ РїРѕРєСѓРїРєРё<br/></td>
+                        <td class="contentEntry2" valign=top><textarea rows="10" cols="45"
+                                                                       name="description_order">{{ entries.description_order }}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="contentEntry1" valign=top>РўРµР»РµС„РѕРЅС‹ РјР°РіР°Р·РёРЅР°<br/></td>
+                        <td class="contentEntry2" valign=top><textarea rows="10" cols="45"
+                                                                       name="description_phones">{{ entries.description_phones }}</textarea>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+        </td>
+    </tr>
+
+			<div class="card-footer">
+				<div class="text-center">
+					<button type="submit" name="submit" class="btn btn-outline-warning">РЎРѕС…СЂР°РЅРёС‚СЊ..</button>
+				</div>
+			</div>
+	
 </form>
