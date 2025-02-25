@@ -4,14 +4,16 @@
 
 ID: userlist
 Name: DR Userlist
-Version: 1.3
+Version: 2.0
 Acts: ppages
 File: userlist.php
 Config: config.php
 Type: plugin
-Description: Cписок пользователей
+Description: CРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
 Author: Styler
 Author_URI: http://ngcms.ru/forum/profile.php?id=7
-Title: Cписок пользователей
-Information: Плагин выводит список пользователей, зарегистрированных на сайте.
+Title: CРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
+Information: РџР»Р°РіРёРЅ РІС‹РІРѕРґРёС‚ СЃРїРёСЃРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№, Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРЅС‹С… РЅР° СЃР°Р№С‚Рµ.
 Preinstall: no
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-users fa-3x" aria-hidden="true"></i>
