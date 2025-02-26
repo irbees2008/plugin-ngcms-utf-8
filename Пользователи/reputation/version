@@ -1,0 +1,16 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: reputation
+Name: Users Reputation
+Version: 1.01
+Acts: ppages, action.ppages.uprofile, comments
+File: reputation.php
+Type: plugin
+Install: install.php
+Deinstall: uninstall.php
+Config: config.php
+Description: Репутация пользователей
+Author: LinMas
+Author_URI: http://linmas.org.ua/

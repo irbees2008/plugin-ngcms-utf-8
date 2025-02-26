@@ -1,0 +1,17 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: rangs
+Name: Ранг комментариев
+Version: 1.1
+Acts: plugin.comments, comments:show
+File: rangs.php
+Type: plugin
+Description: Ведение рейтинга новостей, статей, пользователей и комментариев
+Author: LinMas
+Author_URI: http://linmas.org.ua/
+Title: Ранг комментариев
+Information: Ведение и отображение пользовательского рейтинга новостей, статей, пользователей и комментариев
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-address-card-o fa-3x" aria-hidden="true"></i>

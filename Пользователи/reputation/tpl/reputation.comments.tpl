@@ -1,0 +1,1 @@
+[can-change]<a href="{+url}" title="Повысить"><img src="/engine/plugins/reputation/tpl/arrow_up.png" border="0" alt="Повысить" /></a>[/can-change]<a href="{url}" title="Репутация"> {reputation} </a>[can-change]<a href="{-url}" title="Понизить"><img border="0" src="/engine/plugins/reputation/tpl/arrow_down.png" alt="Понизить"/></a>[/can-change]
