@@ -4,7 +4,7 @@
 
 ID: fish
 Name: Наполнение рыбой
-Version: 0.01
+Version: 0.02
 Config: config.php
 Type: maintanance
 Description: Наполнение рыбой

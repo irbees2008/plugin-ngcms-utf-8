@@ -1,6 +1,6 @@
 <?php
 
-plugins_load_config();
+pluginsLoadConfig();
 LoadPluginLang('messaging', 'messaging', '', 'mes');
 
 $cfg = array();

@@ -10,7 +10,7 @@ include_once(root."/plugins/gsmg/lib/common.php");
 // Configuration file for plugin
 //
 
-plugins_load_config();
+pluginsLoadConfig();
 
 if ($_REQUEST['action'] == 'commit') {
     remove_gsmg_urls();
@@ -19,5 +19,5 @@ if ($_REQUEST['action'] == 'commit') {
     header("HTTP/1.1 301 Moved Permanently");
     header("Location: {$url}");
 } else {
-    generate_install_page($plugin, 'Удаление плагина', 'deinstall');
+    generate_install_page($plugin, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 'deinstall');
 }

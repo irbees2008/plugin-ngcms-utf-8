@@ -1,41 +1,113 @@
 <?php
 
-// Protect against hack attempts
-if (!defined('NGCMS')) die('HAL');
+// Защита от прямого доступа
+if (!defined('NGCMS')) {
+	die('HAL');
+}
 
+// Загрузка конфигурации плагинов и языковых файлов
 pluginsLoadConfig();
 LoadPluginLang('ireplace', 'main', '', '', ':');
 
-$cfg = array();
-array_push($cfg, array('descr' => '<input type="button" value ="Поехали!!!!" onmousedown="javascript:window.location.href=\'{admin_url}/admin.php?mod=extra-config&plugin=fish&action=run />'));
-
-if ($_REQUEST['action'] == 'commit') {
-
-	nowfilling();
-	print_commit_complete($plugin);
-} elseif ($_REQUEST['action'] == 'run') {
-	nowfilling();
-} else {
-	generate_config_page($plugin, $cfg);
+// Проверка прав доступа (функция должна быть определена в CMS)
+function is_admin()
+{
+	return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 }
 
+// Функция для генерации случайного текста
+function generate_random_text($paragraphs = 3, $sentences_per_paragraph = 5)
+{
+	$words = [
+		'Lorem',
+		'ipsum',
+		'dolor',
+		'sit',
+		'amet',
+		'consectetur',
+		'adipiscing',
+		'elit',
+		'sed',
+		'do',
+		'eiusmod',
+		'tempor',
+		'incididunt',
+		'ut',
+		'labore',
+		'et',
+		'dolore',
+		'magna',
+		'aliqua',
+		'Ut',
+		'enim',
+		'ad',
+		'minim',
+		'veniam',
+		'quis',
+		'nostrud',
+		'exercitation',
+		'ullamco',
+		'laboris',
+		'nisi',
+		'aliquip',
+		'ex',
+		'ea',
+		'commodo',
+		'consequat',
+		'Duis',
+		'aute',
+		'irure',
+		'dolor',
+		'in',
+		'reprehenderit',
+		'in',
+		'voluptate',
+		'velit',
+		'esse',
+		'cillum',
+		'eu',
+		'fugiat',
+		'nulla',
+		'pariatur'
+	];
 
+	$text = '';
+	for ($p = 0; $p < $paragraphs; $p++) {
+		$paragraph = '';
+		for ($s = 0; $s < $sentences_per_paragraph; $s++) {
+			$sentence_length = rand(5, 15);
+			$sentence = '';
+			for ($w = 0; $w < $sentence_length; $w++) {
+				$sentence .= $words[array_rand($words)] . ' ';
+			}
+			$sentence = ucfirst(trim($sentence)) . '. ';
+			$paragraph .= $sentence;
+		}
+		$text .= '<p>' . trim($paragraph) . '</p>';
+	}
 
+	return $text;
+}
+
+// Основная функция для создания новостей
 function nowfilling()
 {
 	global $mysql, $catz;
-	$pname = '';
-	$tname = '';
-	$prev = 0;
-	$fish = '<p> Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Вдали от всех живут они в буквенных домах на берегу Семантика большого языкового океана. Маленький ручеек Даль журчит по всей стране и обеспечивает ее всеми необходимыми правилами. Эта парадигматическая страна, в которой жаренные члены предложения залетают прямо в рот.</p>
-<p> Даже всемогущая пунктуация не имеет власти над рыбными текстами, ведущими безорфографичный образ жизни. Однажды одна маленькая строчка рыбного текста по имени Lorem ipsum решила выйти в большой мир грамматики. Великий Оксмокс предупреждал ее о злых запятых, диких знаках вопроса и коварных точках с запятой, но текст не дал сбить себя с толку.</p>
-<p> Он собрал семь своих заглавных букв, подпоясал инициал за пояс и пустился в дорогу. Взобравшись на первую вершину курсивных гор, бросил он последний взгляд назад, на силуэт своего родного города Буквоград, на заголовок деревни Алфавит и на подзаголовок своего переулка Строчка. Грустный реторический вопрос скатился по его щеке и он продолжил свой путь. По дороге встретил текст рукопись.</p>
-<p> Она предупредила его: «В моей стране все переписывается по несколько раз. Единственное, что от меня осталось, это приставка «и». Возвращайся ты лучше в свою безопасную страну». Не послушавшись рукописи, наш текст продолжил свой путь. Вскоре ему повстречался коварный составитель рекламных текстов, напоивший его языком и речью и заманивший в свое агенство, которое использовало его снова и снова в своих проектах.</p>
-<p> И если его не переписали, то живет он там до сих пор. Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Вдали от всех живут они в буквенных домах на берегу Семантика большого языкового океана. Маленький ручеек Даль журчит по всей стране и обеспечивает ее всеми необходимыми правилами.</p>
-<p> Эта парадигматическая страна, в которой жаренные члены предложения залетают прямо в рот. Даже всемогущая пунктуация не имеет власти над рыбными текстами, ведущими безорфографичный образ жизни. Однажды одна маленькая строчка рыбного текста по имени Lorem ipsum решила выйти в большой мир грамматики. Великий Оксмокс предупреждал ее о злых запятых, диких знаках вопроса и коварных точках с запятой, но текст не дал сбить себя с толку.</p>';
 
+	// Проверка прав доступа
+	if (!is_admin()) {
+		die('Access Denied');
+	}
+
+	$pname = ''; // Предыдущее название категории
+	$tname = ''; // Временное название категории
+	$prev = 0;   // ID предыдущей категории
+
+	// Проход по всем категориям
 	foreach ($catz as $k => $v) {
-		if ($v['id'] != 1 and $v['id'] != 3 and $v['id'] != 4) {
+		// Пропускаем категории с ID 1, 3 и 4
+		if ($v['id'] != 1 && $v['id'] != 3 && $v['id'] != 4) {
+			// Формируем название новости на основе уровня вложенности категории
 			if ($v['parent'] == $prev && $v['poslevel'] >= 2) {
 				$newsname = $pname . ' - ' . $v['name'];
 				$tname = $pname;
@@ -45,34 +117,63 @@ function nowfilling()
 				$newsname = $v['name'];
 			}
 
-			$mysql->query("insert into " . prefix . "_news (`postdate`,`author`,`author_id`,`title`,`content`,`alt_name`,`mainpage`,`approve`,`catid`,`tags`) values (
-					 now(),
-					'admin',
-					'1',
-					" . db_squote($newsname) . ",
-					" . db_squote($fish) . ",
-					" . db_squote($v['alt'] . '1') . ",
-					'0',
-					'1',
-					" . db_squote($v['id']) . ",
-					" . db_squote($v['name']) . "
-					)");
-			$id = intval($mysql->lastid('news'));
-			echo $id . ' - ' . $newsname . '<br>';
-			$mysql->query("insert into " . prefix . "_news_map (`newsID`,`categoryID`) values (
-					" . db_squote($id) . ",
-					" . db_squote($v['id']) . "
-					)");
-			$mysql->query("insert into " . prefix . "_tags (tag) values (" . db_squote($v['name']) . ") on duplicate key update posts = posts + 1");
-			$tagid = intval($mysql->lastid('tags'));
-			$mysql->query("insert into " . prefix . "_tags_index (newsID, tagID) values (" . db_squote($id) . "," . db_squote($tagid) . ")");
+			// Генерация случайного текста для новости
+			$fish = generate_random_text(4, 6);
 
+			// Начало транзакции
+			$mysql->query("START TRANSACTION");
 
+			try {
+				// Вставка новости в таблицу _news
+				$mysql->query("insert into " . prefix . "_news (
+                    `postdate`, `author`, `author_id`, `title`, `content`, `alt_name`, `mainpage`, `approve`, `catid`, `tags`
+                ) values (
+                    now(), 'admin', '1', " . db_squote($newsname) . ", " . db_squote($fish) . ", " . db_squote($v['alt'] . '1') . ", '0', '1', " . db_squote($v['id']) . ", " . db_squote($v['name']) . "
+                )");
+				$id = intval($mysql->lastid('news'));
 
+				// Связывание новости с категорией в таблице _news_map
+				$mysql->query("insert into " . prefix . "_news_map (`newsID`, `categoryID`) values (" . db_squote($id) . ", " . db_squote($v['id']) . ")");
 
+				// Обновление тегов в таблице _tags
+				$mysql->query("insert into " . prefix . "_tags (tag) values (" . db_squote($v['name']) . ") on duplicate key update posts = posts + 1");
+				$tagid = intval($mysql->lastid('tags'));
 
+				// Связывание новости с тегом в таблице _tags_index
+				$mysql->query("insert into " . prefix . "_tags_index (newsID, tagID) values (" . db_squote($id) . ", " . db_squote($tagid) . ")");
+
+				// Фиксация изменений
+				$mysql->query("COMMIT");
+
+				// Вывод информации о созданной новости
+				echo $id . ' - ' . $newsname . '<br>';
+			} catch (Exception $e) {
+				// Откат изменений в случае ошибки
+				$mysql->query("ROLLBACK");
+				echo "Ошибка при создании новости: " . $e->getMessage() . '<br>';
+			}
+
+			// Обновление переменных для следующей итерации
 			$prev = $v['id'];
 			$pname = $v['name'];
 		}
 	}
+}
+
+// Основной блок кода
+$cfg = array();
+array_push($cfg, array(
+	'descr' => '<input type="button" value ="Поехали!!!!" onmousedown="javascript:window.location.href=\'{admin_url}/admin.php?mod=extra-config&plugin=fish&action=run />'
+));
+
+if ($_REQUEST['action'] == 'commit') {
+	// Если действие "commit", выполняем nowfilling и выводим сообщение о завершении
+	nowfilling();
+	print_commit_complete($plugin);
+} elseif ($_REQUEST['action'] == 'run') {
+	// Если действие "run", выполняем nowfilling
+	nowfilling();
+} else {
+	// В остальных случаях генерируем страницу конфигурации плагина
+	generate_config_page($plugin, $cfg);
 }

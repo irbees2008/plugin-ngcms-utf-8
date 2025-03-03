@@ -8,7 +8,7 @@ if (!defined('NGCMS')) die ('HAL');
 //
 
 // Preload config file
-plugins_load_config();
+pluginsLoadConfig();
 
 
 // Fill configuration parameters
