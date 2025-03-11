@@ -12,7 +12,8 @@ LoadPluginLang('ireplace', 'main', '', '', ':');
 // Проверка прав доступа (функция должна быть определена в CMS)
 function is_admin()
 {
-	return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+	// Проверка для NGCMS (пример)
+	return isset($GLOBALS['userROW']['status']) && $GLOBALS['userROW']['status'] == 1;
 }
 
 // Функция для генерации случайного текста
@@ -125,11 +126,9 @@ function nowfilling()
 
 			try {
 				// Вставка новости в таблицу _news
-				$mysql->query("insert into " . prefix . "_news (
-                    `postdate`, `author`, `author_id`, `title`, `content`, `alt_name`, `mainpage`, `approve`, `catid`, `tags`
-                ) values (
-                    now(), 'admin', '1', " . db_squote($newsname) . ", " . db_squote($fish) . ", " . db_squote($v['alt'] . '1') . ", '0', '1', " . db_squote($v['id']) . ", " . db_squote($v['name']) . "
-                )");
+				$mysql->query("insert into " . prefix . "_news ( `postdate`, `author`, `author_id`, `title`, `content`, `alt_name`, `mainpage`, `approve`, `catid`, `tags`, `description`, `keywords`
+                ) values ( UNIX_TIMESTAMP(), 'admin', '1',  " . db_squote($newsname) . ",  " . db_squote($fish) . ",  " . db_squote($v['alt'] . '1') . ",  '0', '1',  " . db_squote($v['id']) . ",  " . db_squote($v['name']) . ",
+                 " . db_squote('') . ",  " . db_squote('') . " )");
 				$id = intval($mysql->lastid('news'));
 
 				// Связывание новости с категорией в таблице _news_map
@@ -163,7 +162,7 @@ function nowfilling()
 // Основной блок кода
 $cfg = array();
 array_push($cfg, array(
-	'descr' => '<input type="button" value ="Поехали!!!!" onmousedown="javascript:window.location.href=\'{admin_url}/admin.php?mod=extra-config&plugin=fish&action=run />'
+	'descr' => '<input type="button" class="btn btn-outline-success" value="жми меня - Поехали!!!!" onmousedown="window.location.href=\'{admin_url}/admin.php?mod=extra-config&plugin=fish&action=run\'">'
 ));
 
 if ($_REQUEST['action'] == 'commit') {

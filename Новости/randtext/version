@@ -4,11 +4,12 @@
 
 ID: randtext
 Name: Random Text
-Version: 0.1
+Version: 0.3
 Acts: index
 File: randtext.php
 Config: config.php
 Type: plugin
-Description: Вывод случайной фразы
+Description: Р’С‹РІРѕРґ СЃР»СѓС‡Р°Р№РЅРѕР№ С„СЂР°Р·С‹
 Author: Mazikk
-Author_URI: http://2z-project.ru/
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-random fa-3x" aria-hidden="true"></i>
