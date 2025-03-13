@@ -100,61 +100,43 @@ function nowfilling()
 		die('Access Denied');
 	}
 
-	$pname = ''; // Предыдущее название категории
-	$tname = ''; // Временное название категории
-	$prev = 0;   // ID предыдущей категории
-
-	// Проход по всем категориям
 	foreach ($catz as $k => $v) {
-		// Пропускаем категории с ID 1, 3 и 4
 		if ($v['id'] != 1 && $v['id'] != 3 && $v['id'] != 4) {
-			// Формируем название новости на основе уровня вложенности категории
-			if ($v['parent'] == $prev && $v['poslevel'] >= 2) {
-				$newsname = $pname . ' - ' . $v['name'];
-				$tname = $pname;
-			} elseif ($v['poslevel'] >= 2) {
-				$newsname = $tname . ' - ' . $v['name'];
-			} else {
-				$newsname = $v['name'];
-			}
-
-			// Генерация случайного текста для новости
+			$newsname = $v['name'];
+			$alt_name = strtolower(str_replace(' ', '-', $v['name'])) . '-' . time();
 			$fish = generate_random_text(4, 6);
 
-			// Начало транзакции
+			// Используем текущего пользователя как автора
+			$author = $GLOBALS['userROW']['name'];
+			$author_id = $GLOBALS['userROW']['id'];
+
 			$mysql->query("START TRANSACTION");
 
 			try {
-				// Вставка новости в таблицу _news
-				$mysql->query("insert into " . prefix . "_news ( `postdate`, `author`, `author_id`, `title`, `content`, `alt_name`, `mainpage`, `approve`, `catid`, `tags`, `description`, `keywords`
-                ) values ( UNIX_TIMESTAMP(), 'admin', '1',  " . db_squote($newsname) . ",  " . db_squote($fish) . ",  " . db_squote($v['alt'] . '1') . ",  '0', '1',  " . db_squote($v['id']) . ",  " . db_squote($v['name']) . ",
-                 " . db_squote('') . ",  " . db_squote('') . " )");
+				// Вставка новости
+				$mysql->query("INSERT INTO " . prefix . "_news (
+                    `postdate`, `author`, `author_id`, `title`, `content`, `alt_name`, `mainpage`, `approve`, `catid`, `tags`, `description`, `keywords`
+                ) VALUES (
+                    UNIX_TIMESTAMP(), " . db_squote($author) . ", " . db_squote($author_id) . ", " . db_squote($newsname) . ", " . db_squote($fish) . ", " . db_squote($alt_name) . ", '1', '1', " . db_squote($v['id']) . ", " . db_squote($v['name']) . ", '', ''
+                )");
 				$id = intval($mysql->lastid('news'));
 
-				// Связывание новости с категорией в таблице _news_map
-				$mysql->query("insert into " . prefix . "_news_map (`newsID`, `categoryID`) values (" . db_squote($id) . ", " . db_squote($v['id']) . ")");
+				// Связывание с категорией
+				$mysql->query("INSERT INTO " . prefix . "_news_map (`newsID`, `categoryID`) VALUES (" . db_squote($id) . ", " . db_squote($v['id']) . ")");
 
-				// Обновление тегов в таблице _tags
-				$mysql->query("insert into " . prefix . "_tags (tag) values (" . db_squote($v['name']) . ") on duplicate key update posts = posts + 1");
+				// Обновление тегов
+				$mysql->query("INSERT INTO " . prefix . "_tags (tag) VALUES (" . db_squote($v['name']) . ") ON DUPLICATE KEY UPDATE posts = posts + 1");
 				$tagid = intval($mysql->lastid('tags'));
 
-				// Связывание новости с тегом в таблице _tags_index
-				$mysql->query("insert into " . prefix . "_tags_index (newsID, tagID) values (" . db_squote($id) . ", " . db_squote($tagid) . ")");
+				$mysql->query("INSERT INTO " . prefix . "_tags_index (newsID, tagID) VALUES (" . db_squote($id) . ", " . db_squote($tagid) . ")");
 
-				// Фиксация изменений
 				$mysql->query("COMMIT");
 
-				// Вывод информации о созданной новости
 				echo $id . ' - ' . $newsname . '<br>';
 			} catch (Exception $e) {
-				// Откат изменений в случае ошибки
 				$mysql->query("ROLLBACK");
 				echo "Ошибка при создании новости: " . $e->getMessage() . '<br>';
 			}
-
-			// Обновление переменных для следующей итерации
-			$prev = $v['id'];
-			$pname = $v['name'];
 		}
 	}
 }
