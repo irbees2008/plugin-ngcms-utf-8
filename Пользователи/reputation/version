@@ -4,8 +4,8 @@
 
 ID: reputation
 Name: Users Reputation
-Version: 1.01
-Acts: ppages, action.ppages.uprofile, comments
+Version: 1.2
+Acts: ppages, action.ppages.uprofile, plugin.uprofile, plugin.comments, comments:show
 File: reputation.php
 Type: plugin
 Install: install.php

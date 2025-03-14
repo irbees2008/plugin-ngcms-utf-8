@@ -1,11 +1,11 @@
 <?php
 	// Protect against hack attempts
 	if (!defined('NGCMS')) die ('HAL');
+	
+	//
+	// Configuration file for plugin
+	//
 
-//
-// Configuration file for plugin
-//
-pluginsLoadConfig();
 	function plugin_reputation_install($action) {
 	global $lang;
 
@@ -41,7 +41,7 @@ pluginsLoadConfig();
 	// Apply requested action
 	switch ($action) {
 		case 'confirm':
-			generate_install_page('reputation', '”становить плагин –епутаци¤');
+			generate_install_page('reputation', 'Установить плагин Репутация');
 			break;
 		case 'autoapply':
 		case 'apply':
