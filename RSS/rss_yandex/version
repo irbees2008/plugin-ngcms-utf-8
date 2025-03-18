@@ -14,9 +14,8 @@ Description: Экспорт RSS потока для Яndex
 Description_EN: News export for Yandex
 Author: Vitaly A. Ponomarev
 Author_URI: http://ngcms.ru/
+Icon: <i class='fa fa-rss-square fa-2x'></i>
 Preinstall_vars: feed_title_format="site_title"; news_title="1"; news_count="30"; use_hide="1"
 Title: Экспорт RSS потока для Яndex
 Preinstall: default_no
 Information: Генерирует специальный RSS поток для поисковика Яndex
-MinEngineBuild: 3740369
-Icons: <i class="fa fa-rss fa-3x" aria-hidden="true"></i>
