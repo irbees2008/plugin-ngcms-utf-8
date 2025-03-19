@@ -3,13 +3,13 @@
 ;
 
 ID: content_parser
-Name: Создание тестовых данных
+Name: Парсер контента 
 Version: 0.01
 Acts: index, ppages
 File: content_parser.php
 Config: config.php
 Type: plugin
-Description: Создание тестовых данных
+Description: Парсер контента из rss каналов
 Author: irbees2008
 Author_URI: http://rostunov.com
 MinEngineBuild: 3740369
