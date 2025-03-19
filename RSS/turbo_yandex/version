@@ -22,3 +22,5 @@ Preinstall_vars: feed_title_format="site_title"; news_title="1"; news_count="30"
 Title: RSS поток для Yandex Turbo
 Preinstall: default_no
 Information: Генерирует специальный RSS поток для Yandex Turbo
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-rss fa-3x" aria-hidden="true"></i>
