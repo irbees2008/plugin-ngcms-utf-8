@@ -1,0 +1,16 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+ 
+ID: grab
+Name: grab
+Version: 0.2
+Config: config.php
+Type: plugin
+Description: grab
+Author: KachalkinGeorg
+Author_URI: 
+Icon: <i class='fa fa-code fa-2x'></i>
+Title: grab
+Information: grabgrabgrab
+Preinstall: no
