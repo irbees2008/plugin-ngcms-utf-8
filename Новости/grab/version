@@ -10,7 +10,8 @@ Type: plugin
 Description: grab
 Author: KachalkinGeorg
 Author_URI: 
-Icon: <i class='fa fa-code fa-2x'></i>
 Title: grab
 Information: grabgrabgrab
 Preinstall: no
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-globe fa-3x" aria-hidden="true"></i>

@@ -10,3 +10,5 @@ Type: maintanance
 Description: Наполнение рыбой
 Author: CyberMama
 Author_URI: http://ngcms.ru/
+MinEngineBuild: 3740369
+Icons: <i class="fa fa fa-clone fa-3x" aria-hidden="true"></i>

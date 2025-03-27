@@ -12,3 +12,5 @@ Type: plugin
 Description: Создание тестовых данных
 Author: Rostunov S U
 Author_URI: http://rostunov.com
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-free-code-camp fa-3x" aria-hidden="true"></i>
