@@ -4,7 +4,7 @@
 
 ID: reputation
 Name: Users Reputation
-Version: 1.2
+Version: 1.3
 Acts: ppages, action.ppages.uprofile, plugin.uprofile, plugin.comments, comments:show
 File: reputation.php
 Type: plugin
@@ -14,3 +14,5 @@ Config: config.php
 Description: Репутация пользователей
 Author: LinMas
 Author_URI: http://linmas.org.ua/
+MinEngineBuild: 3740369
+Icons: <i class="fa fa-address-card-o fa-3x" aria-hidden="true"></i>
