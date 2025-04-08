@@ -24,9 +24,9 @@ $path=home."/";
 
 $title = strlen($template['vars']['titles'])-(strlen($template['vars']['titles'])-strpos($template['vars']['titles'], ":"));
 $title=substr($template['vars']['titles'], $title+2);
-$title = iconv( "Windows-1251", "UTF-8", $title);
-$title = iconv( "UTF-8", "Windows-1251", $title);
-$title = iconv( "Windows-1251", "UTF-8", $title);
+$title =  $title;
+$title =  $title;
+$title =  $title;
 //preg_match_all( "|<meta name=\"description\" content=\"(.*)\" />|sUSi", $template['vars']['mainblock'], $description);
 
 $vkontakte="<NOINDEX><a href='http://vkontakte.ru/share.php?url=".$url."&title=".$title."&description=".$description."' target='_blank' rel='nofollow'><img src='".$path."engine/plugins/popular_services/tpl/img/vkontakte.gif'title='Поделиться ВКонтакте'></a></NOINDEX>";

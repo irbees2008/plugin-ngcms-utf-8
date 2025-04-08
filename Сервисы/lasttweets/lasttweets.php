@@ -72,7 +72,6 @@ function lasttweets(){
 		}
 	}
 			
-			
 	// Determine paths for all template files
 	$tpath = locatePluginTemplates(array('lasttweets', 'entries'), 'lasttweets', intval(pluginGetVariable('lasttweets', 'localsource')));
 	
@@ -99,7 +98,7 @@ function lasttweets(){
 		$tweetmessage = preg_replace("/(@[^\s]+)/", "<span class=\"tweet-url\">$1</span>", $tweetmessage);
 
 		$tvars['vars'] = array(
-			'tweet'		=> iconv("utf-8", "windows-1251", $tweetmessage)."\n",
+			'tweet'		=> $tweetmessage."\n",
 			'time' 		=> $GMT2,
 			'link'		=> $item_link
 		);

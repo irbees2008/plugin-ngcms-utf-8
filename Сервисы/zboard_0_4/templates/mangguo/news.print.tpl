@@ -1,6 +1,7 @@
 <html>
 <head>
-<meta content="text/html; charset=windows-1251" http-equiv=Content-Type>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
 <style>
 body,td { font-family: verdana, arial, sans-serif; color: #666; font-size: 80%; }
 h1,h2,h3,h4 { font-family: verdana, arial, sans-serif; color: #666; font-size: 100%; margin: 0px; }

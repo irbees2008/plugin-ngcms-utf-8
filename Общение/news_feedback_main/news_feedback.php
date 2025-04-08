@@ -107,10 +107,9 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql;
 					sendEmailMessage($row['mail'], $mailSubject, $mailBody, $filename = false, $mail_from = false, $ctype = 'text/html');
 				}
 
-
 				$results = array(
 				'feedback' => 100,
-				'feedback_text' => iconv('Windows-1251', 'UTF-8','Ваше сообщение отправленно')
+				'feedback_text' => 'Ваше сообщение отправленно'
 				);
 //				goto endFeedbackCheck;
 			}
@@ -119,7 +118,7 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql;
 			{
 				$results = array(
 				'feedback'	=> 2,
-				'feedback_text' => iconv( 'Windows-1251', 'UTF-8', implode('<br />', $error_text) )
+				'feedback_text' => implode('<br />', $error_text) 
 				);
 //				goto endFeedbackCheck;
 			}
@@ -159,7 +158,6 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $userROW, $mysql;
 			}
 
 		}
-
 
 	if (!is_array($params)) {
 		return array('status' => 0, 'errorCode' => 999, 'errorText' => 'Wrong params type');

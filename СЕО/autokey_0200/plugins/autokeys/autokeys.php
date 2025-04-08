@@ -12,10 +12,10 @@ if($userROW['status'] <=3)
 {
 if($_POST['q'])
 {
-header('Content-type: text/html; charset=windows-1251');
+header('Content-type: text/html; charset=utf-8');
 include_once("inc/class.php");
 if($_POST['q']=='') die('{"res":"error", "msg":"Нет данных!"}');
-		$params['content'] = iconv('UTF-8', 'windows-1251', $_POST['q']);
+		$params['content'] = $_POST['q'];
 		$params['min_word_length'] = (intval(extra_get_param('autokeys','length'))) ? intval(extra_get_param('autokeys','length')) : '5';// yes
 		$params['max_word_length'] = (intval(extra_get_param('autokeys','sub'))) ? intval(extra_get_param('autokeys','sub')) : '100';// yes
 		$params['min_word_occur'] = (intval(extra_get_param('autokeys','occur'))) ? intval(extra_get_param('autokeys','occur')) : '2';// yes

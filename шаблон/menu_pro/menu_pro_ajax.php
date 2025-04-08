@@ -20,9 +20,8 @@ function plugin_menu_pro_ajax_get_plugin($params){
 		return array('status' => 0, 'errorCode' => 3, 'errorText' => 'Access denied');
 	}
 
-	$searchName = iconv('UTF-8', 'Windows-1251', $params);
+	$searchName =  $params;
 	// Return a list of users
-
 
 	$plugin_list = get_extras_list();
 	$output = array();
@@ -38,7 +37,7 @@ function plugin_menu_pro_ajax_get_plugin($params){
 		{
 			$t_str = $val['name'];
 		}
-		$output[] = array(iconv('Windows-1251', 'UTF-8', $key), iconv('Windows-1251', 'UTF-8', $t_str));
+		$output[] = array( $key,  $t_str);
 	}
 
 	return array('status' => 1, 'errorCode' => 0, 'data' => array($params, $output));
@@ -57,8 +56,8 @@ function plugin_menu_pro_ajax_get_handler($params){
 	$rep_plugin = $params['rep_plugin'];
 	$rep_handler = $params['rep_handler'];
 
-	$s_rep_plugin = iconv('UTF-8', 'Windows-1251', $rep_plugin);
-	$s_rep_handler = iconv('UTF-8', 'Windows-1251', $rep_handler);
+	$s_rep_plugin =  $rep_plugin;
+	$s_rep_handler = $rep_handler;
 
 	$ULIB = new urlLibrary();
 	$ULIB->loadConfig();
@@ -77,7 +76,7 @@ function plugin_menu_pro_ajax_get_handler($params){
 					$t_str = substr($t_str, 0, 10).'...';
 				}
 			}
-			$output[] = array(iconv('Windows-1251', 'UTF-8', $key), iconv('Windows-1251', 'UTF-8', $t_str));
+			$output[] = array( $key,  $t_str);
 		}
 	}
 
@@ -94,7 +93,7 @@ function plugin_menu_pro_ajax_get_icon($params)
 		return array('status' => 0, 'errorCode' => 3, 'errorText' => 'Access denied');
 	}
 
-	$searchName = iconv('UTF-8', 'Windows-1251', $params);
+	$searchName =  $params;
 	// Return a list of users
 	
 	$dir = pluginGetVariable('menu_pro', 'locate_tpl')?extras_dir.'/menu_pro/tpl/icons/':tpl_site.'plugins/menu_pro/icons/';
@@ -105,7 +104,7 @@ function plugin_menu_pro_ajax_get_icon($params)
 			while (false !== ($file = readdir($handle))) { 
 				if ($file == "." || $file == "..")
 					continue;
-				$output[] = array(iconv('Windows-1251', 'UTF-8', $file));
+				$output[] = array( $file);
 			}
 			closedir($handle); 
 		}
@@ -123,7 +122,7 @@ function plugin_menu_pro_ajax_get_skin($params)
 		return array('status' => 0, 'errorCode' => 3, 'errorText' => 'Access denied');
 	}
 
-	$searchName = iconv('UTF-8', 'Windows-1251', $params);
+	$searchName =  $params;
 	// Return a list of users
 	
 	$dir = pluginGetVariable('menu_pro', 'locate_tpl')?extras_dir.'/menu_pro/tpl/skins/':tpl_site.'plugins/menu_pro/skins/';
@@ -134,7 +133,7 @@ function plugin_menu_pro_ajax_get_skin($params)
 			while (false !== ($file = readdir($handle))) { 
 				if ($file == "." || $file == ".." || !is_dir($dir.$file))
 					continue;
-				$output[] = array(iconv('Windows-1251', 'UTF-8', $file));
+				$output[] = array( $file);
 			}
 			closedir($handle); 
 		}

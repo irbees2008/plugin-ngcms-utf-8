@@ -91,7 +91,6 @@ class YMLCategory extends ImportConfig
                     }
                 }
 
-
             }
 
         }
@@ -117,7 +116,6 @@ class YMLCategory extends ImportConfig
         $_SESSION['cats'][$id]['UF_PARENT_ID'] = $uf_parent_id;
         $_SESSION['cats_uf_ids'][] = $uf_id;
     }
-
 
 }
 
@@ -343,7 +341,7 @@ class YMLOffer extends YMLCategory
 //            }
 
 //            foreach ($returnArr as $el) {
-//                $f_name = iconv('utf-8', 'windows-1251', $el['name']);
+//                $f_name =  $el['name'];
 //                $feature_row = $mysql->record(
 //                    "select * from ".prefix."_eshop_features where name = ".db_squote($f_name)." limit 1"
 //                );
@@ -355,7 +353,7 @@ class YMLOffer extends YMLCategory
 //                    $f_key = $feature_row['id'];
 //                }
 //
-//                $f_value = iconv('utf-8', 'windows-1251', $el['value']);
+//                $f_value =  $el['value'];
 //                if ($f_value != "") {
 //                    
 //                    $mysql->query(
@@ -397,7 +395,6 @@ class YMLOffer extends YMLCategory
         
 //        die();
 
-
     }
 
     /**
@@ -422,7 +419,6 @@ class YMLOffer extends YMLCategory
         foreach ($PROP as $k => $v) {
             $vnames[] = $k.' = '.db_squote($v);
         }
-        
         
         $qid = (int)$id;
         
@@ -457,7 +453,6 @@ class YMLOffer extends YMLCategory
 
          $mysql->query("DELETE FROM ".prefix."_eshop_options  WHERE `product_id` = '$qid'");
          
-   
         if ($offer->param){
 
             foreach ($offer->param as $el) {
@@ -484,10 +479,7 @@ class YMLOffer extends YMLCategory
             }
         }
 
-        
-        
 //        die();
-
 
     }
 
@@ -505,7 +497,6 @@ class ImportConfig
         }
     }
 
-
     public function translitIt($str)
     {
         $str = Translit::transliterate($str);
@@ -513,7 +504,6 @@ class ImportConfig
 
         return $str;
     }
-
 
     public function addToFiles($key, $url)
     {

@@ -306,7 +306,7 @@ function plugin_rss_quotes()
 
 	$SYSTEM_FLAGS['info']['title']['group'] = 'RSS из цитатника';
 
-	$output = '<?xml version="1.0" encoding="windows-1251"?>' . "\n";
+	$output = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
 $output .= '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"
     xmlns:wfw="http://wellformedweb.org/CommentAPI/">' . "\n";
     $output .= "<channel>\n";

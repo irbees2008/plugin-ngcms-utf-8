@@ -17,7 +17,6 @@ add_act('index', 'lasttopics');
 								}
 											}
 		
-
 		if ($rssurl = extra_get_param('lasttopics','rssurl')){
 		$rssurl = extra_get_param('lasttopics','rssurl');
 														}
@@ -25,21 +24,12 @@ add_act('index', 'lasttopics');
 		$rssurl = 'http://www.nulled.cc/external.php?type=RSS2';
 			}
 
-
-
-
 		$num = extra_get_param('lasttopics','number');
 		if (($num < 1) || ($num > 50)) {$num = 10;}
 		
 		$name_length  = extra_get_param('lasttopics','topicname');
 		if (($name_length < 10) || ($name_length > 100)) {$name_length = 30;}
 		
-
-
-
-
-
- 
 $rss = simplexml_load_file($rssurl);//Интерпретирует XML-файл в объект
  
 //цикл для обхода всей RSS ленты
@@ -48,13 +38,12 @@ foreach ($rss->channel->item as $item) {
 		$link = str_replace('&','&amp;',$item->link);
 
 		$title = strip_tags($item->title);//лишние теги
-		$title = iconv("UTF-8", "CP1251//IGNORE", $title);
+		$title =  $title;
 		
 		$description  = strip_tags($item->description);//лишние теги
 		$words = split(" ", $description);
 		if ( count($words)>$name_length ) $description = join(" ", array_slice($words, 0, $name_length));//оставляю кол-во слов исходя из настроек плагина
-		$description = iconv("UTF-8", "CP1251//IGNORE", $description);
-
+		$description =  $description;
 
 		$tvars['vars'] = array	(
 				'topic_link'	=>	$link,
@@ -62,7 +51,6 @@ foreach ($rss->channel->item as $item) {
 				'topic_data'	=>	$description
 
 								);
-
 
 			$tpl -> template('lasttopics', extras_dir."/lasttopics/tpl");
 			$tpl -> vars('lasttopics', $tvars);
@@ -72,13 +60,10 @@ foreach ($rss->channel->item as $item) {
 				cacheStoreFile($cacheFileName, $output, 'lasttopics');
 				}
 
-
 $i++;
 
 if ($i>=$num) break;
 
 		}
-
-
 
 }

@@ -73,7 +73,7 @@ function plugin_testmanager_showScreen($mode = 0, $errorText = '') {
       'type'    => $tInfo['type'],
     );
 
-    $FBF_DATA[$tName] = array($tInfo['type'], iconv('Windows-1251', 'UTF-8', $tInfo['title']));
+    $FBF_DATA[$tName] = array($tInfo['type'],  $tInfo['title']);
 
     // Fill value
     $setValue = '';
@@ -112,14 +112,13 @@ function plugin_testmanager_showScreen($mode = 0, $errorText = '') {
   // Prepare hidden fields
   $hF = '';
   foreach ($hiddenFields as $k => $v) {
-    $hF .= '<input type="hidden" name="'.$k.'" value="'.htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'cp1251').'"/>'."\n";
+    $hF .= '<input type="hidden" name="'.$k.'" value="'.htmlspecialchars($v, ENT_COMPAT | ENT_HTML401, 'utf8').'"/>'."\n";
   }
   $tVars['hidden_fields'] = $hF;
  
   $template['vars']['mainblock'] =  $xt->render($tVars);
 
 }
-
 
 // Show test result
 function plugin_testmanager_result() {

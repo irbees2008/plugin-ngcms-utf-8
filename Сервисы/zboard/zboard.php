@@ -137,7 +137,7 @@ function pay_zboard($params) {
                         $amount = $xml_vars->amount;
                         $currency = $xml_vars->currency;
                         $description = $xml_vars->description;
-                        $description = iconv("utf-8", "windows-1251", $description);
+                        $description =  $description;
                         $paymode = $xml_vars->paymode;
                         $trans_id = $xml_vars->trans_id;
                         $status = $xml_vars->status;
@@ -224,7 +224,7 @@ function pay_zboard($params) {
             $amount = $row['price']; // Сумма заказа
             $currency = 'RUB'; // Валюта заказа
             $desc = 'Оплата за VIP объявление, ID: '.$zid; // Описание заказа
-            $desc = iconv("windows-1251", "utf-8", $desc);
+            $desc =  $desc;
             $test_mode = pluginGetVariable('zboard', 'pay2pay_test_mode'); // Тестовый режим
             // Формируем xml
             $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>

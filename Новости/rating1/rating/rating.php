@@ -96,7 +96,7 @@ function rating_show($item, $itemID, $rating, $votes){
 function plugin_rating_screen(){
 	global $SUPRESS_TEMPLATE_SHOW, $template;
 
-	@header('Content-type: text/html; charset="windows-1251"');
+	@header('Content-type: text/html; charset="utf-8"');
 	if ($_REQUEST['item'] and $_REQUEST['itemID']) {
 		$template['vars']['mainblock'] = plugin_rating_update();
 		$SUPRESS_TEMPLATE_SHOW = 1;

@@ -79,8 +79,6 @@ global $CurrentHandler, $SYSTEM_FLAGS, $template, $lang;
             break;
     }
 
-
-
     $template['vars']['titles'] = trim($titles);
 }
 
@@ -99,7 +97,6 @@ function pay_zboard($params) {
     {
         redirect_zboard(link_zboard());
     }
-
 
     if(!empty($result))
     {
@@ -140,7 +137,7 @@ function pay_zboard($params) {
                         $amount = $xml_vars->amount;
                         $currency = $xml_vars->currency;
                         $description = $xml_vars->description;
-                        $description = iconv("utf-8", "windows-1251", $description);
+                        $description = $description;
                         $paymode = $xml_vars->paymode;
                         $trans_id = $xml_vars->trans_id;
                         $status = $xml_vars->status;
@@ -186,7 +183,6 @@ function pay_zboard($params) {
                             $error = 'Incorrect sign';
                         }
 
-
                     }
                     else {
                         $error = 'Unknown order_id';
@@ -228,7 +224,7 @@ function pay_zboard($params) {
             $amount = $row['price']; // РЎСѓРјРјР° Р·Р°РєР°Р·Р°
             $currency = 'RUB'; // Р’Р°Р»СЋС‚Р° Р·Р°РєР°Р·Р°
             $desc = 'РћРїР»Р°С‚Р° Р·Р° VIP РѕР±СЉСЏРІР»РµРЅРёРµ, ID: '.$zid; // РћРїРёСЃР°РЅРёРµ Р·Р°РєР°Р·Р°
-            $desc = iconv("windows-1251", "utf-8", $desc);
+            $desc =  $desc;
             $test_mode = pluginGetVariable('zboard', 'pay2pay_test_mode'); // РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј
             // Р¤РѕСЂРјРёСЂСѓРµРј xml
             $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -336,8 +332,6 @@ function vip_zboard($params)
 
 }
 
-
-
 function del_zboard($params)
 {global $userROW, $mysql;
     $id = isset($params['id'])?abs(intval($params['id'])):abs(intval($_REQUEST['id']));
@@ -414,7 +408,6 @@ function edit_zboard($params)
             $cats = getCats($res);
             $options = getTree($cats, $row['cat_id'], 0);
 
-
         if (isset($_REQUEST['submit']))
         {
             $SQL['editdate'] = time() + ($config['date_adjust'] * 60);
@@ -422,7 +415,6 @@ function edit_zboard($params)
             $SQL['announce_name'] = input_filter_com(convert($_REQUEST['announce_name']));
             if(empty($SQL['announce_name']))
                 $error_text[] = 'РќР°Р·РІР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїСѓСЃС‚РѕРµ';
-
 
             $SQL['author'] = input_filter_com(convert($_REQUEST['author']));
             if(empty($SQL['author']))
@@ -452,7 +444,6 @@ function edit_zboard($params)
             } else {
                 $error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
             }
-
 
             $SQL['announce_description'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_description'])));
             if(empty($SQL['announce_description']))
@@ -534,7 +525,6 @@ function edit_zboard($params)
             'error' => $error_input,
         );
 
-
     if (isset($_REQUEST['delimg']) && isset($_REQUEST['filepath']))
         {
         $imgID = intval($_REQUEST['delimg']);
@@ -562,7 +552,6 @@ function edit_zboard($params)
         redirect_zboard(link_zboard_list());
         }
 
-
         $template['vars']['mainblock'] .= $xt->render($tVars);
         $template['vars']['pages'] = '';
 
@@ -585,7 +574,6 @@ function edit_zboard($params)
     }
 
 }
-
 
 function expend_zboard($params)
 {global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, $CurrentHandler;
@@ -623,7 +611,6 @@ function expend_zboard($params)
             if(empty($SQL['announce_name']))
                 $error_text[] = 'РќР°Р·РІР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїСѓСЃС‚РѕРµ';
 
-
             $SQL['author'] = input_filter_com(convert($_REQUEST['author']));
             if(empty($SQL['author']))
                 $error_text[] = 'РџРѕР»Рµ Р°РІС‚РѕСЂ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
@@ -653,7 +640,6 @@ function expend_zboard($params)
                 $error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
             }
 
-
             $SQL['announce_description'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_description'])));
             if(empty($SQL['announce_description']))
             {
@@ -669,7 +655,6 @@ function expend_zboard($params)
             //$SQL['active'] = $_REQUEST['announce_activeme'];
             $SQL['active'] = 0;
             $SQL['expired'] = '';
-
 
             if(is_array($SQLi)){
                 $vnamess = array();
@@ -714,7 +699,6 @@ function expend_zboard($params)
 
         }
 
-
         $tVars = array(
             'entriesImg' => isset($entriesImg)?$entriesImg:'',
             'options' => $options,
@@ -730,7 +714,6 @@ function expend_zboard($params)
             'id' => intval($id),
             'error' => $error_input,
         );
-
 
     if (isset($_REQUEST['delimg']) && isset($_REQUEST['filepath']))
         {
@@ -759,7 +742,6 @@ function expend_zboard($params)
         redirect_zboard(link_zboard());
         }
 
-
             $template['vars']['mainblock'] .= $xt->render($tVars);
 
         } else {
@@ -771,7 +753,6 @@ function expend_zboard($params)
         }
 
 }
-
 
 function zboard_upload_files($files_del){
     $max_file_size = pluginGetVariable('zboard', 'max_file_size') * 1024 * 1024;
@@ -913,7 +894,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
     $SYSTEM_FLAGS['info']['title']['others'] = 'РЎРїРёСЃРѕРє РІР°С€РёС… РѕР±СЉСЏРІР»РµРЅРёР№';
     $SYSTEM_FLAGS['template.main.name'] = pluginGetVariable('zboard', 'main_template')?pluginGetVariable('zboard', 'main_template'):'main';
 
-
     $url = pluginGetVariable('zboard', 'url');
 
     switch($CurrentHandler['handlerParams']['value']['pluginName'])
@@ -1011,7 +991,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
 
         }
 
-
         if ($limitStart)
         {
             $prev = floor($limitStart / $limitCount);
@@ -1034,7 +1013,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         } else {
             $gvars['regx']["'\[next-link\](.*?)\[/next-link\]'si"] = "";
         }
-
 
         $tVars = array(
         'entries' => isset($tEntry)?$tEntry:'',
@@ -1126,7 +1104,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         $cat_id = '';
     }
 
-
     $sorting = $cat_id;
 
     $url = pluginGetVariable('zboard', 'url');
@@ -1164,7 +1141,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         $catt[$rows['cat_id']] .= $rows['num'];
     }
     */
-
 
     foreach ($mysql->select('SELECT * FROM '.prefix.'_zboard_cat ORDER BY position ASC') as $cat_row)
     {
@@ -1226,12 +1202,10 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
     if($count == 0)
         return msg(array("type" => "error", "text" => "Р’ РґР°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё РїРѕРєР° С‡С‚Рѕ РЅРµС‚Сѓ РѕР±СЉСЏРІР»РµРЅРёР№"));
 
-
     $countPages = ceil($count / $limitCount);
 
     if($countPages < $pageNo)
         return msg(array("type" => "error", "text" => "РџРѕРґСЃС‚СЂР°РЅРёС†С‹ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"));
-
 
     if ($countPages > 1 && $countPages >= $pageNo)
     {
@@ -1272,7 +1246,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         }
         $pvars['vars']['entriesImg'] = $entriesImg;
         */
-
 
         //var_dump($row);
         $entries[] = array (
@@ -1325,7 +1298,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         } else {
             $gvars['regx']["'\[next-link\](.*?)\[/next-link\]'si"] = "";
         }
-
 
         $tVars = array(
             'info' =>	isset($info)?$info:'',
@@ -1491,7 +1463,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
                 generateLink('zboard', '', array('cat' => $row_two['bid'])):
                 generateLink('core', 'plugin', array('plugin' => 'zboard'), array('cat' => $row_two['bid']));
 
-
             $tEntry[] = array (
                 'aid'					=>	$row_two['aid'],
                 'bid'					=>	$row_two['bid'],
@@ -1576,7 +1547,6 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
 
 }
 
-
 function show_zboard($params)
 {
 global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $CurrentHandler, $lang;
@@ -1610,9 +1580,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
     $tpath = locatePluginTemplates(array('show_zboard'), 'zboard', pluginGetVariable('zboard', 'localsource'), pluginGetVariable('zboard','localskin'));
     $xt = $twig->loadTemplate($tpath['show_zboard'].'show_zboard.tpl');
 
-
     $row = $mysql->record('SELECT *, c.id as cid, n.id as nid FROM '.prefix.'_zboard n LEFT OUTER JOIN '.prefix.'_zboard_cat c ON n.cat_id = c.id  WHERE '.$sql.' ORDER BY date DESC LIMIT 1');
-
 
         foreach ($mysql->select('select * from '.prefix.'_zboard_images where zid='.$row['nid'].' ') as $row2)
         {
@@ -1723,7 +1691,6 @@ function getCats($res){
     return $tree;
 }
 
-
 function getTree($arr, $flg, $l){
     $flg;
     $out = '';
@@ -1740,7 +1707,6 @@ function getTree($arr, $flg, $l){
     }
     return $out;
 }
-
 
 function send_zboard()
 {
@@ -1800,7 +1766,6 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
             $res = mysql_query("SELECT * FROM ".prefix."_zboard_cat ORDER BY id");
             $cats = getCats($res);
             $options = getTree($cats, $row['cat_id'], 0);
-
 
         $error_text = array();
 
@@ -2124,8 +2089,6 @@ function zboard_bbcode_p($text, $replace = true)
         $text = str_ireplace($bb_close, $tag_close, $text);
         $text = str_ireplace($smile_open, $smile_close, $text);
 
-
-
         $text = str_replace("\t", "    ", $text);
         $text = str_replace('  ', '&nbsp;&nbsp;', $text);
         $text = nl2br($text);
@@ -2368,7 +2331,6 @@ class Lingua_Stem_Ru
             }
 
             $this->s($RV, '/Рё$/', '');
-
 
             if($this->m($RV, $this->DERIVATIONAL))
             {

@@ -31,7 +31,6 @@ class videoThumb {
 		return @$array[$msg];
 	}
 
-
 	/*
 	 * Check and format video link, then fire download of preview image
 	 * @param string $video Remote url on video hosting
@@ -47,7 +46,7 @@ class videoThumb {
 		
 		if(is_file($_SERVER['DOCUMENT_ROOT'] . $vt_img)) { @unlink($_SERVER['DOCUMENT_ROOT'] . $vt_img);		}
 		
-		$translated_title = $this->translit(trim(iconv("utf-8", "windows-1251", $title)));
+		$translated_title = $this->translit(trim( $title));
 
 		// YouTube
 		if (preg_match('/[http|https]+:\/\/(?:www\.|)youtube\.com\/watch\?(?:.*)?v=([a-zA-Z0-9_\-]+)/i', $video, $matches) || preg_match('/[http|https]+:\/\/(?:www\.|)youtube\.com\/embed\/([a-zA-Z0-9_\-]+)/i', $video, $matches) || preg_match('/[http|https]+:\/\/(?:www\.|)youtu\.be\/([a-zA-Z0-9_\-]+)/i', $video, $matches)) {

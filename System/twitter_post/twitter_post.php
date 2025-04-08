@@ -3,8 +3,6 @@
 // Protect against hack attempts
 if (!defined('NGCMS')) die ('HAL');
 
-
-
 function add_js_to_header(){
     global $mod, $skin_header;
     if($mod!='news') return;
@@ -96,7 +94,6 @@ class MessegingTwitterFilter extends NewsFilter {
                     }
                     * */
                     
-                    
                 }
                 else {
                     break;
@@ -115,7 +112,6 @@ class MessegingTwitterFilter extends NewsFilter {
         
         //var_dump($media_ids);
         
-        
         /** URL for REST request, see: https://dev.twitter.com/docs/api/1.1/ **/
         $url = 'https://api.twitter.com/1.1/statuses/update.json';
         $requestMethod = 'POST';
@@ -125,9 +121,8 @@ class MessegingTwitterFilter extends NewsFilter {
             $link_to_news = newsGenerateLink($SQL, false, 0, true);
             $twitterContent = str_replace(array('{news_content}', '{link_to_news}', '{news_title}'), array($_REQUEST['ng_news_content'], $link_to_news, $_REQUEST['title']), $_REQUEST['twitter_post_textarea']);
             
-            
             /** POST fields required by the URL above. See relevant docs as above **/
-            $postfields['status'] = iconv("windows-1251", "UTF-8", $twitterContent);
+            $postfields['status'] =  $twitterContent;
             if($media_ids != "") {
                 $postfields['media_ids'] = $media_ids;
             }

@@ -18,7 +18,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 	$cacheKeys = array();
 	$cacheDisabled = false;
 
-
 	if (isset($cat) && !empty($cat)) {
 		$cat_id = ' and n.cat_id IN ( ' . $cat . ' ) ';
 	} else {
@@ -43,7 +42,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 	}
 	$sorting_expired = $expired_f;
 
-
 	switch ($mode) {
 		case 'view':
 			$sql = 'SELECT *, c.id as cid, n.id as nid FROM ' . prefix . '_events n LEFT JOIN ' . prefix . '_events_cat c ON n.cat_id = c.id LEFT JOIN ' . prefix . '_events_images i ON n.id = i.zid WHERE n.active = \'1\' ' . $sorting . ' ' . $sorting_user . ' ' . $sorting_expired . ' GROUP BY n.id ORDER BY n.views DESC';
@@ -66,7 +64,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 	}
 	$sql .= " limit " . $number;
 
-
 	if ($overrideTemplateName) {
 		$templateName = 'block/' . $overrideTemplateName;
 	} else {
@@ -75,7 +72,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 
 	// Determine paths for all template files
 	$tpath = locatePluginTemplates(array($templateName), 'events', pluginGetVariable('events', 'localsource'));
-
 
 	// Preload template configuration variables
 	@templateLoadVariables();
@@ -95,7 +91,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 			return $cacheData;
 		}
 	}
-
 
 	foreach ($mysql->select($sql) as $row) {
 
@@ -140,8 +135,6 @@ function plugin_block_events($number, $mode, $cat, $toU, $pagination, $expired, 
 		);
 		//var_dump($row);
 	}
-
-
 
 	if (isset($pagination) && !empty($pagination)) {
 		//$get_total_rows = $mysql->select($sql_count);
@@ -206,10 +199,8 @@ function plugin_m_events_send()
 
 	$output = $xt->render($tVars);
 
-
 	return $output;
 }
-
 
 function plugin_m_events_archive()
 {
@@ -218,15 +209,12 @@ function plugin_m_events_archive()
 	$tpath = locatePluginTemplates(array('archive_main'), 'events', pluginGetVariable('events', 'localsource'));
 	$xt = $twig->loadTemplate($tpath['archive_main'] . 'archive_main.tpl');
 
-
 	$tVars = array();
 
 	$output = $xt->render($tVars);
 
-
 	return $output;
 }
-
 
 function plugin_m_events_filter()
 {
@@ -262,7 +250,6 @@ function plugin_m_events_filter()
 	);
 
 	$output = $xt->render($tVars);
-
 
 	return $output;
 }
@@ -322,7 +309,6 @@ function events_arch_me($params)
 			$avatar = $noAvatarURL;
 		}
 
-
 		$tEntry[] = array(
 			'id' => $row['id'],
 			'date' => $row['edate'],
@@ -344,7 +330,6 @@ function events_arch_me($params)
 		);
 	}
 
-
 	$tpath = locatePluginTemplates(array('list_result_archive'), 'events', 1);
 	$xt = $twig->loadTemplate($tpath['list_result_archive'] . 'list_result_archive.tpl');
 
@@ -357,20 +342,17 @@ function events_arch_me($params)
 
 	);
 
-
 	if (empty($row)) {
 		$results = array(
 			'event_archive' => 2,
-			'event_archive_text' => iconv('Windows-1251', 'UTF-8', 'Нет событий подходящих под фильтр!')
+			'event_archive_text' => 'Нет событий подходящих под фильтр!'
 		);
 	} else {
 		$results = array(
 			'event_archive'	=> 100,
-			'event_archive_text' => iconv('Windows-1251', 'UTF-8', $xt->render($tVars))
+			'event_archive_text' => $xt->render($tVars)
 		);
 	}
-
-
 
 	return array('status' => 1, 'errorCode' => 0, 'data' => $results);
 }
@@ -472,7 +454,6 @@ function events_flt_me($params)
 		);
 	}
 
-
 	$tpath = locatePluginTemplates(array('list_result_filter'), 'events', 1);
 	$xt = $twig->loadTemplate($tpath['list_result_filter'] . 'list_result_filter.tpl');
 
@@ -488,24 +469,20 @@ function events_flt_me($params)
 
 	);
 
-
 	if (empty($row)) {
 		$results = array(
 			'event_filter' => 2,
-			'event_filter_text' => iconv('Windows-1251', 'UTF-8', 'Нет событий подходящих под фильтр!')
+			'event_filter_text' => 'Нет событий подходящих под фильтр!'
 		);
 	} else {
 		$results = array(
 			'event_filter'	=> 100,
-			'event_filter_text' => iconv('Windows-1251', 'UTF-8', $xt->render($tVars))
+			'event_filter_text' => $xt->render($tVars)
 		);
 	}
 
-
-
 	return array('status' => 1, 'errorCode' => 0, 'data' => $results);
 }
-
 
 function ruDecline($n, $var1, $var2, $var3)
 {
@@ -599,7 +576,6 @@ function generateLP($param)
 		$pages .= generateNavi($param['current'], 1, $param['count'], $param['url'], $nav);
 	}
 
-
 	$tvars['vars']['pages'] = $pages;
 	if ($prev + 2 <= $param['count']) {
 		$next = $prev + 2;
@@ -627,7 +603,6 @@ function generateNavi($current, $start, $stop, $link, $navigations)
 	}
 	return $result;
 }
-
 
 function events_snd_me($params)
 {
@@ -684,7 +659,6 @@ function events_snd_me($params)
 		$error_text[] = "Вы не заполнили описание мероприятия!";
 	}
 
-
 	if (empty($error_text)) {
 
 		$timestamp = strtotime($announce_datepicker . " " . $announce_timepicker);
@@ -707,17 +681,16 @@ function events_snd_me($params)
 
 		$results = array(
 			'event_send' => 100,
-			'event_send_text' => iconv('Windows-1251', 'UTF-8', 'Ваше сообщение отправленно!')
+			'event_send_text' => 'Ваше сообщение отправленно!'
 		);
 	}
 
 	if (!empty($error_text)) {
 		$results = array(
 			'event_send'	=> 2,
-			'event_send_text' => iconv('Windows-1251', 'UTF-8', implode('<br />', $error_text))
+			'event_send_text' =>  implode('<br />', $error_text)
 		);
 	}
-
 
 	return array('status' => 1, 'errorCode' => 0, 'data' => $results);
 }
@@ -748,13 +721,11 @@ function plugin_m_events_catz_tree()
 function plugin_block_events_showTwig($params)
 {
 
-
 	return plugin_block_events($params['number'], $params['mode'], $params['cat'], $params['toU'], $params['pagination'], $params['expired'], $params['template'], isset($params['cacheExpire']) ? $params['cacheExpire'] : 0);
 }
 
 function plugin_m_events_showTwig($params)
 {
-
 
 	return plugin_m_events();
 }
@@ -762,13 +733,11 @@ function plugin_m_events_showTwig($params)
 function plugin_m_events_catz_tree_showTwig($params)
 {
 
-
 	return plugin_m_events_catz_tree();
 }
 
 function plugin_block_events_sendTwig($params)
 {
-
 
 	return plugin_m_events_send();
 }
@@ -776,17 +745,14 @@ function plugin_block_events_sendTwig($params)
 function plugin_block_events_filterTwig($params)
 {
 
-
 	return plugin_m_events_filter();
 }
 
 function plugin_block_events_archiveTwig($params)
 {
 
-
 	return plugin_m_events_archive();
 }
-
 
 twigRegisterFunction('events', 'show', plugin_block_events_showTwig);
 twigRegisterFunction('events', 'show_entries_cnt', plugin_m_events_showTwig);

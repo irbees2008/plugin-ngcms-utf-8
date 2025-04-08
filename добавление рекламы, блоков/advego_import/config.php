@@ -8,11 +8,10 @@ $url_atom = extra_get_param('advego_import', 'url_atom');
 $feed = new SimplePie();
 $feed->set_feed_url($url_atom);
 $feed->init();
-$feed->set_output_encoding('Windows-1251');
+$feed->set_output_encoding('utf-8');
 $feed->handle_content_type();
 
 ?>
-
 
 <form action="" method="post">
 	<?php
@@ -39,10 +38,8 @@ $feed->handle_content_type();
 				$mainpage = 1;
 				$approve = 0;
 
-
 				$SQL['content'] = str_replace("\r\n", "\n", $content);
 				$SQL['title'] = $title;
-
 
 				$alt_name = strtolower($parse->translit(trim($title), 1));
 
@@ -65,7 +62,6 @@ $feed->handle_content_type();
 				$SQL['mainpage'] = $mainpage;
 				$SQL['approve'] = $approve;
 
-
 				if (empty($error_text)) {
 					$vnames = array();
 					$vparams = array();
@@ -75,7 +71,6 @@ $feed->handle_content_type();
 					}
 					$mysql->query("insert into " . prefix . "_news (" . implode(",", $vnames) . ") values (" . implode(",", $vparams) . ")");
 				}
-
 
 				echo "<META HTTP-EQUIV='Refresh' Content='0'>";
 			}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="utf-8"?>
 <yml_catalog date="{{ 'now'|date("Y-m-d H:i") }}">
     <shop>
         <name>{{ system_flags.info.title.header }}</name>

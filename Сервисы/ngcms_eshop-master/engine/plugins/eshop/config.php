@@ -401,7 +401,6 @@ function add_product()
                 }
             }
 
-
             if ($features != null) {
                 foreach ($features as $f_key => $f_value) {
                     if ($f_value != '') {
@@ -525,7 +524,7 @@ function edit_product()
         $frow['value'] = $options_array[$frow['id']];
         $frow['foptions'] = json_decode($frow['foptions'], true);
         foreach ($frow['foptions'] as $key => $value) {
-            $frow['foptions'][$key] = iconv("utf-8", "windows-1251", $value);
+            $frow['foptions'][$key] = $value;
         }
         $features_array[] = $frow;
     }
@@ -595,11 +594,11 @@ function edit_product()
             array_push(
                 $sOpts,
                 '<tr>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][0]" value="'.htmlspecialchars($v['sku'],ENT_COMPAT | ENT_HTML401,'cp1251').'"/></td>
-                <td><input type="text" size="45" name="so_data['.($fNum).'][1]" value="'.htmlspecialchars($v['name'],ENT_COMPAT | ENT_HTML401,'cp1251').'"/></td>
+                <td><input type="text" size="12" name="so_data['.($fNum).'][0]" value="'.htmlspecialchars($v['sku'],ENT_COMPAT | ENT_HTML401,'utf8').'"/></td>
+                <td><input type="text" size="45" name="so_data['.($fNum).'][1]" value="'.htmlspecialchars($v['name'],ENT_COMPAT | ENT_HTML401,'utf8').'"/></td>
                 <td><input type="text" size="12" name="so_data['.($fNum).'][2]" value="'.$v['price'].'"/></td>
                 <td><input type="text" size="12" name="so_data['.($fNum).'][3]" value="'.$v['compare_price'].'"/></td>
-                <td><input type="text" size="12" name="so_data['.($fNum).'][4]" value="'.htmlspecialchars($v['amount'],ENT_COMPAT | ENT_HTML401,'cp1251').'"/></td>
+                <td><input type="text" size="12" name="so_data['.($fNum).'][4]" value="'.htmlspecialchars($v['amount'],ENT_COMPAT | ENT_HTML401,'utf8').'"/></td>
                 <td>
                     <select name="so_data['.($fNum).'][5]" style="width: 100px;">
                         <option '.$check_stock_array[5].' value="5">Есть</option>
@@ -789,7 +788,7 @@ function edit_product()
     }
 
     foreach ($mysql->select("SELECT * FROM ".prefix."_eshop_categories_features") as $cfrow) {
-        $cat_features_array[$cfrow['category_id']][] = iconv("windows-1251", "utf-8", $cfrow['feature_id']);
+        $cat_features_array[$cfrow['category_id']][] = $cfrow['feature_id'];
     }
 
     $tEntry['cat_features'] = json_encode($cat_features_array);
@@ -806,7 +805,6 @@ function edit_product()
         generateLink('eshop', 'show', array('alt' => $row['url'])) :
         generateLink('core', 'plugin', array('plugin' => 'eshop', 'handler' => 'show'), array('alt' => $row['url']));
     $prd_link = home.$view_link;
-
 
     $xt = $twig->loadTemplate($tpath['config/add_product'].'config/'.'add_product.tpl');
 
@@ -1000,7 +998,6 @@ function getChildIdsArray($arr, $flg)
             }
             */
         }
-
 
     }
 
@@ -1332,7 +1329,6 @@ function edit_cat()
 
     $cats = getCats2();
 
-
     $tEntry = array(
         'cat_name' => $row['name'],
         'description' => $row['description'],
@@ -1394,7 +1390,6 @@ function del_cat()
     } else {
         msg(array("type" => "info", "info" => "Категория не может быть удалена, т.к. в ней есть продукция"));
     }
-
 
 }
 
@@ -1595,7 +1590,6 @@ function get_prefix($CategoryID)
     return $add_prefix;
 }
 
-
 function list_feature()
 {
     global $mysql, $twig;
@@ -1612,7 +1606,7 @@ function list_feature()
         $row['del_link'] = "?mod=extra-config&plugin=eshop&action=del_feature&id=".$row['id'];
         $row['foptions'] = json_decode($row['foptions'], true);
         foreach ($row['foptions'] as $key => $value) {
-            $row['foptions'][$key] = iconv("utf-8", "windows-1251", $value);
+            $row['foptions'][$key] = $value;
         }
         $tEntry[] = $row;
     }
@@ -1679,9 +1673,9 @@ function add_feature()
                     foreach ($_REQUEST['so_data'] as $k => $v) {
                         if (is_array($v) && isset($v[0]) && isset($v[1]) && (($v[0] != '') || ($v[1] != ''))) {
                             if ($v[0] != '') {
-                                $optlist[$v[0]] = iconv("windows-1251", "utf-8", $v[1]);
+                                $optlist[$v[0]] =  $v[1];
                             } else {
-                                $optlist[] = iconv("windows-1251", "utf-8", $v[1]);
+                                $optlist[] = $v[1];
                             }
                         }
                     }
@@ -1799,9 +1793,9 @@ function edit_feature()
                     foreach ($_REQUEST['so_data'] as $k => $v) {
                         if (is_array($v) && isset($v[0]) && isset($v[1]) && (($v[0] != '') || ($v[1] != ''))) {
                             if ($v[0] != '') {
-                                $optlist[$v[0]] = iconv("windows-1251", "utf-8", $v[1]);
+                                $optlist[$v[0]] =  $v[1];
                             } else {
-                                $optlist[] = iconv("windows-1251", "utf-8", $v[1]);
+                                $optlist[] = , $v[1];
                             }
                         }
                     }
@@ -1867,7 +1861,7 @@ function edit_feature()
     if ($tEntry['ftype'] == '2') {
         if (is_array($tEntry['foptions'])) {
             foreach ($tEntry['foptions'] as $k => $v) {
-                array_push($sOpts,'<tr><td><input size="12" name="so_data['.($fNum).'][0]" type="text" value="'.($tEntry['foptions'] ? htmlspecialchars($k, ENT_COMPAT | ENT_HTML401, 'cp1251') : '').'"/></td><td><input type="text" size="55" name="so_data['.($fNum).'][1]" value="'.iconv("utf-8","windows-1251",$v).'"/></td><td><a href="#" onclick="return false;"><img src="'.admin_url.'/plugins/eshop/tpl/img/delete.png" alt="DEL" width="12" height="12" /></a></td></tr>');
+                array_push($sOpts,'<tr><td><input size="12" name="so_data['.($fNum).'][0]" type="text" value="'.($tEntry['foptions'] ? htmlspecialchars($k, ENT_COMPAT | ENT_HTML401, 'utf8') : '').'"/></td><td><input type="text" size="55" name="so_data['.($fNum).'][1]" value="'. $v .'"/></td><td><a href="#" onclick="return false;"><img src="'.admin_url.'/plugins/eshop/tpl/img/delete.png" alt="DEL" width="12" height="12" /></a></td></tr>');
                 $fNum++;
             }
         }
@@ -1950,7 +1944,6 @@ function modify_feature()
 
     generate_features_cache(true);
 }
-
 
 function list_order()
 {
@@ -2139,7 +2132,7 @@ function edit_order()
     foreach ($mysql->select("SELECT * FROM ".prefix."_eshop_purchases WHERE ".join(" or ", $filter), 1) as $prow) {
         $prow['info'] = json_decode($prow['info'], true);
         foreach ($prow['info'] as $k_info => $v_info) {
-            $prow['info_string'] .= $k_info." => ".iconv("utf-8", "windows-1251", $v_info)."<br/>";
+            $prow['info_string'] .= $k_info." => ". $v_info ."<br/>";
         }
         $purchases [] = $prow;
     }
@@ -2377,7 +2370,6 @@ function modify_comment()
 
 }
 
-
 function add_currency()
 {
     global $mysql, $twig;
@@ -2445,7 +2437,6 @@ function add_currency()
     $tVars = array(
         'entries' => isset($tEntry) ? $tEntry : '',
     );
-
 
     $xg = $twig->loadTemplate($tpath['config/main'].'config/'.'main.tpl');
 
@@ -2662,7 +2653,6 @@ function add_payment_type()
         'entries' => isset($tEntry) ? $tEntry : '',
     );
 
-
     $xg = $twig->loadTemplate($tpath['config/main'].'config/'.'main.tpl');
 
     $tVars = array(
@@ -2858,7 +2848,6 @@ function add_delivery_type()
     $tVars = array(
         'entries' => isset($tEntry) ? $tEntry : '',
     );
-
 
     $xg = $twig->loadTemplate($tpath['config/main'].'config/'.'main.tpl');
 
@@ -3084,7 +3073,6 @@ function add_api()
         'entries' => isset($tEntry) ? $tEntry : '',
     );
 
-
     $xg = $twig->loadTemplate($tpath['config/main'].'config/'.'main.tpl');
 
     $tVars = array(
@@ -3282,7 +3270,6 @@ function urls()
 
 }
 
-
 function automation()
 {
     global $mysql, $twig, $SUPRESS_TEMPLATE_SHOW, $SUPRESS_MAINBLOCK_SHOW;
@@ -3395,7 +3382,7 @@ function automation()
                 $frow['value'] = $options_array[$frow['id']];
                 $frow['foptions'] = json_decode($frow['foptions'], true);
                 foreach ($frow['foptions'] as $key => $value) {
-                    $frow['foptions'][$key] = iconv("utf-8", "windows-1251", $value);
+                    $frow['foptions'][$key] =  $value;
                 }
                 $features_array["xfields_".$frow['name']] = $frow['value'];
                 $xf_name_id[$frow['name']] = $frow['id'];
@@ -3751,7 +3738,6 @@ function automation()
     print $xg->render($tVars);
 
 }
-
 
 function import_upload_images($qid)
 {

@@ -241,7 +241,7 @@ function plugin_finsmscoin() {
 		$params['s_sign'] = md5($params['s_purse'] . '::' . $params['s_order_id'] . '::' . $params['s_amount'] . '::' . $params['s_clear_amount'] . '::' . $params['s_description'] . '::' . pluginGetVariable('fin_smscoin', 'secret_key'));
 		$inputs = '';
 		foreach ($params as $k => $v) {
-			$inputs .= '<input type="hidden" name="' . $k . '" value="' . htmlspecialchars($v, null, 'cp1251') . '"/>' . "\n";
+			$inputs .= '<input type="hidden" name="' . $k . '" value="' . htmlspecialchars($v, null, 'utf8') . '"/>' . "\n";
 		}
 		$tvars = array('vars' => array('form_url' => pluginGetVariable('fin_smscoin', 'post_url'), 'inputs' => $inputs));
 		$tpl->template('redirect', extras_dir . '/fin_smscoin/tpl');

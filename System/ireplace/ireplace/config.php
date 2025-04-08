@@ -59,7 +59,7 @@ if ('commit' == $_REQUEST['action']) {
             break;
 
         case 'news_xfields':
-            $mysql->query("SET NAMES 'cp1251'");
+            $mysql->query("SET NAMES 'utf-8'");
             // 1 Select.
             if ($xrows = $mysql->select("SELECT id, xfields FROM " . prefix . "_news")) {
                 foreach ($xrows as $xrow) {
