@@ -22,7 +22,9 @@ function plugin_complain_screen() {
 	global $template, $tpl, $lang, $mysql, $userROW;
 	global $SUPRESS_TEMPLATE_SHOW;
 	loadPluginLang('complain', 'main', '', '', ':');
-	$SUPRESS_TEMPLATE_SHOW = 1;
+	
+	$SUPRESS_TEMPLATE_SHOW = pluginGetVariable('complain', 'extform') ? 1 : pluginGetVariable('complain', 'extform');
+	
 	// Determine paths for all template files
 	$tpath = locatePluginTemplates(array('list.entry', 'list.header', 'infoblock'), 'complain', pluginGetVariable('complain', 'localsource'));
 	// No access for unregistered users
@@ -70,7 +72,7 @@ function plugin_complain_screen() {
 			'status'         => $lang['complain:status.' . $crow['status']],
 		);
 		if ($crow['error_text'])
-			$etext[$crow['id']] = iconv('Windows-1251', 'UTF-8', $crow['error_text']);
+			$etext[$crow['id']] = $crow['error_text'];
 		// Check if user have enough permissions to make any changes in this report
 		if (($userROW['status'] == 1) ||
 			(in_array($userROW['name'], $admins)) ||
@@ -86,10 +88,12 @@ function plugin_complain_screen() {
 		$tpl->vars('list.entry', $tvars);
 		$entries .= $tpl->show('list.entry');
 	}
+	
 	$sselect = '';
 	for ($i = 2; $i < 5; $i++) $sselect .= '<option value="' . $i . '">' . $lang['complain:status.' . $i] . '</option>';
 	$tpl->template('list.header', $tpath['list.header']);
 	$tvars = array();
+	$tvars['regx']['#\[extform\](.*?)\[\/extform\]#is'] = $SUPRESS_TEMPLATE_SHOW ? '$1' : '';	
 	$tvars['vars'] = array('entries' => $entries, 'status_options' => $sselect, 'form_url' => generateLink('core', 'plugin', array('plugin' => 'complain', 'handler' => 'update')), 'ETEXT' => json_encode($etext));
 	$tpl->vars('list.header', $tvars);
 	$template['vars']['mainblock'] = $tpl->show('list.header');
@@ -115,7 +119,7 @@ function plugin_complain_add() {
 	$err = '';
 	foreach (explode("\n", pluginGetVariable('complain', 'errlist')) as $erow) {
 		if (preg_match('#^(\d+)\|(.+?)$#', trim($erow), $m)) {
-			$err .= '<option value="' . $m[1] . '">' . htmlspecialchars($m[2], ENT_COMPAT | ENT_HTML401, 'cp1251') . '</option>' . "\n";
+			$err .= '<option value="' . $m[1] . '">' . htmlspecialchars($m[2], ENT_COMPAT | ENT_HTML401, 'utf-8') . '</option>' . "\n";
 		}
 	}
 	$txvars = array();
@@ -356,7 +360,7 @@ class ComplainNewsFilter extends NewsFilter {
 		$err = '';
 		foreach (explode("\n", pluginGetVariable('complain', 'errlist')) as $erow) {
 			if (preg_match('#^(\d+)\|(.+?)$#', trim($erow), $m)) {
-				$err .= '<option value="' . $m[1] . '">' . htmlspecialchars($m[2], ENT_COMPAT | ENT_HTML401, 'cp1251') . '</option>' . "\n";
+				$err .= '<option value="' . $m[1] . '">' . htmlspecialchars($m[2], ENT_COMPAT | ENT_HTML401, 'utf-8') . '</option>' . "\n";
 			}
 		}
 		$txvars = array();

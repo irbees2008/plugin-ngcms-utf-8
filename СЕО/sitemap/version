@@ -8,5 +8,4 @@ Type: plugin
 Description: Карта сайта
 Author: Wolverine, kt2k
 Author_URI: http://digitalplace.ru/
-MinEngineBuild: 2020731
 Icons: <i class="fa fa-sitemap fa-3x" aria-hidden="true"></i>

@@ -210,7 +210,7 @@ class XFieldsNewsFilter extends NewsFilter
                         $xfEntry['input'] = $val;
                         break;
                     case 'text':
-                        $val = '<input type="text" class="form-control" id="form_xfields_'.$id.'" name="xfields['.$id.']" title="'.$data['title'].'" value="'.secure_html($data['default']).'"/>';
+                        $val = '<input type="text" id="form_xfields_'.$id.'" name="xfields['.$id.']" title="'.$data['title'].'" value="'.secure_html($data['default']).'"/>';
                         $xfEntry['input'] = $val;
                         break;
                     case 'select':
@@ -264,7 +264,7 @@ class XFieldsNewsFilter extends NewsFilter
                         $xfEntry['input'] = $val;
                         break;
                     default:
-                        continue;
+                        continue(2);
                 }
                 $xfEntries[intval($data['area'])][] = $xfEntry;
                 $xfList[$id] = $xfEntry;
@@ -276,12 +276,12 @@ class XFieldsNewsFilter extends NewsFilter
         }
         // Prepare table data [if needed]
         $flagTData = false;
+        // Data are not provisioned
+        $tlist = [];
+        // Prepare config
+        $tclist = [];
+        $thlist = [];
         if (isset($xf['tdata']) && is_array($xf['tdata'])) {
-            // Data are not provisioned
-            $tlist = [];
-            // Prepare config
-            $tclist = [];
-            $thlist = [];
             foreach ($xf['tdata'] as $fId => $fData) {
                 if ($fData['disabled']) {
                     continue;
@@ -303,11 +303,12 @@ class XFieldsNewsFilter extends NewsFilter
                 }
             }
         }
+        $xfNews = $xf['news'] ?: [];
         $tVars = [
             //	'entries'	=>	$xfEntries,
             'xfGC'       => json_encode($xf['grp.news']),
             'xfCat'      => json_encode($xfCategories),
-            'xfList'     => json_encode(array_keys($xf['news'])),
+            'xfList'     => json_encode(array_keys($xfNews)),
             'xtableConf' => json_encode($tclist),
             'xtableVal'  => isset($_POST['xftable']) ? $_POST['xftable'] : json_encode($tlist),
             'xtableHdr'  => $thlist,
@@ -486,7 +487,7 @@ class XFieldsNewsFilter extends NewsFilter
                     $xfEntries[intval($data['area'])][] = $xfEntry;
                     break;
                 case 'text':
-                    $val = '<input type="text" class="form-control" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
+                    $val = '<input type="text" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
                     $xfEntry['input'] = $val;
                     $xfEntries[intval($data['area'])][] = $xfEntry;
                     break;
@@ -587,6 +588,8 @@ class XFieldsNewsFilter extends NewsFilter
         }
         // Prepare table data [if needed]
         $flagTData = false;
+        $tclist = [];
+        $thlist = [];
         if (isset($xf['tdata']) && is_array($xf['tdata'])) {
             // Load table data for specific news
             $tlist = [];
@@ -606,8 +609,6 @@ class XFieldsNewsFilter extends NewsFilter
                 $tlist[] = $tEntry;
             }
             // Prepare config
-            $tclist = [];
-            $thlist = [];
             foreach ($xf['tdata'] as $fId => $fData) {
                 if ($fData['disabled']) {
                     continue;
@@ -630,11 +631,12 @@ class XFieldsNewsFilter extends NewsFilter
             }
         }
         // Prepare personal [group] variables
+        $xfNews = $xf['news'] ?: [];
         $tVars = [
             //	'entries'		=>	$xfEntries[0],
             'xfGC'       => json_encode($xf['grp.news']),
             'xfCat'      => json_encode($xfCategories),
-            'xfList'     => json_encode(array_keys($xf['news'])),
+            'xfList'     => json_encode(array_keys($xfNews)),
             'xtableConf' => json_encode($tclist),
             'xtableVal'  => json_encode($tlist),
             'xtableHdr'  => $thlist,
@@ -1040,7 +1042,7 @@ if (getPluginStatusActive('uprofile')) {
                         $xfEntry['input'] = $val;
                         break;
                     case 'text':
-                        $val = '<input type="text" class="form-control" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
+                        $val = '<input type="text" name="xfields['.$id.']"  id="form_xfields_'.$id.'" title="'.$data['title'].'" value="'.secure_html($xdata[$id]).'" />';
                         $xfEntry['input'] = $val;
                         break;
                     case 'select':
@@ -1113,7 +1115,7 @@ if (getPluginStatusActive('uprofile')) {
                         $xfEntry['input'] = $val;
                         break;
                     default:
-                        continue;
+                        continue(2);
                 }
                 $xfEntries[intval($data['area'])][] = $xfEntry;
                 $xfList[$id] = $xfEntry;

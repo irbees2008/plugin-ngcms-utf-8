@@ -1,11 +1,18 @@
-<nav aria-label="breadcrumb">
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{{ admin_url }}"><i class="fa fa-home"></i></a></li>
-		<li class="breadcrumb-item"><a href="?mod=extras">{{ lang['extras'] }}</a></li>
-		<li class="breadcrumb-item"><a href="?mod=extra-config&plugin=xfields&section={{ sectionID }}">{{ lang.xfconfig['config_text'] }} xfields</a></li>
-		<li class="breadcrumb-item active" aria-current="page">{% if (not flags.editMode) %}{{ lang.xfconfig['title_add'] }}{% else %}{{ lang.xfconfig['title_edit'] }} ({{ id }}){% endif %}</li>
-	</ol>
-</nav>
+<div class="container-fluid">
+	<div class="row mb-2">
+	  <div class="col-sm-6 d-none d-md-block ">
+			<h1 class="m-0 text-dark">xfields</h1>
+	  </div><!-- /.col -->
+	  <div class="col-sm-6">
+		<ol class="breadcrumb float-sm-right">
+			<li class="breadcrumb-item"><a href="{{ admin_url }}"><i class="fa fa-home"></i></a></li>
+			<li class="breadcrumb-item"><a href="?mod=extras">{{ lang['extras'] }}</a></li>
+			<li class="breadcrumb-item"><a href="?mod=extra-config&plugin=xfields&section={{ sectionID }}">{{ lang.xfconfig['config_text'] }} xfields</a></li>
+			<li class="breadcrumb-item active" aria-current="page">{% if (not flags.editMode) %}{{ lang.xfconfig['title_add'] }}{% else %}{{ lang.xfconfig['title_edit'] }} ({{ id }}){% endif %}</li>
+		</ol>
+	  </div><!-- /.col -->
+	</div><!-- /.row -->
+</div>
 
 <div id="edit_yakor"></div>
 
@@ -29,7 +36,7 @@
 					</td>
 					<td width="50%">
 						<div class="input-group">
-							<input type="text" class="form-control" name="id" value="{{ id }}" class="form-control" pattern="[a-z]{1}[a-z0-9]{2,}" {{ flags.editMode ? 'readonly' : '' }} required />
+							<input type="text" name="id" value="{{ id }}" class="form-control" pattern="[a-z]{1}[a-z0-9]{2,}" {{ flags.editMode ? 'readonly' : '' }} required />
 							<div class="input-group-append">
 								<a class="btn btn-outline-primary" data-toggle="popover" data-placement="left" data-trigger="focus" data-html="true" data-content="{{ lang.xfconfig['id#descr'] }}" tabindex="0">
 									<i class="fa fa-question"></i>
@@ -42,7 +49,7 @@
 				<tr>
 					<td width="50%" colspan="2">{{ lang.xfconfig['title'] }}</td>
 					<td width="50%">
-						<input type="text" class="form-control" name="title" value="{{ title }}" class="form-control" required />
+						<input type="text" name="title" value="{{ title }}" class="form-control" required />
 					</td>
 				</tr>
 				<tr>
@@ -67,7 +74,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">{{ lang.xfconfig['default'] }}</td>
-					<td width="50%"><input type="text" class="form-control" name="text_default" value="{{ defaults.text }}" class="form-control" /></td>
+					<td width="50%"><input type="text" name="text_default" value="{{ defaults.text }}" class="form-control" /></td>
 				</tr>
 			</tbody>
 
@@ -123,7 +130,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">{{ lang.xfconfig['tselect_default'] }}</td>
-					<td width="50%"><input type="text" class="form-control" name="select_default" value="{{ defaults.select }}" class="form-control" /></td>
+					<td width="50%"><input type="text" name="select_default" value="{{ defaults.select }}" class="form-control" /></td>
 				</tr>
 			</tbody>
 
@@ -159,7 +166,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">{{ lang.xfconfig['tselect_default'] }}</td>
-					<td width="50%"><input type="text" class="form-control" name="select_default_multi" value="{{ defaults.select }}" class="form-control" /></td>
+					<td width="50%"><input type="text" name="select_default_multi" value="{{ defaults.select }}" class="form-control" /></td>
 				</tr>
 			</tbody>
 

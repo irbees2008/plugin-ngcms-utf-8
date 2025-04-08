@@ -5,7 +5,7 @@
 			<td>{{ image.number }}</td>
 			{% if image.flags.exist %}
 				<td>
-					<input type="text" class="form-control" name="xfields_{{ image.id }}_dscr[{{ image.image.id }}]" value="{{ image.description }}" placeholder="Введите описание..." class="form-control mb-2" />
+					<input type="text" name="xfields_{{ image.id }}_dscr[{{ image.image.id }}]" value="{{ image.description }}" placeholder="Введите описание..." class="form-control mb-2" />
 					<figure class="figure mb-0">
 						<a href="{{ image.image.url }}" target="_blank">
 							{% if image.flags.preview %}
@@ -21,7 +21,7 @@
 				</td>
 			{% else %}
 				<td>
-					<input type="text" class="form-control" name="xfields_{{ image.id }}_adscr[]" value="{{ image.description }}" placeholder="Введите описание..." class="form-control mb-2" />
+					<input type="text" name="xfields_{{ image.id }}_adscr[]" value="{{ image.description }}" placeholder="Введите описание..." class="form-control mb-2" />
 					<input type="file" name="xfields_{{ image.id }}[]" />
 				</td>
 			{% endif %}
