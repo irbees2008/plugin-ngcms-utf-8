@@ -2,90 +2,90 @@
 <tr>
 <td colspan=2>
 <fieldset class="admGroup">
-<legend class="title">РќР°СЃС‚СЂРѕР№РєРё</legend>
+<legend class="title">Настройки</legend>
 <table width="100%" border="0" class="content">
 <tr>
-<td class="contentEntry1" valign=top>Р Р°Р·СЂРµС€РёС‚СЊ РіРѕСЃС‚СЏРј РґРѕР±Р°РІР»СЏС‚СЊ РѕР±СЉСЏРІР»РµРЅРёСЏ?<br /></td>
+<td class="contentEntry1" valign=top>Разрешить гостям добавлять объявления?<br /></td>
 <td class="contentEntry2" valign=top><select name="send_guest" >{send_guest}</select></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ<br /></td>
-<td class="contentEntry2" valign=top><input name="count" type="text" title="РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ" size="4" value="{count}" /></td>
+<td class="contentEntry1" valign=top>Количество объявлений на странице<br /></td>
+<td class="contentEntry2" valign=top><input name="count" type="text" title="Количество объявлений на странице" size="4" value="{count}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РІР°С‚РµР»СЏ<br /></td>
-<td class="contentEntry2" valign=top><input name="count_list" type="text" title="РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕР»СЊР·РІР°С‚РµР»СЏ" size="4" value="{count_list}" /></td>
+<td class="contentEntry1" valign=top>Количество объявлений на странице пользвателя<br /></td>
+<td class="contentEntry2" valign=top><input name="count_list" type="text" title="Количество объявлений на странице пользвателя" size="4" value="{count_list}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕРёСЃРєР°<br /></td>
-<td class="contentEntry2" valign=top><input name="count_search" type="text" title="РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ РїРѕРёСЃРєР°" size="4" value="{count_search}" /></td>
+<td class="contentEntry1" valign=top>Количество объявлений на странице поиска<br /></td>
+<td class="contentEntry2" valign=top><input name="count_search" type="text" title="Количество объявлений на странице поиска" size="4" value="{count_search}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РћРїРёСЃР°РЅРёРµ РґР»СЏ РіР»Р°РІРЅРѕР№ РѕР±СЉСЏРІР»РµРЅРёР№<br /><small></small></td>
-<td class="contentEntry2" valign=top><input name="description" type="text" title="РћРїРёСЃР°РЅРёРµ РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёР№" size="50" value="{description}" /></td>
+<td class="contentEntry1" valign=top>Описание для главной объявлений<br /><small></small></td>
+<td class="contentEntry2" valign=top><input name="description" type="text" title="Описание для объявлений" size="50" value="{description}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РґР»СЏ РіР»Р°РІРЅРѕР№ РѕР±СЉСЏРІР»РµРЅРёР№<br /><small></small></td>
-<td class="contentEntry2" valign=top><input name="keywords" type="text" title="РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёР№" size="50" value="{keywords}" /></td>
+<td class="contentEntry1" valign=top>Ключевые слова для главной объявлений<br /><small></small></td>
+<td class="contentEntry2" valign=top><input name="keywords" type="text" title="Ключевые слова для объявлений" size="50" value="{keywords}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р�РЅС„РѕСЂРјР°С†РёСЏ, РІС‹РІРѕРґРёРјР°СЏ РїРѕСЃР»Рµ РґРѕР±Р°РІР»РµРЅРёСЏ<br /><small></small></td>
-<td class="contentEntry2" valign=top><textarea name="info_send" title="Р�РЅС„РѕСЂРјР°С†РёСЏ, РІС‹РІРѕРґРёРјР°СЏ РїРѕСЃР»Рµ РґРѕР±Р°РІР»РµРЅРёСЏ" rows=8 cols=100>{info_send}</textarea></td>
+<td class="contentEntry1" valign=top>Информация, выводимая после добавления<br /><small></small></td>
+<td class="contentEntry2" valign=top><textarea name="info_send" title="Информация, выводимая после добавления" rows=8 cols=100>{info_send}</textarea></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р�РЅС„РѕСЂРјР°С†РёСЏ РІС‹РІРѕРґРёРјР°СЏ РїРѕСЃР»Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ<br /><small></small></td>
-<td class="contentEntry2" valign=top><textarea name="info_edit" title="Р�РЅС„РѕСЂРјР°С†РёСЏ РІС‹РІРѕРґРёРјР°СЏ РїРѕСЃР»Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ" rows=8 cols=100>{info_edit}</textarea></td>
+<td class="contentEntry1" valign=top>Информация выводимая после редактирования<br /><small></small></td>
+<td class="contentEntry2" valign=top><textarea name="info_edit" title="Информация выводимая после редактирования" rows=8 cols=100>{info_edit}</textarea></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р’РєР»СЋС‡РёС‚СЊ СЃРЅСЏС‚РёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїРѕ РёСЃС‚РµС‡РµРЅРёРё СЃСЂРѕРєР°?<br /></td>
+<td class="contentEntry1" valign=top>Включить снятие объявления по истечении срока?<br /></td>
 <td class="contentEntry2" valign=top><select name="use_expired" >{use_expired}</select></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р’СЂРµРјСЏ Р¶РёР·РЅРё РѕР±СЉСЏРІР»РµРЅРёСЏ<br /></td>
-<td class="contentEntry2" valign=top><input name="list_period" type="text" title="Р’СЂРµРјСЏ Р¶РёР·РЅРё РѕР±СЉСЏРІР»РµРЅРёСЏ" size="10" value="{list_period}" /></td>
+<td class="contentEntry1" valign=top>Время жизни объявления<br /></td>
+<td class="contentEntry2" valign=top><input name="list_period" type="text" title="Время жизни объявления" size="10" value="{list_period}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РЈС‡С‘С‚ РїСЂРѕСЃРјРѕС‚СЂР° РѕР±СЉСЏРІР»РµРЅРёР№?<br /></td>
+<td class="contentEntry1" valign=top>Учёт просмотра объявлений?<br /></td>
 <td class="contentEntry2" valign=top><select name="views_count" >{views_count}</select></td>
 </tr>
 <!--
 <tr>
-<td class="contentEntry1" valign=top>РљР°С‚РµРіРѕСЂРёСЏ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ Р°РєС‚РёРІРЅР° РїРµСЂРµР№РґСЏ РЅР° РіР»Р°РІРЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ РѕР±СЉСЏРІР»РµРЅРёР№<br /></td>
+<td class="contentEntry1" valign=top>Категория, которая будет активна перейдя на главную страницу объявлений<br /></td>
 <td class="contentEntry2" valign=top><select name="cat_id" >{cat_id}</select></td>
 </tr>
 -->
 <tr>
-<td class="contentEntry1" valign=top>РЈРІРµРґРѕРјР»СЏС‚СЊ Р°РґРјРёРЅР° Рѕ РЅРѕРІС‹С… РѕР±СЉСЏРІР»РµРЅРёСЏС…?<br /></td>
+<td class="contentEntry1" valign=top>Уведомлять админа о новых объявлениях?<br /></td>
 <td class="contentEntry2" valign=top><select name="notice_mail" >{notice_mail}</select></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РЁР°Р±Р»РѕРЅ СѓРІРµРґРѕРјР»РµРЅРёР№ РїРѕ РїРѕС‡С‚Рµ<br /><small>Р”РѕСЃС‚СѓРїРЅС‹Рµ С‚РµРіРё:<br />%announce_name% - <br />%author% - <br />%announce_description% - <br />%announce_period% - <br />%announce_contacts% - <br />%date% -</small></td>
-<td class="contentEntry2" valign=top><textarea name="template_mail" title="РЁР°Р±Р»РѕРЅ СѓРІРµРґРѕРјР»РµРЅРёР№ РїРѕ РїРѕС‡С‚Рµ" rows=8 cols=100>{template_mail}</textarea></td>
+<td class="contentEntry1" valign=top>Шаблон уведомлений по почте<br /><small>Доступные теги:<br />%announce_name% - <br />%author% - <br />%announce_description% - <br />%announce_period% - <br />%announce_contacts% - <br />%date% -</small></td>
+<td class="contentEntry2" valign=top><textarea name="template_mail" title="Шаблон уведомлений по почте" rows=8 cols=100>{template_mail}</textarea></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р“Р»Р°РІРЅС‹Р№ С€Р°Р±Р»РѕРЅ РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёР№<br /><small>Р•СЃР»Рё РїСѓСЃС‚Рѕ С‚Рѕ Р±РµСЂРµС‚СЃСЏ РѕСЃРЅРѕРІРЅРѕР№ С€Р°Р±Р»РѕРЅ <b>main.tpl</b><br />РџСЂРёРјРµСЂ: РЎРѕР·РґР°С‚СЊ template.tpl РІ ngcms/www/templates/default/ Рё РґРѕР±Р°РІРёС‚СЊ РІ СЌС‚Рѕ РїРѕР»Рµ С‚РѕР»СЊРєРѕ РЅР°Р·РІР°РЅРёРµ <b>template</b> Р±РµР· СЂР°Р·С€РµСЂРµРЅРёСЏ</small></td>
-<td class="contentEntry2" valign=top><input name="main_template" type="text" title="Р“Р»Р°РІРЅС‹Р№ С€Р°Р±Р»РѕРЅ РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёР№" size="20" value="{main_template}" /></td>
+<td class="contentEntry1" valign=top>Главный шаблон для объявлений<br /><small>Если пусто то берется основной шаблон <b>main.tpl</b><br />Пример: Создать template.tpl в ngcms/www/templates/default/ и добавить в это поле только название <b>template</b> без разшерения</small></td>
+<td class="contentEntry2" valign=top><input name="main_template" type="text" title="Главный шаблон для объявлений" size="20" value="{main_template}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё<br /></td>
-<td class="contentEntry2" valign=top><input name="width_thumb" type="text" title="РЁРёСЂРёРЅР° СѓРјРµРЅСЊС€РµРЅРЅРѕР№ РєРѕРїРёРё" size="20" value="{width_thumb}" /></td>
+<td class="contentEntry1" valign=top>Ширина уменьшенной копии<br /></td>
+<td class="contentEntry2" valign=top><input name="width_thumb" type="text" title="Ширина уменьшенной копии" size="20" value="{width_thumb}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№<br /><small>Р¤РѕСЂРјР°С‚ Р·Р°РїРёСЃРё <b>*.jpg;*.jpeg;*.gif;*.png</b></small></td>
-<td class="contentEntry2" valign=top><input name="ext_image" type="text" title="Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ СЂР°Р·С€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№" size="50" value="{ext_image}" /></td>
+<td class="contentEntry1" valign=top>Разрешенные расширения для изображений<br /><small>Формат записи <b>*.jpg;*.jpeg;*.gif;*.png</b></small></td>
+<td class="contentEntry2" valign=top><input name="ext_image" type="text" title="Разрешенные разширения для изображений" size="50" value="{ext_image}" /></td>
 </tr>
 <!--
 <tr>
-<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>Р Р°Р·РјРµСЂ РІ РјРµРіР°Р±Р°Р№С‚Р°С…</small></td>
-<td class="contentEntry2" valign=top><input name="max_image_size" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{max_image_size}" /></td>
+<td class="contentEntry1" valign=top>Максимальный размер загружаемого изображения<br /><small>Размер в мегабайтах</small></td>
+<td class="contentEntry2" valign=top><input name="max_image_size" type="text" title="Максимальный размер загружаемого изображения" size="20" value="{max_image_size}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
-<td class="contentEntry2" valign=top><input name="width" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ С€РёСЂРёРЅР° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{width}" /></td>
+<td class="contentEntry1" valign=top>Максимальный ширина загружаемого изображения<br /><small>Указывается в пикселях</small></td>
+<td class="contentEntry2" valign=top><input name="width" type="text" title="Максимальный ширина загружаемого изображения" size="20" value="{width}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small>РЈРєР°Р·С‹РІР°РµС‚СЃСЏ РІ РїРёРєСЃРµР»СЏС…</small></td>
-<td class="contentEntry2" valign=top><input name="height" type="text" title="РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІС‹СЃРѕС‚Р° Р·Р°РіСЂСѓР¶Р°РµРјРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ" size="20" value="{height}" /></td>
+<td class="contentEntry1" valign=top>Максимальный высота загружаемого изображения<br /><small>Указывается в пикселях</small></td>
+<td class="contentEntry2" valign=top><input name="height" type="text" title="Максимальный высота загружаемого изображения" size="20" value="{height}" /></td>
 </tr>
 -->
 </table>
@@ -95,10 +95,10 @@
 <tr>
 <td colspan=2>
 <fieldset class="admGroup">
-<legend class="title">РќР°СЃС‚СЂРѕР№РєРё reCaptcha</legend>
+<legend class="title">Настройки reCaptcha</legend>
 <table width="100%" border="0" class="content">
 <tr>
-<td class="contentEntry1" valign=top>Р�СЃРїРѕР»СЊР·РѕРІР°С‚СЊ reCaptcha?<br /></td>
+<td class="contentEntry1" valign=top>Использовать reCaptcha?<br /></td>
 <td class="contentEntry2" valign=top><select name="use_recaptcha" >{use_recaptcha}</select></td>
 </tr>
 <tr>
@@ -116,15 +116,15 @@
 <tr>
 <td colspan=2>
 <fieldset class="admGroup">
-<legend class="title">РќР°СЃС‚СЂРѕР№РєРё Р°РґРјРёРЅРєРё</legend>
+<legend class="title">Настройки админки</legend>
 <table width="100%" border="0" class="content">
 <tr>
-<td class="contentEntry1" valign=top>РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ<br /></td>
-<td class="contentEntry2" valign=top><input name="admin_count" type="text" title="РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉСЏРІР»РµРЅРёР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ" size="4" value="{admin_count}" /></td>
+<td class="contentEntry1" valign=top>Количество объявлений на странице<br /></td>
+<td class="contentEntry2" valign=top><input name="admin_count" type="text" title="Количество объявлений на странице" size="4" value="{admin_count}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>Р¤РѕСЂРјР°С‚ РґР°С‚С‹<br /></td>
-<td class="contentEntry2" valign=top><input name="date" type="text" title="Р¤РѕСЂРјР°С‚ РґР°С‚С‹" size="10" value="{date}" /></td>
+<td class="contentEntry1" valign=top>Формат даты<br /></td>
+<td class="contentEntry2" valign=top><input name="date" type="text" title="Формат даты" size="10" value="{date}" /></td>
 </tr>
 </table>
 </fieldset>
@@ -134,22 +134,22 @@
 <tr>
 <td colspan=2>
 <fieldset class="admGroup">
-<legend class="title">РќР°СЃС‚СЂРѕР№РєРё Pay2Pay</legend>
+<legend class="title">Настройки Pay2Pay</legend>
 <table width="100%" border="0" class="content">
 <tr>
-<td class="contentEntry1" valign=top>Р�РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјР°РіР°Р·РёРЅР° РІ Pay2Pay<br /></td>
-<td class="contentEntry2" valign=top><input name="pay2pay_merchant_id" type="text" title="Р�РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјР°РіР°Р·РёРЅР° РІ Pay2Pay" size="100" value="{pay2pay_merchant_id}" /></td>
+<td class="contentEntry1" valign=top>Идентификатор магазина в Pay2Pay<br /></td>
+<td class="contentEntry2" valign=top><input name="pay2pay_merchant_id" type="text" title="Идентификатор магазина в Pay2Pay" size="100" value="{pay2pay_merchant_id}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РЎРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡<br /></td>
-<td class="contentEntry2" valign=top><input name="pay2pay_secret_key" type="text" title="РЎРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡" size="100" value="{pay2pay_secret_key}" /></td>
+<td class="contentEntry1" valign=top>Секретный ключ<br /></td>
+<td class="contentEntry2" valign=top><input name="pay2pay_secret_key" type="text" title="Секретный ключ" size="100" value="{pay2pay_secret_key}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РЎРєСЂС‹С‚С‹Р№ РєР»СЋС‡<br /></td>
-<td class="contentEntry2" valign=top><input name="pay2pay_hidden_key" type="text" title="РЎРєСЂС‹С‚С‹Р№ РєР»СЋС‡" size="100" value="{pay2pay_hidden_key}" /></td>
+<td class="contentEntry1" valign=top>Скрытый ключ<br /></td>
+<td class="contentEntry2" valign=top><input name="pay2pay_hidden_key" type="text" title="Скрытый ключ" size="100" value="{pay2pay_hidden_key}" /></td>
 </tr>
 <tr>
-<td class="contentEntry1" valign=top>РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј?<br /></td>
+<td class="contentEntry1" valign=top>Тестовый режим?<br /></td>
 <td class="contentEntry2" valign=top><select name="pay2pay_test_mode" >{pay2pay_test_mode}</select></td>
 </tr>
 </table>
@@ -161,7 +161,7 @@
 <tr><td width="100%" colspan="2">&nbsp;</td></tr>
 <tr>
 <td width="100%" colspan="2" class="contentEdit" align="center">
-<input name="submit" type="submit"  value="РЎРѕС…СЂР°РЅРёС‚СЊ" class="button" />
+<input name="submit" type="submit"  value="Сохранить" class="button" />
 </td>
 </tr>
 </table>

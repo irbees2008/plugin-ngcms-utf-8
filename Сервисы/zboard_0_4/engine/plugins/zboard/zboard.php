@@ -37,7 +37,7 @@ global $CurrentHandler, $SYSTEM_FLAGS, $template, $lang;
         $page = $_REQUEST['page'];
     }
 
-    $pageNo = isset($page)?str_replace('%count%',intval($page), '/ РЎС‚СЂР°РЅРёС†Р° %count%'):'';
+    $pageNo = isset($page)?str_replace('%count%',intval($page), '/ Страница %count%'):'';
 
     switch ($CurrentHandler['handlerName'])
     {
@@ -87,20 +87,20 @@ function pay_zboard($params) {
 
 	$SUPRESS_TEMPLATE_SHOW = 1;
 	$SUPRESS_MAINBLOCK_SHOW = 1;
-
+    
     $zid = intval($_REQUEST['zid']);
     $price_id = intval($_REQUEST['price_time_id']);
     $current_time = time() + ($config['date_adjust'] * 60);
     $result = intval($_REQUEST['result']);
-
+    
     if(empty($result) && empty($zid))
     {
         redirect_zboard(link_zboard());
     }
-
+    
     if(!empty($result))
     {
-
+        
         switch($result) {
             case '1':
                 // fail_url
@@ -109,27 +109,27 @@ function pay_zboard($params) {
             case '2':
                 $_REQUEST['sign'] = str_replace(' ', '+', $_REQUEST['sign']);
                 $_REQUEST['xml'] = str_replace(' ', '+', $_REQUEST['xml']);
-
+                
                 // result_url
                 if (!empty($_REQUEST['xml']) and !empty($_REQUEST['sign'])){
-                    // Р�РЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅРѕР№ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєРµ
+                    // Инициализация переменной для хранения сообщения об ошибке
                     $error = '';
-                    // Р”РµРєРѕРґРёСЂСѓРµРј РІС…РѕРґРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
+                    // Декодируем входные параметры
                     $xml_encoded = str_replace(' ', '+', $_REQUEST['xml']);
                     $xml = base64_decode($xml_encoded);
-                    // РїСЂРµРѕР±СЂР°Р·СѓРµРј РІС…РѕРґРЅРѕР№ xml РІ СѓРґРѕР±РЅС‹Р№ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ С„РѕСЂРјР°С‚
+                    // преобразуем входной xml в удобный для использования формат
                     $xml_vars = simplexml_load_string($xml);
                     //$file = '/home/s/stdex/air.tw1.ru/public_html/engine/plugins/zboard/eeeeee.txt';
                     //file_put_contents($file, strval($xml_vars), FILE_APPEND | LOCK_EX);
 
                     if ($xml_vars->order_id)
-                    // Р•СЃР»Рё РїРѕР»Рµ order_id РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ, РїСЂРѕРґРѕР»Р¶Р°С‚СЊ РЅРµС‚ СЃРјС‹СЃР»Р°.
+                    // Если поле order_id не заполнено, продолжать нет смысла.
                     {
-
+                        
                         $hidden_key = pluginGetVariable('zboard', 'pay2pay_hidden_key');
                         $sign = md5($hidden_key.$xml.$hidden_key);
                         $sign_encode = base64_encode($sign);
-
+                        
                         $a_or_id = explode("_", $xml_vars->order_id);
                         $zid = $a_or_id[1];
                         $merchant_id = $xml_vars->merchant_id;
@@ -137,15 +137,15 @@ function pay_zboard($params) {
                         $amount = $xml_vars->amount;
                         $currency = $xml_vars->currency;
                         $description = $xml_vars->description;
-                        $description = $description;
+                        $description =  $description;
                         $paymode = $xml_vars->paymode;
                         $trans_id = $xml_vars->trans_id;
                         $status = $xml_vars->status;
                         $error_msg = $xml_vars->error_msg;
                         $test_mode = $xml_vars->test_mode;
-
+                        
                         if($sign_encode == $_REQUEST['sign']) {
-
+       
                            $mysql->query('INSERT INTO '.prefix.'_zboard_pay_order (dt, zid, merchant_id, order_id, amount, currency, description, paymode, trans_id, status, error_msg, test_mode)
                                     VALUES
                                     ('.db_squote($current_time).',
@@ -162,13 +162,13 @@ function pay_zboard($params) {
                                         '.db_squote($test_mode).'
                                     )
                                 ');
-
+       
                             if($status == 'success') {
-
+                                
                                 $price_time = $mysql->record('SELECT * FROM '.prefix.'_zboard_pay_price WHERE price = '.db_squote($amount).' LIMIT 1');
 
                                 $expired_time = $current_time + $price_time['time'] * 24 * 60 * 60;
-
+                                
                                 $mysql->query('UPDATE '.prefix.'_zboard SET
                                     vip_added = '.db_squote($current_time).',
                                     vip_expired =  '.db_squote($expired_time).',
@@ -177,18 +177,18 @@ function pay_zboard($params) {
                                     WHERE id = '.$zid.'
                                 ');
                             }
-
+                            
                         }
                         else {
                             $error = 'Incorrect sign';
                         }
-
+                        
                     }
                     else {
                         $error = 'Unknown order_id';
                     }
 
-                    // РћС‚РІРµС‡Р°РµРј СЃРµСЂРІРµСЂСѓ Pay2Pay
+                    // Отвечаем серверу Pay2Pay
                     if ($error == '') {
                         $ret = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
                         <result>
@@ -218,15 +218,15 @@ function pay_zboard($params) {
     elseif(!empty($zid)) {
         if($row = $mysql->record('SELECT * FROM '.prefix.'_zboard_pay_price WHERE id = '.db_squote($price_id).'LIMIT 1'))
         {
-            $merchant_id = pluginGetVariable('zboard', 'pay2pay_merchant_id'); // Р�РґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РјР°РіР°Р·РёРЅР° РІ Pay2Pay
-            $secret_key = pluginGetVariable('zboard', 'pay2pay_secret_key'); // РЎРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡
-            $order_id =  $current_time."_".$zid; // РќРѕРјРµСЂ Р·Р°РєР°Р·Р°
-            $amount = $row['price']; // РЎСѓРјРјР° Р·Р°РєР°Р·Р°
-            $currency = 'RUB'; // Р’Р°Р»СЋС‚Р° Р·Р°РєР°Р·Р°
-            $desc = 'РћРїР»Р°С‚Р° Р·Р° VIP РѕР±СЉСЏРІР»РµРЅРёРµ, ID: '.$zid; // РћРїРёСЃР°РЅРёРµ Р·Р°РєР°Р·Р°
+            $merchant_id = pluginGetVariable('zboard', 'pay2pay_merchant_id'); // Идентификатор магазина в Pay2Pay
+            $secret_key = pluginGetVariable('zboard', 'pay2pay_secret_key'); // Секретный ключ
+            $order_id =  $current_time."_".$zid; // Номер заказа
+            $amount = $row['price']; // Сумма заказа
+            $currency = 'RUB'; // Валюта заказа
+            $desc = 'Оплата за VIP объявление, ID: '.$zid; // Описание заказа
             $desc =  $desc;
-            $test_mode = pluginGetVariable('zboard', 'pay2pay_test_mode'); // РўРµСЃС‚РѕРІС‹Р№ СЂРµР¶РёРј
-            // Р¤РѕСЂРјРёСЂСѓРµРј xml
+            $test_mode = pluginGetVariable('zboard', 'pay2pay_test_mode'); // Тестовый режим
+            // Формируем xml
             $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
              <request>
              <version>1.2</version>
@@ -239,9 +239,9 @@ function pay_zboard($params) {
              <test_mode>$test_mode</test_mode>
              <other><![CDATA[$id]]></other>
              </request>";
-            // Р’С‹С‡РёСЃР»СЏРµРј РїРѕРґРїРёСЃСЊ
+            // Вычисляем подпись
             $sign = md5($secret_key.$xml.$secret_key);
-            // РљРѕРґРёСЂСѓРµРј РґР°РЅРЅС‹Рµ РІ BASE64
+            // Кодируем данные в BASE64
             $xml_encode = base64_encode($xml);
             $sign_encode = base64_encode($sign);
             echo'
@@ -274,7 +274,7 @@ function vip_zboard($params)
     $xt = $twig->loadTemplate($tpath['vip_zboard'].'vip_zboard.tpl');
 
     $SYSTEM_FLAGS['info']['title']['group'] = $lang['zboard']['name_plugin'];
-    $SYSTEM_FLAGS['info']['title']['others'] = 'РџР»Р°С‚РЅС‹Рµ РѕР±СЉСЏРІР»РµРЅРёСЏ';
+    $SYSTEM_FLAGS['info']['title']['others'] = 'Платные объявления';
     $id = isset($params['id'])?abs(intval($params['id'])):abs(intval($_REQUEST['id']));
 
     if(empty($id))
@@ -297,7 +297,7 @@ function vip_zboard($params)
             );
 
         }
-
+            
         $pay_url = link_zboard_pay();
 
         $tVars = array(
@@ -314,7 +314,7 @@ function vip_zboard($params)
 
         } else {
             header('HTTP/1.1 403 Forbidden');
-            $SYSTEM_FLAGS['info']['title']['others'] = 'Р’С‹ РЅРµ СЏРІР»СЏРµС‚РµСЃСЊ Р°РІС‚РѕСЂРѕРј СЌС‚РѕРіРѕ РѕР±СЉСЏРІР»РµРЅРёСЏ';
+            $SYSTEM_FLAGS['info']['title']['others'] = 'Вы не являетесь автором этого объявления';
             $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
             $tVars['vars']['home'] = home;
@@ -323,7 +323,7 @@ function vip_zboard($params)
 
     } else {
             header('HTTP/1.1 403 Forbidden');
-            $SYSTEM_FLAGS['info']['title']['others'] = 'Р”РѕСЃС‚СѓРї СЂР°Р·СЂРµС€РµРЅ С‚РѕР»СЊРєРѕ Р°РІС‚РѕСЂРёР·РёСЂРѕРІР°РЅРЅС‹Рј';
+            $SYSTEM_FLAGS['info']['title']['others'] = 'Доступ разрешен только авторизированным';
             $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
             $tVars['vars']['home'] = home;
@@ -357,7 +357,7 @@ function del_zboard($params)
 
                 $mysql->query('delete from '.prefix.'_zboard where id = '.db_squote($id));
 
-                $_SESSION['zboard']['info'] = 'РћР±СЉСЏРІР»РµРЅРёРµ СѓРґР°Р»РµРЅРѕ.';
+                $_SESSION['zboard']['info'] = 'Объявление удалено.';
 
                 generate_entries_cnt_cache(true);
                 generate_catz_cache(true);
@@ -366,11 +366,11 @@ function del_zboard($params)
             }
             else
             {
-            $_SESSION['zboard']['info'] = 'Р’С‹ РїС‹С‚Р°РµС‚РµСЃСЊ СѓРґР°Р»РёС‚СЊ РЅРµ СЃРІРѕРµ РѕР±СЉСЏРІР»РµРЅРёРµ.';
+            $_SESSION['zboard']['info'] = 'Вы пытаетесь удалить не свое объявление.';
             redirect_zboard(link_zboard_list());
             }
     } else {
-        $_SESSION['zboard']['info'] = 'РЈ РІР°СЃ РЅРµС‚ РїСЂР°РІ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ РѕР±СЉСЏРІР»РµРЅРёР№.';
+        $_SESSION['zboard']['info'] = 'У вас нет прав для удаления объявлений.';
         redirect_zboard(link_zboard());
     }
 }
@@ -381,7 +381,7 @@ function edit_zboard($params)
     $xt = $twig->loadTemplate($tpath['edit_zboard'].'edit_zboard.tpl');
 
     $SYSTEM_FLAGS['info']['title']['group'] = $lang['zboard']['name_plugin'];
-    $SYSTEM_FLAGS['info']['title']['others'] = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ';
+    $SYSTEM_FLAGS['info']['title']['others'] = 'Редактирование';
     $id = isset($params['id'])?abs(intval($params['id'])):abs(intval($_REQUEST['id']));
 
     if(empty($id))
@@ -414,22 +414,22 @@ function edit_zboard($params)
 
             $SQL['announce_name'] = input_filter_com(convert($_REQUEST['announce_name']));
             if(empty($SQL['announce_name']))
-                $error_text[] = 'РќР°Р·РІР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїСѓСЃС‚РѕРµ';
+                $error_text[] = 'Название объявления пустое';
 
             $SQL['author'] = input_filter_com(convert($_REQUEST['author']));
             if(empty($SQL['author']))
-                $error_text[] = 'РџРѕР»Рµ Р°РІС‚РѕСЂ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле автор не заполнено';
 
             $SQL['announce_period'] = input_filter_com(convert($_REQUEST['announce_period']));
             if(!empty($SQL['announce_period']))
             {
                 if(!in_array($SQL['announce_period'], explode("|",pluginGetVariable('zboard', 'list_period'))))
                 {
-                    $error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ Р·Р°РґР°РЅРѕ РЅРµРІРµСЂРЅРѕ '.$SQL['announce_period'];
+                    $error_text[] = 'Поле период задано неверно '.$SQL['announce_period'];
                 }
 
             } else {
-                $error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле период не заполнено';
             }
 
             $SQL['cat_id'] = intval($_REQUEST['cat_id']);
@@ -439,22 +439,22 @@ function edit_zboard($params)
 
                 if(empty($cat))
                 {
-                    $error_text[] = 'РўР°РєРѕР№ РєР°С‚РµРіРѕСЂРёРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+                    $error_text[] = 'Такой категории не существует';
                 }
             } else {
-                $error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
+                $error_text[] = 'Вы не выбрали категорию';
             }
 
             $SQL['announce_description'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_description'])));
             if(empty($SQL['announce_description']))
             {
-                $error_text[] = 'РќРµС‚ РѕРїРёСЃР°РЅРёСЏ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+                $error_text[] = 'Нет описания к объявлению';
             }
 
             $SQL['announce_contacts'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_contacts'])));
             if(empty($SQL['announce_contacts']))
             {
-                $error_text[] = 'РќРµС‚ РєРѕРЅС‚Р°РєС‚РѕРІ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+                $error_text[] = 'Нет контактов к объявлению';
             }
 
             //$SQL['active'] = $_REQUEST['announce_activeme'];
@@ -557,7 +557,7 @@ function edit_zboard($params)
 
         } else {
             header('HTTP/1.1 403 Forbidden');
-            $SYSTEM_FLAGS['info']['title']['others'] = 'Р’С‹ РЅРµ СЏРІР»СЏРµС‚РµСЃСЊ Р°РІС‚РѕСЂРѕРј СЌС‚РѕРіРѕ РѕР±СЉСЏРІР»РµРЅРёСЏ';
+            $SYSTEM_FLAGS['info']['title']['others'] = 'Вы не являетесь автором этого объявления';
             $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
             $tVars['vars']['home'] = home;
@@ -566,7 +566,7 @@ function edit_zboard($params)
 
     } else {
             header('HTTP/1.1 403 Forbidden');
-            $SYSTEM_FLAGS['info']['title']['others'] = 'Р”РѕСЃС‚СѓРї СЂР°Р·СЂРµС€РµРЅ С‚РѕР»СЊРєРѕ Р°РІС‚РѕСЂРёР·РёСЂРѕРІР°РЅРЅС‹Рј';
+            $SYSTEM_FLAGS['info']['title']['others'] = 'Доступ разрешен только авторизированным';
             $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
             $tVars['vars']['home'] = home;
@@ -582,7 +582,7 @@ function expend_zboard($params)
     $xt = $twig->loadTemplate($tpath['edit_zboard'].'edit_zboard.tpl');
 
     $SYSTEM_FLAGS['info']['title']['group'] = $lang['zboard']['name_plugin'];
-    $SYSTEM_FLAGS['info']['title']['others'] = 'РџСЂРѕРґР»РµРЅРёРµ';
+    $SYSTEM_FLAGS['info']['title']['others'] = 'Продление';
     $id = isset($params['id'])?abs(intval($params['id'])):abs(intval($_REQUEST['id']));
     $hashcode = isset($params['hashcode'])?$params['hashcode']:$_REQUEST['hashcode'];
 
@@ -609,22 +609,22 @@ function expend_zboard($params)
 
             $SQL['announce_name'] = input_filter_com(convert($_REQUEST['announce_name']));
             if(empty($SQL['announce_name']))
-                $error_text[] = 'РќР°Р·РІР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїСѓСЃС‚РѕРµ';
+                $error_text[] = 'Название объявления пустое';
 
             $SQL['author'] = input_filter_com(convert($_REQUEST['author']));
             if(empty($SQL['author']))
-                $error_text[] = 'РџРѕР»Рµ Р°РІС‚РѕСЂ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле автор не заполнено';
 
             $SQL['announce_period'] = input_filter_com(convert($_REQUEST['announce_period']));
             if(!empty($SQL['announce_period']))
             {
                 if(!in_array($SQL['announce_period'], explode("|",pluginGetVariable('zboard', 'list_period'))))
                 {
-                    $error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ Р·Р°РґР°РЅРѕ РЅРµРІРµСЂРЅРѕ '.$SQL['announce_period'];
+                    $error_text[] = 'Поле период задано неверно '.$SQL['announce_period'];
                 }
 
             } else {
-                $error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле период не заполнено';
             }
 
             $SQL['cat_id'] = intval($_REQUEST['cat_id']);
@@ -634,22 +634,22 @@ function expend_zboard($params)
 
                 if(empty($cat))
                 {
-                    $error_text[] = 'РўР°РєРѕР№ РєР°С‚РµРіРѕСЂРёРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+                    $error_text[] = 'Такой категории не существует';
                 }
             } else {
-                $error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
+                $error_text[] = 'Вы не выбрали категорию';
             }
 
             $SQL['announce_description'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_description'])));
             if(empty($SQL['announce_description']))
             {
-                $error_text[] = 'РќРµС‚ РѕРїРёСЃР°РЅРёСЏ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+                $error_text[] = 'Нет описания к объявлению';
             }
 
             $SQL['announce_contacts'] = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_contacts'])));
             if(empty($SQL['announce_contacts']))
             {
-                $error_text[] = 'РќРµС‚ РєРѕРЅС‚Р°РєС‚РѕРІ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+                $error_text[] = 'Нет контактов к объявлению';
             }
 
             //$SQL['active'] = $_REQUEST['announce_activeme'];
@@ -747,7 +747,7 @@ function expend_zboard($params)
         } else {
             header('HTTP/1.1 403 Forbidden');
             $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
-            $SYSTEM_FLAGS['info']['title']['others'] = 'Р’С‹ РЅРµ СЏРІР»СЏРµС‚РµСЃСЊ Р°РІС‚РѕСЂРѕРј СЌС‚РѕРіРѕ РѕР±СЉСЏРІР»РµРЅРёСЏ';
+            $SYSTEM_FLAGS['info']['title']['others'] = 'Вы не являетесь автором этого объявления';
             $tVars['vars']['home'] = home;
             $template['vars']['mainblock'] .= $xt->render($tVars);
         }
@@ -773,7 +773,7 @@ function zboard_upload_files($files_del){
                         }
 
                         if(file_exists(files_dir . 'zboard/' . $Ffile))
-                            $error_text = 'РўР°РєРѕР№ С„Р°Р№Р» СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+                            $error_text = 'Такой файл уже существует';
                         else
                             unlink(files_dir . 'zboard/'. $files_del);
 
@@ -781,20 +781,20 @@ function zboard_upload_files($files_del){
                             if(move_uploaded_file($_FILES['plugin_files']['tmp_name'], files_dir . 'zboard/' . $Ffile)){
                                 chmod(files_dir . 'zboard/' . $Ffile, 0644);
                             } else {
-                                $error_text = 'Р—Р°РіСЂСѓР·РєР° РЅРµ СѓРґР°Р»Р°СЃСЊ';
+                                $error_text = 'Загрузка не удалась';
                             }
                         }
                     } else {
-                        $error_text = 'РќРµС‚ РїСЂР°РІ РЅР° Р·Р°РїРёСЃСЊ';
+                        $error_text = 'Нет прав на запись';
                     }
                 } else {
-                    $error_text = 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° Р±РѕР»СЊС€Рµ РґРѕРїСѓСЃС‚РёРјРѕРіРѕ';
+                    $error_text = 'Размер файла больше допустимого';
                 }
             } else {
-                $error_text = 'Р—Р°РїСЂРµС‰РµРЅРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ';
+                $error_text = 'Запрещеное расширение';
             }
         } else {
-            $error_text = 'Р¤Р°Р№Р» РЅРµ Р·Р°РіСЂСѓР¶РµРЅ';
+            $error_text = 'Файл не загружен';
         }
     }
     return array($Ffile, $error_text);
@@ -863,22 +863,22 @@ function zboard_upload_images($images_del, $w, $h, $quality = 100){
                                 chmod($dir_image, 0644);
                                 chmod(images_dir .'zboard/thumb/'.$new, 0644);
                             } else {
-                                $error_text = 'РћС€РёР±РєР° РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё';
+                                $error_text = 'Ошибка при сохранении';
                             }
                         } else {
-                            $error_text = 'Р Р°Р·РјРµСЂ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Р±РѕР»СЊС€Рµ С‡РµРј '.pluginGetVariable('template', 'width').' РЅР° '.pluginGetVariable('template', 'height');
+                            $error_text = 'Размер изображения больше чем '.pluginGetVariable('template', 'width').' на '.pluginGetVariable('template', 'height');
                         }
                     } else {
-                        $error_text = 'Р—Р°РіСЂСѓР¶РµРЅС‹Р№ С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёР·РѕР±СЂР°Р¶РµРЅРёРµРј';
+                        $error_text = 'Загруженый файл не является изображением';
                     }
                 } else {
-                    $error_text = 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° Р±РѕР»СЊС€Рµ РґРѕРїСѓСЃС‚РёРјРѕРіРѕ';
+                    $error_text = 'Размер файла больше допустимого';
                 }
             } else {
-                $error_text = 'РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ СЂР°Р·С‰РёСЂРµРЅРёРµ';
+                $error_text = 'Недопустимое разщирение';
             }
         } else {
-            $error_text = 'Р�Р·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅРѕ';
+            $error_text = 'Изображение не загружено';
         }
     }
     return array($new, $error_text);
@@ -891,7 +891,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
     $xt = $twig->loadTemplate($tpath['list_zboard'].'list_zboard.tpl');
 
     $SYSTEM_FLAGS['info']['title']['group'] = $lang['zboard']['name_plugin'];
-    $SYSTEM_FLAGS['info']['title']['others'] = 'РЎРїРёСЃРѕРє РІР°С€РёС… РѕР±СЉСЏРІР»РµРЅРёР№';
+    $SYSTEM_FLAGS['info']['title']['others'] = 'Список ваших объявлений';
     $SYSTEM_FLAGS['template.main.name'] = pluginGetVariable('zboard', 'main_template')?pluginGetVariable('zboard', 'main_template'):'main';
 
     $url = pluginGetVariable('zboard', 'url');
@@ -932,7 +932,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         $countPages = ceil($count / $limitCount);
 
         if($countPages < $pageNo)
-        return msg(array("type" => "error", "text" => "РџРѕРґСЃС‚СЂР°РЅРёС†С‹ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"));
+        return msg(array("type" => "error", "text" => "Подстраницы не существует"));
 
         if ($countPages > 1 && $countPages >= $pageNo){
             $paginationParams = checkLinkAvailable('zboard', '')?
@@ -951,7 +951,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
             $catlink = checkLinkAvailable('zboard', '')?
                 generateLink('zboard', '', array('cat' => $row['cid'])):
                 generateLink('core', 'plugin', array('plugin' => 'zboard'), array('cat' => $row['cid']));
-
+            
             $vip = checkLinkAvailable('zboard', 'vip')?
                 generateLink('zboard', 'edit', array('id' => $row['nid'])):
                 generateLink('core', 'plugin', array('plugin' => 'zboard', 'handler' => 'vip'), array('id' => $row['nid']));
@@ -1052,7 +1052,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
         $template['vars']['mainblock'] .= $xt->render($tVars);
     } else {
         header('HTTP/1.1 403 Forbidden');
-        $SYSTEM_FLAGS['info']['title']['others'] = 'Р”РѕСЃС‚СѓРї СЂР°Р·СЂРµС€РµРЅ С‚РѕР»СЊРєРѕ Р°РІС‚РѕСЂРёР·РёСЂРѕРІР°РЅРЅС‹Рј';
+        $SYSTEM_FLAGS['info']['title']['others'] = 'Доступ разрешен только авторизированным';
         $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
         $tVars['vars']['home'] = home;
@@ -1200,12 +1200,12 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $lang, 
     $count = $mysql->result('SELECT COUNT(id) FROM '.prefix.'_zboard WHERE active = \'1\' '.$sorting);
 
     if($count == 0)
-        return msg(array("type" => "error", "text" => "Р’ РґР°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё РїРѕРєР° С‡С‚Рѕ РЅРµС‚Сѓ РѕР±СЉСЏРІР»РµРЅРёР№"));
+        return msg(array("type" => "error", "text" => "В данной категории пока что нету объявлений"));
 
     $countPages = ceil($count / $limitCount);
 
     if($countPages < $pageNo)
-        return msg(array("type" => "error", "text" => "РџРѕРґСЃС‚СЂР°РЅРёС†С‹ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"));
+        return msg(array("type" => "error", "text" => "Подстраницы не существует"));
 
     if ($countPages > 1 && $countPages >= $pageNo)
     {
@@ -1379,9 +1379,9 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
         if(empty($search_in))
             $search_in = 'all';
 
-        $search = mb_substr($keywords, 0, 64);
+        $search = substr($keywords, 0, 64);
          if( strlen($search) < 3 )
-            $output = msg(array("type" => "error", "text" => "РЎР»РёС€РєРѕРј РєРѕСЂРѕС‚РєРѕРµ СЃР»РѕРІРѕ"), 1, 2);
+            $output = msg(array("type" => "error", "text" => "Слишком короткое слово"), 1, 2);
 
         $keywords = array();
 
@@ -1430,7 +1430,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
 
         $countPages = ceil($count / $limitCount);
         if($countPages < $pageNo)
-            $output = msg(array("type" => "error", "text" => "РџРѕРґСЃС‚СЂР°РЅРёС†С‹ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"), 1, 2);
+            $output = msg(array("type" => "error", "text" => "Подстраницы не существует"), 1, 2);
 
         if ($pageNo < 1) $pageNo = 1;
         if (!isset($limitStart)) $limitStart = ($pageNo - 1)* $limitCount;
@@ -1438,8 +1438,8 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
         if ($countPages > 1 && $countPages >= $pageNo){
 
             $paginationParams = checkLinkAvailable('zboard', 'search')?
-                array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false)):
-                array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false));
+                array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false)):
+                array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false));
 
             $navigations = LoadVariables();
             $pages = generatePagination($pageNo, 1, $countPages, 10, $paginationParams, $navigations);
@@ -1488,7 +1488,7 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
         }
 
         if( empty($row_two) )
-            $output = msg(array("type" => "error", "text" => "РџРѕ РІР°С€РµРјСѓ Р·Р°РїСЂРѕСЃСѓ <b>".$get_url."</b> РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ"), 1, 2);
+            $output = msg(array("type" => "error", "text" => "По вашему запросу <b>".$get_url."</b> ничего не найдено"), 1, 2);
     }else{
             $res = mysql_query("SELECT * FROM ".prefix."_zboard_cat ORDER BY id");
             $cats = getCats($res);
@@ -1521,9 +1521,9 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
                                             "$1",
                                             str_replace('%link%',
                                                 checkLinkAvailable('zboard', 'search')?
-                                                generatePageLink(array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'xparams' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false)), $prev = floor($limitStart / $limitCount)):
-                                                generatePageLink(array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => isset($get_url)?$get_url:'', 'cat_id' => isset($cat_id)?$cat_id:'', 'search_in' => isset($search_in)?$search_in:'', 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false)),
-                                                    $prev = floor((isset($limitStart) && $limitStart)?$limitStart:10 / (isset($limitCount) && $limitCount)?$limitCount:'5')),
+                                                generatePageLink(array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'xparams' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false)), $prev = floor($limitStart / $limitCount)):
+                                                generatePageLink(array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => isset($get_url)?$get_url:'', 'cat_id' => isset($cat_id)?$cat_id:'', 'search_in' => isset($search_in)?$search_in:'', 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false)),
+                                                    $prev = floor((isset($limitStart) && $limitStart) ? $limitStart : (10 / ((isset($limitCount) && $limitCount) ? $limitCount : '5'))),
                                                 isset($navigations['prevlink'])?$navigations['prevlink']:''
                                             )
                     ),
@@ -1534,8 +1534,8 @@ global $tpl, $template, $twig, $mysql, $SYSTEM_FLAGS, $config, $userROW, $Curren
                                             "$1",
                                             str_replace('%link%',
                                                 checkLinkAvailable('zboard', 'search')?
-                                                generatePageLink(array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'xparams' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false)), $prev+2):
-                                                generatePageLink(array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'РћС‚РїСЂР°РІРёС‚СЊ'), 'paginator' => array('page', 1, false)), $prev+2),
+                                                generatePageLink(array('pluginName' => 'zboard', 'pluginHandler' => 'search', 'params' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'xparams' => array('keywords' => $get_url?$get_url:'', 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false)), $prev+2):
+                                                generatePageLink(array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'zboard', 'handler' => 'search'), 'xparams' => array('keywords' => $get_url, 'cat_id' => $cat_id, 'search_in' => $search_in, 'submit'=> 'Отправить'), 'paginator' => array('page', 1, false)), $prev+2),
                                                 isset($navigations['nextlink'])?$navigations['nextlink']:''
                                             )
                     ),
@@ -1772,10 +1772,10 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
         if (isset($_REQUEST['submit']))
         {
             $announce_name = input_filter_com(convert($_REQUEST['announce_name']));
-            if(empty($announce_name)) $error_text[] = 'Р—Р°РіРѕР»РѕРІРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ РЅРµ Р·Р°РїРѕР»РЅРµРЅ';
+            if(empty($announce_name)) $error_text[] = 'Заголовок объявления не заполнен';
 
             $author = input_filter_com(convert($_REQUEST['author']));
-            if(empty($author)) $error_text[] = 'РџРѕР»Рµ Р°РІС‚РѕСЂ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+            if(empty($author)) $error_text[] = 'Поле автор не заполнено';
 
             if( isset($userROW) && !empty($userROW) )
             {
@@ -1785,42 +1785,42 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
             {
                 $email = secure_html($_REQUEST['author_email']);
                 if ( !(filter_var($email, FILTER_VALIDATE_EMAIL)) ) {
-                    $error_text[] = 'Р’ РїРѕР»Рµ Email РІРІРµРґРµРЅ РЅРµРїСЂР°РІРёР»СЊРЅС‹Р№ email';
+                    $error_text[] = 'В поле Email введен неправильный email';
                 }
             }
             else
             {
-                $error_text[] = 'РџРѕР»Рµ Email РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле Email не заполнено';
             }
 
             $announce_description = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_description'])));
             if(empty($announce_description))
             {
-                $error_text[] = 'РџРѕР»Рµ СЃ РѕР±СЉСЏРІР»РµРЅРёРµРј РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле с объявлением не заполнено';
             }
 
             $announce_contacts = str_replace(array("\r\n", "\r"), "\n",input_filter_com(convert($_REQUEST['announce_contacts'])));
             if(empty($announce_contacts))
             {
-                $error_text[] = 'РџРѕР»Рµ СЃ РєРѕРЅС‚Р°РєС‚Р°РјРё РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+                $error_text[] = 'Поле с контактами не заполнено';
             }
 
             $find_url_msg = $announce_name.' '.$author.' '.$announce_description;
             preg_match_all("@([\d\pL]([\d\-\pL]*[\d\pL]){2,62}\.)+\pL{2,4}@", $find_url_msg, $find_url);
-            //preg_match_all("@(?:(?:https?|ftp|telnet)://(?:[Р°-СЏРђ-РЇС‘РЃa-zA-Z0-9_-]{1,32}(?::[Р°-СЏРђ-РЇС‘РЃa-zA-Z0-9_-]{1,32})?@)?)?(?:(?:[Р°-СЏРђ-РЇС‘РЃa-zA-Z0-9_-]{1,128}\.)+(?:ru|su|СЂС„|com|net|org|mil|edu|arpa|gov|biz|info|aero|inc|name|[a-z]{2})|(?!0)(?:(?!0[^.]|255)[0-9]{1,3}\.){3}(?!0|255)[0-9]{1,3})(?:/[Р°-СЏРђ-РЇС‘РЃa-zA-Z0-9_.,_@%&?+=\~/-]*)?(?:#[^ '\"&]*)?@", $find_url_msg, $find_url);
+            //preg_match_all("@(?:(?:https?|ftp|telnet)://(?:[а-яА-ЯёЁa-zA-Z0-9_-]{1,32}(?::[а-яА-ЯёЁa-zA-Z0-9_-]{1,32})?@)?)?(?:(?:[а-яА-ЯёЁa-zA-Z0-9_-]{1,128}\.)+(?:ru|su|рф|com|net|org|mil|edu|arpa|gov|biz|info|aero|inc|name|[a-z]{2})|(?!0)(?:(?!0[^.]|255)[0-9]{1,3}\.){3}(?!0|255)[0-9]{1,3})(?:/[а-яА-ЯёЁa-zA-Z0-9_.,_@%&?+=\~/-]*)?(?:#[^ '\"&]*)?@", $find_url_msg, $find_url);
             //preg_match_all("@((https?://)?([-\w]+\.[-\w\.]+)+\w(:\d+)?(/([-\w/_\.]*(\?\S+)?)?)*)@", $find_url_msg, $find_url);
-            if( $find_url[0] ) { $error_text[] = "Р’ РїРѕР»СЏС… СЃРѕРѕР±С‰РµРЅРёСЏ РЅРµР»СЊР·СЏ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃСЃС‹Р»РєРё!"; }
+            if( $find_url[0] ) { $error_text[] = "В полях сообщения нельзя использовать ссылки!"; }
 
             $announce_period = input_filter_com(convert($_REQUEST['announce_period']));
             if(!empty($announce_period))
             {
                 if(!in_array($announce_period, explode("|",pluginGetVariable('zboard', 'list_period'))))
                 {
-                    $error_text[] = 'РўР°РєРѕРіРѕ СЃР»РѕРІР° РЅРµС‚ '.$announce_period;
+                    $error_text[] = 'Такого слова нет '.$announce_period;
                 }
 
             } else {
-                $error_text[] = 'РќРµ СѓРєР°Р·Р°РЅ РїРµСЂРёРѕРґ';
+                $error_text[] = 'Не указан период';
             }
 
             if (pluginGetVariable('zboard','use_recaptcha'))
@@ -1833,7 +1833,7 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
 
                 if (!$resp->is_valid) {
                // What happens when the CAPTCHA was entered incorrectly
-               $error_text[] = "РџСЂРѕРІРµСЂРѕС‡РЅС‹Р№ РєРѕРґ РІРІРµРґРµРЅ РЅРµРїСЂР°РІРёР»СЊРЅРѕ.";
+               $error_text[] = "Проверочный код введен неправильно.";
                 }
 
             }
@@ -1845,10 +1845,10 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
 
                 if(empty($cat))
                 {
-                    $error_text[] = 'РўР°РєРѕР№ РєР°С‚РµРіРѕСЂРёРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+                    $error_text[] = 'Такой категории не существует';
                 }
             } else {
-                $error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
+                $error_text[] = 'Вы не выбрали категорию';
             }
 
             if(empty($error_text))
@@ -1883,7 +1883,7 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
                                 pluginGetVariable('zboard', 'template_mail'));
                         foreach ($mysql->select('select * from '.prefix.'_users WHERE status = 1') as $row)
                         {
-                            zzMail($row['mail'], 'Р”РѕР±Р°РІР»РµРЅРѕ РЅРѕРІРѕРµ РѕР±СЉСЏРІР»РµРЅРёРµ, С‚СЂРµР±СѓСЋС‰РµРµ РїСЂРѕРІРµСЂРєРё Рё Р°РєС‚РёРІР°С†РёРё', $body, '', false, 'text/html');
+                            zzMail($row['mail'], 'Добавлено новое объявление, требующее проверки и активации', $body, '', false, 'text/html');
                         }
                     }
 
@@ -1972,7 +1972,7 @@ global $tpl, $template, $twig, $SYSTEM_FLAGS, $config, $userROW, $mysql, $lang, 
         $template['vars']['mainblock'] .= $xt->render($tVars);
     } else {
         header('HTTP/1.1 403 Forbidden');
-        $SYSTEM_FLAGS['info']['title']['others'] = 'Р”РѕСЃС‚СѓРї СЂР°Р·СЂРµС€РµРЅ С‚РѕР»СЊРєРѕ Р°РІС‚РѕСЂРёР·РёСЂРѕРІР°РЅРЅС‹Рј';
+        $SYSTEM_FLAGS['info']['title']['others'] = 'Доступ разрешен только авторизированным';
         $xt = $twig->loadTemplate($tpath['no_access'].'no_access.tpl');
 
         $tVars['vars']['home'] = home;
@@ -2177,11 +2177,11 @@ global $tpl, $cron, $mysql, $config, $lang, $parse, $PFILTERS;
 // Update expired announces
 function zboardUpdateExpiredAnnounces() {
 global $tpl, $cron, $mysql, $config, $lang, $parse, $PFILTERS;
-
+        
         foreach ($mysql->select("select * from ".prefix."_zboard where active = 1 AND (datediff(NOW(), FROM_UNIXTIME(vip_expired)) > 0) AND vip_expired != 0") as $irow) {
             $mysql->query("UPDATE ".prefix."_zboard SET vip_expired = '', vip_added = '' WHERE id = '".$irow['id']."' ");
         }
-
+        
         foreach ($mysql->select("select * from ".prefix."_zboard where active = 1 AND datediff(NOW(),FROM_UNIXTIME(editdate)) > announce_period * 30") as $irow) {
 
         $hashcode = rand_str();
@@ -2276,15 +2276,15 @@ class Lingua_Stem_Ru
     public $VERSION = "0.02";
     public $Stem_Caching = 0;
     public $Stem_Cache = array();
-    public $VOWEL = '/Р°РµРёРѕСѓС‹СЌСЋСЏ/';
-    public $PERFECTIVEGROUND = '/((РёРІ|РёРІС€Рё|РёРІС€РёСЃСЊ|С‹РІ|С‹РІС€Рё|С‹РІС€РёСЃСЊ)|((?<=[Р°СЏ])(РІ|РІС€Рё|РІС€РёСЃСЊ)))$/';
-    public $REFLEXIVE = '/(СЃ[СЏСЊ])$/';
-    public $ADJECTIVE = '/(РµРµ|РёРµ|С‹Рµ|РѕРµ|РёРјРё|С‹РјРё|РµР№|РёР№|С‹Р№|РѕР№|РµРј|РёРј|С‹Рј|РѕРј|РµРіРѕ|РѕРіРѕ|РµРјСѓ|РѕРјСѓ|РёС…|С‹С…|СѓСЋ|СЋСЋ|Р°СЏ|СЏСЏ|РѕСЋ|РµСЋ)$/';
-    public $PARTICIPLE = '/((РёРІС€|С‹РІС€|СѓСЋС‰)|((?<=[Р°СЏ])(РµРј|РЅРЅ|РІС€|СЋС‰|С‰)))$/';
-    public $VERB = '/((РёР»Р°|С‹Р»Р°|РµРЅР°|РµР№С‚Рµ|СѓР№С‚Рµ|РёС‚Рµ|РёР»Рё|С‹Р»Рё|РµР№|СѓР№|РёР»|С‹Р»|РёРј|С‹Рј|РµРЅ|РёР»Рѕ|С‹Р»Рѕ|РµРЅРѕ|СЏС‚|СѓРµС‚|СѓСЋС‚|РёС‚|С‹С‚|РµРЅС‹|РёС‚СЊ|С‹С‚СЊ|РёС€СЊ|СѓСЋ|СЋ)|((?<=[Р°СЏ])(Р»Р°|РЅР°|РµС‚Рµ|Р№С‚Рµ|Р»Рё|Р№|Р»|РµРј|РЅ|Р»Рѕ|РЅРѕ|РµС‚|СЋС‚|РЅС‹|С‚СЊ|РµС€СЊ|РЅРЅРѕ)))$/';
-    public $NOUN = '/(Р°|РµРІ|РѕРІ|РёРµ|СЊРµ|Рµ|РёСЏРјРё|СЏРјРё|Р°РјРё|РµРё|РёРё|Рё|РёРµР№|РµР№|РѕР№|РёР№|Р№|РёСЏРј|СЏРј|РёРµРј|РµРј|Р°Рј|РѕРј|Рѕ|Сѓ|Р°С…|РёСЏС…|СЏС…|С‹|СЊ|РёСЋ|СЊСЋ|СЋ|РёСЏ|СЊСЏ|СЏ)$/';
-    public $RVRE = '/^(.*?[Р°РµРёРѕСѓС‹СЌСЋСЏ])(.*)$/';
-    public $DERIVATIONAL = '/[^Р°РµРёРѕСѓС‹СЌСЋСЏ][Р°РµРёРѕСѓС‹СЌСЋСЏ]+[^Р°РµРёРѕСѓС‹СЌСЋСЏ]+[Р°РµРёРѕСѓС‹СЌСЋСЏ].*(?<=Рѕ)СЃС‚СЊ?$/';
+    public $VOWEL = '/аеиоуыэюя/';
+    public $PERFECTIVEGROUND = '/((ив|ивши|ившись|ыв|ывши|ывшись)|((?<=[ая])(в|вши|вшись)))$/';
+    public $REFLEXIVE = '/(с[яь])$/';
+    public $ADJECTIVE = '/(ее|ие|ые|ое|ими|ыми|ей|ий|ый|ой|ем|им|ым|ом|его|ого|ему|ому|их|ых|ую|юю|ая|яя|ою|ею)$/';
+    public $PARTICIPLE = '/((ивш|ывш|ующ)|((?<=[ая])(ем|нн|вш|ющ|щ)))$/';
+    public $VERB = '/((ила|ыла|ена|ейте|уйте|ите|или|ыли|ей|уй|ил|ыл|им|ым|ен|ило|ыло|ено|ят|ует|уют|ит|ыт|ены|ить|ыть|ишь|ую|ю)|((?<=[ая])(ла|на|ете|йте|ли|й|л|ем|н|ло|но|ет|ют|ны|ть|ешь|нно)))$/';
+    public $NOUN = '/(а|ев|ов|ие|ье|е|иями|ями|ами|еи|ии|и|ией|ей|ой|ий|й|иям|ям|ием|ем|ам|ом|о|у|ах|иях|ях|ы|ь|ию|ью|ю|ия|ья|я)$/';
+    public $RVRE = '/^(.*?[аеиоуыэюя])(.*)$/';
+    public $DERIVATIONAL = '/[^аеиоуыэюя][аеиоуыэюя]+[^аеиоуыэюя]+[аеиоуыэюя].*(?<=о)сть?$/';
 
     public function s(&$s, $re, $to)
     {
@@ -2301,7 +2301,7 @@ class Lingua_Stem_Ru
     public function stem_word($word)
     {
         $word = strtolower($word);
-        $word = strtr($word, 'С‘', 'Рµ');
+        $word = strtr($word, 'ё', 'е');
 
         if($this->Stem_Caching && isset($this->Stem_Cache[$word]))
         {
@@ -2330,17 +2330,17 @@ class Lingua_Stem_Ru
                 }
             }
 
-            $this->s($RV, '/Рё$/', '');
+            $this->s($RV, '/и$/', '');
 
             if($this->m($RV, $this->DERIVATIONAL))
             {
-                $this->s($RV, '/РѕСЃС‚СЊ?$/', '');
+                $this->s($RV, '/ость?$/', '');
             }
 
-            if(!$this->s($RV, '/СЊ$/', ''))
+            if(!$this->s($RV, '/ь$/', ''))
             {
-                $this->s($RV, '/РµР№С€Рµ?/', '');
-                $this->s($RV, '/РЅРЅ$/', 'РЅ');
+                $this->s($RV, '/ейше?/', '');
+                $this->s($RV, '/нн$/', 'н');
             }
 
             $stem = $start.$RV;

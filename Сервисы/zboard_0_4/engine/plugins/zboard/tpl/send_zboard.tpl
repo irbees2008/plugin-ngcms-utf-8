@@ -14,16 +14,16 @@
 var currentInputAreaID = 'content_description';
 </script>
 <div class="comment">
-<h3><span>Р”РѕР±Р°РІРёС‚СЊ РѕР±СЉСЏРІР»РµРЅРёРµ</span></h3>
+<h3><span>Добавить объявление</span></h3>
 <form method="post" action="" class="comment-form" name="form" enctype="multipart/form-data">
 <ul class="comment-author">
 <li class="item clearfix">
 <input type="text" class="form-control" name="announce_name" value="{{announce_name}}" tabindex="1">
-<label>Р—Р°РіРѕР»РѕРІРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ <i>(*)</i></label>
+<label>Заголовок объявления <i>(*)</i></label>
 </li>
 <li class="item clearfix">
 <input type="text" class="form-control" name="author" value="{{author}}" tabindex="1">
-<label>РђРІС‚РѕСЂ <i>(*)</i></label>
+<label>Автор <i>(*)</i></label>
 </li>
 {% if not(global.flags.isLogged) %}
 <li class="item clearfix">
@@ -35,23 +35,23 @@ var currentInputAreaID = 'content_description';
 <select name="announce_period">
 {{list_period}}
 </select>
-<label>РџРµСЂРёРѕРґ РѕР±СЉСЏРІР»РµРЅРёСЏ <i>(*)</i></label>
+<label>Период объявления <i>(*)</i></label>
 </li>
 <li class="item clearfix">
 <select name="cat_id">
 {{options}}
 </select>
-<label>РљР°С‚РµРіРѕСЂРёСЏ <i>(*)</i></label>
+<label>Категория <i>(*)</i></label>
 </li>
 </ul>
 <span class="textarea">
-<label>РћРїРёСЃР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ <i>(*)</i></label><br/><br/>
+<label>Описание объявления <i>(*)</i></label><br/><br/>
 {{bb_tags}}
 <textarea type="text" id="content_description" name="announce_description" tabindex="4">{{announce_description}}</textarea>
 
 </span>
 <span class="textarea">
-РљРѕРЅС‚Р°РєС‚С‹ <i>(*)</i>
+Контакты <i>(*)</i>
 <textarea type="text" name="announce_contacts" tabindex="4">{{announce_contacts}}</textarea>
 </span>
 
@@ -93,7 +93,7 @@ $(document).ready(function() {
 });
 
 </script>
-<label>РџСЂРёРєСЂРµРїРёС‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ</label><br/><br/>
+<label>Прикрепить изображения</label><br/><br/>
 <input type="hidden" id="txtdes" name="txtdes" value="{{id}}" />
 <div id="queue">
 </div>
@@ -102,13 +102,13 @@ $(document).ready(function() {
 
 {% if (use_recaptcha) %}
 <li class="item clearfix">
-<label>РљР°РїС‡Р° <i>(*)</i></label><br/><br/>
+<label>Капча <i>(*)</i></label><br/><br/>
 {{captcha}}
 </li>
 {% endif %}
 
 </ul>
-<span class="submit"><button name="submit" type="submit"  tabindex="5" onclick="javascript:$('#file_upload').uploadifive('upload')" >РћС‚РїСЂР°РІРёС‚СЊ</button></span>
-<span class="submit"><button tabindex="5" type="reset" >РЎР±СЂРѕСЃ</button></span>
+<span class="submit"><button name="submit" type="submit"  tabindex="5" onclick="javascript:$('#file_upload').uploadifive('upload')" >Отправить</button></span>
+<span class="submit"><button tabindex="5" type="reset" >Сброс</button></span>
 </form>
 </div>

@@ -9,11 +9,11 @@ function plugin_zboard_install($action) {
 
     if(!file_exists(dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/zboard'))
         if(!@mkdir(dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/zboard/', 0777))
-            msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РїР°РїРєСѓ ".dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/images/zboard'), 1);
+            msg(array("type" => "error", "text" => "Критическая ошибка <br /> не удалось создать папку ".dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/images/zboard'), 1);
 
     if(!file_exists(dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/zboard/thumb'))
         if(!@mkdir(dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/zboard/thumb', 0777))
-            msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> РЅРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РїР°РїРєСѓ ".dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/images/zboard/thumb'), 1);
+            msg(array("type" => "error", "text" => "Критическая ошибка <br /> не удалось создать папку ".dirname(dirname(dirname(dirname(__FILE__)))).'/uploads/images/zboard/thumb'), 1);
 
     if ($action != 'autoapply')
         loadPluginLang('zboard', 'config', '', '', ':');
@@ -141,11 +141,11 @@ function plugin_zboard_install($action) {
                 'width' => '2000',
                 'height' => '2000',
                 'width_thumb' => '350',
-                'description' => 'РћРїРёСЃР°РЅРёРµ',
-                'keywords' => 'РљР»СЋС‡РµРІС‹Рµ, СЃР»РѕРІР°,',
+                'description' => 'Описание',
+                'keywords' => 'Ключевые, слова,',
                 'list_period' => '1|2|3|4',
-                'info_send' => '<div class="msgo">РЎРїР°СЃРёР±Рѕ, <strong>%user%</strong>! Р’С‹ РґРѕР±Р°РІРёР»Рё РЅРѕРІРѕРµ РѕР±СЉСЏРІР»РµРЅРёРµ.<br /><strong>РћР±СЉСЏРІР»РµРЅРёРµ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ РїРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё.</strong></div>',
-                'info_edit' => '<div class="msgo">РЎРїР°СЃРёР±Рѕ, <strong>%user%</strong>! Р’С‹ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°Р»Рё РѕР±СЉСЏРІР»РµРЅРёРµ.<br /><strong>РћР±СЉСЏРІР»РµРЅРёРµ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ РїРѕСЃР»Рµ РїСЂРѕРІРµСЂРєРё.</strong></div>',
+                'info_send' => '<div class="msgo">Спасибо, <strong>%user%</strong>! Вы добавили новое объявление.<br /><strong>Объявление будет доступно после проверки.</strong></div>',
+                'info_edit' => '<div class="msgo">Спасибо, <strong>%user%</strong>! Вы отредактировали объявление.<br /><strong>Объявление будет доступно после проверки.</strong></div>',
                 'template_mail' => '%announce_name% - %author% - %announce_description% - %announce_period% - %announce_contacts% - %date%',
                 'ext_image' => '*.jpg;*.jpeg;*.gif;*.png',
                 'admin_count' => '10',

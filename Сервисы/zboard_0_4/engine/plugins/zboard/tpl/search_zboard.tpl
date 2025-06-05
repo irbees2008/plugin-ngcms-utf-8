@@ -1,34 +1,34 @@
 {% if (submit) %}
 
 <div class="t-side">
-<div class="hd">РџРѕРёСЃРє</div>
+<div class="hd">Поиск</div>
 <div class="bd">
 
 <form id="search" method="post" action="">
-<label class="conl">РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°<br />
+<label class="conl">Ключевые слова<br />
 <input type="text" class="form-control" name="keywords" size="40" maxlength="100" />
 <br />
 </label>
 
-<label class="conl">РљР°С‚РµРіРѕСЂРёРё<br />
+<label class="conl">Категории<br />
 <select id="cat" name="cat_id">
-<option value='0'>Р’СЃРµ РёРјРµСЋС‰РёРµСЃСЏ</option>
+<option value='0'>Все имеющиеся</option>
 {{ options }}
 </select>
 <br />
 </label>
 
-<label class="conl">РџРѕРёСЃРє РІ<br />
+<label class="conl">Поиск в<br />
 <select name="search_in">
-<option value='all' selected>Р’ С‚РµРєСЃС‚Рµ РѕР±СЉСЏРІР»РµРЅРёСЏ Рё Р·Р°РіРѕР»РѕРІРєРµ</option>
-<option value='text'>РўРѕР»СЊРєРѕ РІ С‚РµРєСЃС‚Рµ РѕР±СЉСЏРІР»РµРЅРёСЏ</option>
-<option value='title'>РўРѕР»СЊРєРѕ РІ Р·Р°РіРѕР»РѕРІРєРµ</option>
+<option value='all' selected>В тексте объявления и заголовке</option>
+<option value='text'>Только в тексте объявления</option>
+<option value='title'>Только в заголовке</option>
 </select>
 <br />
 </label>
 <br /><br /><br />
 
-<input type="submit" name="submit" value="РћС‚РїСЂР°РІРёС‚СЊ" accesskey="s" />
+<input type="submit" name="submit" value="Отправить" accesskey="s" />
 </form>
 
 </div>
@@ -36,17 +36,17 @@
 {% else %}
 
 <div class="t-side">
-<div class="hd">Р РµР·СѓР»СЊС‚Р°С‚С‹ РїРѕРёСЃРєР°</div>
+<div class="hd">Результаты поиска</div>
 <div class="bd">
 
 <table class="hosting">
 				<tr>
-					<th>Р”Р°С‚Р°</th>
-					<th>РљР°С‚РµРіРѕСЂРёСЏ</th>
-					<th>Р�Р·РѕР±СЂР°Р¶РµРЅРёРµ</th>
-					<th>Р—Р°РіРѕР»РѕРІРѕРє</th>
-					<th>РћР±СЉСЏРІР»РµРЅРёРµ</th>
-					<th>РђРІС‚РѕСЂ</th>
+					<th>Дата</th>
+					<th>Категория</th>
+					<th>Изображение</th>
+					<th>Заголовок</th>
+					<th>Объявление</th>
+					<th>Автор</th>
 				</tr>
 				{% for entry in entries %}
 				<tr>
@@ -74,13 +74,13 @@
 				{% else %}
 				<tr>
 					<td colspan="6" class="website">
-						РџРѕ РІР°С€РµРјСѓ Р·Р°РїСЂРѕСЃСѓ <b>{{get_url}}</b> РЅРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ
+						По вашему запросу <b>{{get_url}}</b> ничего не найдено
 					</td>
 				</tr>
 				{% endfor %}
 				<tr>
 					<td colspan="6" class="website">
-						<a href='{{home}}/plugin/zboard/search/'>Р’РµСЂРЅСѓС‚СЊСЃСЏ РЅР°Р·Р°Рґ</a>
+						<a href='{{home}}/plugin/zboard/search/'>Вернуться назад</a>
 					</td>
 				</tr>
 				{% if (pages.true) %}

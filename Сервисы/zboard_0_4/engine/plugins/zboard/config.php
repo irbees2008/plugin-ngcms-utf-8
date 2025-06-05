@@ -80,7 +80,7 @@ global $tpl, $config, $mysql;
 	}
 
 	$cache = pluginGetVariable('zboard', 'cache');
-	$cache = '<option value="0" '.($cache==0?'selected':'').'>РќРµС‚</option><option value="1" '.($cache==1?'selected':'').'>Р”Р°</option>';
+	$cache = '<option value="0" '.($cache==0?'selected':'').'>Нет</option><option value="1" '.($cache==1?'selected':'').'>Да</option>';
 
 	$pvars['vars']= array(
 		'cache' => $cache,
@@ -94,7 +94,7 @@ global $tpl, $config, $mysql;
 	$tvars['vars']= array (
 		'active' => !empty($count)?'[ '.$count.' ]':'',
 		'entries' => $tpl->show('caching'),
-		'global' => 'РќР°СЃС‚СЂРѕР№РєР° РєСЌС€Р°'
+		'global' => 'Настройка кэша'
 	);
 
 	$tpl->template('main', $tpath['config/main'].'config');
@@ -105,7 +105,7 @@ global $tpl, $config, $mysql;
 
 function cat_edit()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_cat'), 'zboard', 1);
 
 	$id = intval($_REQUEST['id']);
@@ -116,20 +116,20 @@ function cat_edit()
 		$parent_id = intval($_REQUEST['parent']);
 		$cat_name = input_filter_com(convert($_REQUEST['cat_name']));
 		if (empty($cat_name)) {
-			$error_text[] = '?РќР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = '?Название категории не задано';
 		}
 		$description = input_filter_com(convert($_REQUEST['description']));
 		if (empty($description)) {
-			$error_text[] = 'РћРїРёСЃР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = 'Описание категории не задано';
 		}
 		$keywords = input_filter_com(convert($_REQUEST['keywords']));
 		if (empty($keywords)) {
-			$error_text[] = 'РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РЅРµ Р·Р°РґР°РЅС‹';
+			$error_text[] = 'Ключевые слова не заданы';
 		}
 		//$position = intval($_REQUEST['position']);
 		$position = 1;
 		if (empty($position)) {
-			$error_text[] = 'РќРµ Р·Р°РґР°РЅР° РїРѕР·РёС†РёСЏ';
+			$error_text[] = 'Не задана позиция';
 		}
 
 		if (empty($error_text)) {
@@ -179,12 +179,12 @@ function cat_edit()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('send_cat'),
-		'global' => 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РєР°С‚РµРіРѕСЂРёСЋ'
+		'global' => 'Редактировать категорию'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function getCats($res)
@@ -233,7 +233,7 @@ function getTree($arr, $flg, $l)
 
 function send_cat($params)
 {
-	global $tpl, $template, $config, $mysql, $lang, $main_admin;
+	global $tpl, $template, $config, $mysql, $lang;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_cat'), 'zboard', 1);
 
 	if (isset($_REQUEST['submit'])) {
@@ -242,20 +242,20 @@ function send_cat($params)
 		$parent_id = intval($_REQUEST['parent']);
 
 		if (empty($cat_name)) {
-			$error_text[] = 'РќР°Р·РІР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = 'Название категории не задано';
 		}
 		$description = input_filter_com(convert($_REQUEST['description']));
 		if (empty($description)) {
-			$error_text[] = 'РћРїРёСЃР°РЅРёРµ РєР°С‚РµРіРѕСЂРёРё РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = 'Описание категории не задано';
 		}
 		$keywords = input_filter_com(convert($_REQUEST['keywords']));
 		if (empty($keywords)) {
-			$error_text[] = 'РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° РЅРµ Р·Р°РґР°РЅС‹';
+			$error_text[] = 'Ключевые слова не заданы';
 		}
 		//$position = intval($_REQUEST['position']);
 		$position = 1;
 		if (empty($position)) {
-			$error_text[] = 'РќРµ Р·Р°РґР°РЅР° РїРѕР·РёС†РёСЏ';
+			$error_text[] = 'Не задана позиция';
 		}
 
 		if (empty($error_text)) {
@@ -303,17 +303,17 @@ function send_cat($params)
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('send_cat'),
-		'global' => 'Р”РѕР±Р°РІРёС‚СЊ РєР°С‚РµРіРѕСЂРёСЋ'
+		'global' => 'Добавить категорию'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function list_cat()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_cat', 'config/list_cat_entries'), 'zboard', 1);
 
 	foreach ($mysql->select('SELECT cat_id, COUNT(id) as num FROM ' . prefix . '_zboard GROUP BY cat_id') as $rows) {
@@ -345,23 +345,23 @@ function list_cat()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('list_cat'),
-		'global' => 'РЎРїРёСЃРѕРє РєР°С‚РµРіРѕСЂРёР№'
+		'global' => 'Список категорий'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function list_order()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_order', 'config/list_order_entries'), 'zboard', 1);
 
 	foreach ($mysql->select('SELECT *, po.id as id, zb.id as zid from ' . prefix . '_zboard_pay_order po LEFT JOIN ' . prefix . '_zboard zb  ON po.zid = zb.id ORDER BY po.id ASC') as $row) {
 		$gvars['vars'] = array(
 			'id' => $row['id'],
-			'dt' => (empty($row['dt'])) ? 'Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°' : date(pluginGetVariable('zboard', 'date'), $row['dt']),
+			'dt' => (empty($row['dt'])) ? 'Дата не указана' : date(pluginGetVariable('zboard', 'date'), $row['dt']),
 			'price' => $row['amount'] . " " . $row['currency'],
 			'discr' => $row['description'],
 			'status' => $row['status'],
@@ -381,17 +381,17 @@ function list_order()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('list_order'),
-		'global' => 'РџСЂР°Р№СЃ'
+		'global' => 'Прайс'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function list_price()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_price', 'config/list_price_entries'), 'zboard', 1);
 
 	foreach ($mysql->select('SELECT * from ' . prefix . '_zboard_pay_price ORDER BY id ASC') as $row) {
@@ -415,17 +415,17 @@ function list_price()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('list_price'),
-		'global' => 'РџСЂР°Р№СЃ'
+		'global' => 'Прайс'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function send_price($params)
 {
-	global $tpl, $template, $config, $mysql, $lang, $main_admin;
+	global $tpl, $template, $config, $mysql, $lang;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_price'), 'zboard', 1);
 
 	if (isset($_REQUEST['submit'])) {
@@ -434,11 +434,11 @@ function send_price($params)
 		$time = intval($_REQUEST['time']);
 
 		if (empty($price)) {
-			$error_text[] = 'РџСЂР°Р№СЃ РЅРµ Р·Р°РґР°РЅ';
+			$error_text[] = 'Прайс не задан';
 		}
 
 		if (empty($time)) {
-			$error_text[] = 'Р’СЂРµРјСЏ РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = 'Время не задано';
 		}
 
 		if (empty($error_text)) {
@@ -475,17 +475,17 @@ function send_price($params)
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('send_price'),
-		'global' => 'Р”РѕР±Р°РІРёС‚СЊ РєР°С‚РµРіРѕСЂРёСЋ'
+		'global' => 'Добавить категорию'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function price_edit()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_price'), 'zboard', 1);
 
 	$id = intval($_REQUEST['id']);
@@ -497,11 +497,11 @@ function price_edit()
 		$price = input_filter_com(convert($_REQUEST['price']));
 
 		if (empty($price)) {
-			$error_text[] = 'РџСЂР°Р№СЃ РЅРµ Р·Р°РґР°РЅ';
+			$error_text[] = 'Прайс не задан';
 		}
 
 		if (empty($time)) {
-			$error_text[] = 'Р’СЂРµРјСЏ РЅРµ Р·Р°РґР°РЅРѕ';
+			$error_text[] = 'Время не задано';
 		}
 
 		if (empty($error_text)) {
@@ -538,12 +538,12 @@ function price_edit()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('send_price'),
-		'global' => 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РїСЂР°Р№СЃ'
+		'global' => 'Редактировать прайс'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function price_del()
@@ -553,18 +553,18 @@ function price_del()
 	$id = intval($_REQUEST['id']);
 
 	if (empty($id)) {
-		return msg(array("type" => "error", "text" => "РћС€РёР±РєР°, РІС‹ РЅРµ РІС‹Р±СЂР°Р»Рё С‡С‚Рѕ С…РѕС‚РёС‚Рµ СѓРґР°Р»РёС‚СЊ"));
+		return msg(array("type" => "error", "text" => "Ошибка, вы не выбрали что хотите удалить"));
 	}
 
 	$mysql->query("delete from " . prefix . "_zboard_pay_price where id = {$id}");
 
-	msg(array("type" => "info", "info" => "РџСЂР°Р№СЃ СѓРґР°Р»РµРЅ"));
+	msg(array("type" => "info", "info" => "Прайс удален"));
 }
 
 
 function url()
 {
-	global $tpl, $mysql, $main_admin;
+	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/url'), 'zboard', 1);
 
 	if (isset($_REQUEST['submit'])) {
@@ -578,10 +578,10 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'cat' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'РљР°С‚РµРіРѕСЂРёРё')),
-						'page' => array('matchRegex' => '\d{1,4}', 'descr' => array('russian' => 'РџРѕСЃС‚СЂР°РЅРёС‡РЅР°СЏ РЅР°РІРёРіР°С†РёСЏ'))
+						'cat' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'Категории')),
+						'page' => array('matchRegex' => '\d{1,4}', 'descr' => array('russian' => 'Постраничная навигация'))
 					),
-					'descr'	=> array('russian' => 'Р“Р»Р°РІРЅР°СЏ СЃС‚СЂР°РЅРёС†Р°'),
+					'descr'	=> array('russian' => 'Главная страница'),
 				)
 			);
 
@@ -591,9 +591,9 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID РѕР±СЉСЏРІР»РµРЅРёСЏ')),
+						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID объявления')),
 					),
-					'descr'	=> array('russian' => 'РЎСЃС‹Р»РєР° РЅР° РѕР±СЉСЏРІР»РµРЅРёРµ'),
+					'descr'	=> array('russian' => 'Ссылка на объявление'),
 				)
 			);
 
@@ -603,7 +603,7 @@ function url()
 				array(
 					'vars' =>
 					array(),
-					'descr'	=> array('russian' => 'Р”РѕР±Р°РІРёС‚СЊ РѕР±СЉСЏРІР»РґРµРЅРёРµ'),
+					'descr'	=> array('russian' => 'Добавить объявлдение'),
 				)
 			);
 
@@ -613,7 +613,7 @@ function url()
 				array(
 					'vars' =>
 					array(),
-					'descr'	=> array('russian' => 'РџРѕРёСЃРє РїРѕ РѕР±СЉСЏРІР»РµРЅРёСЏРј'),
+					'descr'	=> array('russian' => 'Поиск по объявлениям'),
 				)
 			);
 
@@ -623,9 +623,9 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'page' => array('matchRegex' => '\d{1,4}', 'descr' => array('russian' => 'РџРѕСЃС‚СЂР°РЅРёС‡РЅР°СЏ РЅР°РІРёРіР°С†РёСЏ'))
+						'page' => array('matchRegex' => '\d{1,4}', 'descr' => array('russian' => 'Постраничная навигация'))
 					),
-					'descr'	=> array('russian' => 'РЎРїРёСЃРѕРє РѕР±СЉСЏРІР»РµРЅРёР№ РґРѕР±Р°РІР»РµРЅРЅС‹С… РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј'),
+					'descr'	=> array('russian' => 'Список объявлений добавленных пользователем'),
 				)
 			);
 
@@ -635,9 +635,9 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID РѕР±СЉСЏРІР»РµРЅРёСЏ')),
+						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID объявления')),
 					),
-					'descr'	=> array('russian' => 'РЎСЃС‹Р»РєР° РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ'),
+					'descr'	=> array('russian' => 'Ссылка для редактирования'),
 				)
 			);
 
@@ -647,9 +647,9 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID РѕР±СЉСЏРІР»РµРЅРёСЏ')),
+						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID объявления')),
 					),
-					'descr'	=> array('russian' => 'РЎСЃС‹Р»РєР° РґР»СЏ СѓРґР°Р»РµРЅРёСЏ'),
+					'descr'	=> array('russian' => 'Ссылка для удаления'),
 				)
 			);
 
@@ -659,10 +659,10 @@ function url()
 				array(
 					'vars' =>
 					array(
-						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID РѕР±СЉСЏРІР»РµРЅРёСЏ')),
-						'hashcode' => array('matchRegex' => '.+?', 'descr' => array('russian' => 'Hashcode РѕР±СЉСЏРІР»РµРЅРёСЏ')),
+						'id' => array('matchRegex' => '\d+', 'descr' => array('russian' => 'ID объявления')),
+						'hashcode' => array('matchRegex' => '.+?', 'descr' => array('russian' => 'Hashcode объявления')),
 					),
-					'descr'	=> array('russian' => 'РЎСЃС‹Р»РєР° РґР»СЏ РїСЂРѕРґР»РµРЅРёСЏ'),
+					'descr'	=> array('russian' => 'Ссылка для продления'),
 				)
 			);
 
@@ -1092,7 +1092,7 @@ function url()
 		redirect_zboard('?mod=extra-config&plugin=zboard&action=url');
 	}
 	$url = pluginGetVariable('zboard', 'url');
-	$url = '<option value="0" ' . (empty($url) ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . (!empty($url) ? 'selected' : '') . '>Р”Р°</option>';
+	$url = '<option value="0" ' . (empty($url) ? 'selected' : '') . '>Нет</option><option value="1" ' . (!empty($url) ? 'selected' : '') . '>Да</option>';
 	$pvars['vars']['info'] = $url;
 
 	$count = $mysql->result('SELECT COUNT(id) FROM ' . prefix . '_zboard WHERE active = \'0\' ');
@@ -1102,17 +1102,17 @@ function url()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('url'),
-		'global' => 'РќР°СЃС‚СЂРѕР№РєР° Р§РџРЈ'
+		'global' => 'Настройка ЧПУ'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function list_announce()
 {
-	global $tpl, $mysql, $lang, $main_admin;
+	global $tpl, $mysql, $lang;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_announce', 'config/list_entries'), 'zboard', 1);
 
 	$news_per_page = pluginGetVariable('zboard', 'admin_count');
@@ -1129,13 +1129,13 @@ function list_announce()
 	foreach ($mysql->select('SELECT * from ' . prefix . '_zboard ORDER BY editdate DESC LIMIT ' . $start_from . ', ' . $news_per_page) as $row) {
 		switch ($row['active']) {
 			case 1:
-				$active = 'Р”Р°';
+				$active = 'Да';
 				break;
 			case 0:
-				$active = 'РќРµС‚';
+				$active = 'Нет';
 				break;
 			default:
-				$active = 'РћС€РёР±РєР°';
+				$active = 'Ошибка';
 		}
 
 		foreach ($mysql->select('SELECT id, cat_name FROM ' . prefix . '_zboard_cat where id=' . $row['cat_id'] . '') as $cat) {
@@ -1150,7 +1150,7 @@ function list_announce()
 			'announce_contacts' => $row['announce_contacts'],
 			'vip_added'				=>	$row['vip_added'],
 			'vip_expired'			=>	$row['vip_expired'],
-			'date' => (empty($row['date'])) ? 'Р”Р°С‚Р° РЅРµ СѓРєР°Р·Р°РЅР°' : date(pluginGetVariable('zboard', 'date'), $row['date']),
+			'date' => (empty($row['date'])) ? 'Дата не указана' : date(pluginGetVariable('zboard', 'date'), $row['date']),
 			'category' => $options,
 			'active' => $active,
 			'author' => $row['author'],
@@ -1170,17 +1170,17 @@ function list_announce()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('list_announce'),
-		'global' => 'РЎРїРёСЃРѕРє РѕР±СЉСЏРІР»РµРЅРёР№'
+		'global' => 'Список объявлений'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function edit_announce()
 {
-	global $tpl, $lang, $mysql, $config, $main_admin;
+	global $tpl, $lang, $mysql, $config;
 	$tpath = locatePluginTemplates(array('config/main', 'config/edit_announce', 'config/list_images'), 'zboard', 1);
 
 	$id = intval($_REQUEST['id']);
@@ -1207,20 +1207,20 @@ function edit_announce()
 
 			$SQL['announce_name'] = input_filter_com(convert($_REQUEST['announce_name']));
 			if (empty($SQL['announce_name']))
-				$error_text[] = 'РќР°Р·РІР°РЅРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РїСѓСЃС‚РѕРµ';
+				$error_text[] = 'Название объявления пустое';
 
 
 			$SQL['author'] = input_filter_com(convert($_REQUEST['author']));
 			if (empty($SQL['author']))
-				$error_text[] = 'РџРѕР»Рµ Р°РІС‚РѕСЂ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+				$error_text[] = 'Поле автор не заполнено';
 
 			$SQL['announce_period'] = input_filter_com(convert($_REQUEST['announce_period']));
 			if (!empty($SQL['announce_period'])) {
 				if (!in_array($SQL['announce_period'], explode("|", pluginGetVariable('zboard', 'list_period')))) {
-					$error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ Р·Р°РґР°РЅРѕ РЅРµРІРµСЂРЅРѕ ' . $SQL['announce_period'];
+					$error_text[] = 'Поле период задано неверно ' . $SQL['announce_period'];
 				}
 			} else {
-				$error_text[] = 'РџРѕР»Рµ РїРµСЂРёРѕРґ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ';
+				$error_text[] = 'Поле период не заполнено';
 			}
 
 			$SQL['cat_id'] = intval($_REQUEST['cat_id']);
@@ -1228,21 +1228,21 @@ function edit_announce()
 				$cat = $mysql->result('SELECT 1 FROM ' . prefix . '_zboard_cat WHERE id = \'' . $SQL['cat_id'] . '\' LIMIT 1');
 
 				if (empty($cat)) {
-					$error_text[] = 'РўР°РєРѕР№ РєР°С‚РµРіРѕСЂРёРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+					$error_text[] = 'Такой категории не существует';
 				}
 			} else {
-				$error_text[] = 'Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё РєР°С‚РµРіРѕСЂРёСЋ';
+				$error_text[] = 'Вы не выбрали категорию';
 			}
 
 
 			$SQL['announce_description'] = str_replace(array("\r\n", "\r"), "\n", input_filter_com(convert($_REQUEST['announce_description'])));
 			if (empty($SQL['announce_description'])) {
-				$error_text[] = 'РќРµС‚ РѕРїРёСЃР°РЅРёСЏ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+				$error_text[] = 'Нет описания к объявлению';
 			}
 
 			$SQL['announce_contacts'] = str_replace(array("\r\n", "\r"), "\n", input_filter_com(convert($_REQUEST['announce_contacts'])));
 			if (empty($SQL['announce_contacts'])) {
-				$error_text[] = 'РќРµС‚ РєРѕРЅС‚Р°РєС‚РѕРІ Рє РѕР±СЉСЏРІР»РµРЅРёСЋ';
+				$error_text[] = 'Нет контактов к объявлению';
 			}
 
 			$SQL['active'] = $_REQUEST['announce_activeme'];
@@ -1306,7 +1306,7 @@ function edit_announce()
 			'error' => $error_input,
 		);
 	} else {
-		msg(array("type" => "error", "text" => "Р’С‹ РІС‹Р±СЂР°Р»Рё РЅРµРІРµСЂРЅРѕРµ id"));
+		msg(array("type" => "error", "text" => "Вы выбрали неверное id"));
 	}
 
 
@@ -1359,12 +1359,12 @@ function edit_announce()
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('edit_announce'),
 		'entriesImg' => $tpl->show('list_images'),
-		'global' => 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ: ' . $row['announce_name']
+		'global' => 'Редактирование: ' . $row['announce_name']
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 /*
@@ -1380,7 +1380,7 @@ global $tpl, $mysql;
 	$tvars['vars']= array (
 		'active' => !empty($count)?'[ '.$count.' ]':'',
 		'entries' => $tpl->show('about'),
-		'global' => 'Рћ РїР»Р°РіРёРЅРµ'
+		'global' => 'О плагине'
 	);
 
 	$tpl->template('main', $tpath['config/main'].'config');
@@ -1396,14 +1396,14 @@ function cat_name_del()
 	$id = intval($_REQUEST['id']);
 
 	if (empty($id)) {
-		return msg(array("type" => "error", "text" => "РћС€РёР±РєР°, РІС‹ РЅРµ РІС‹Р±СЂР°Р»Рё С‡С‚Рѕ С…РѕС‚РёС‚Рµ СѓРґР°Р»РёС‚СЊ"));
+		return msg(array("type" => "error", "text" => "Ошибка, вы не выбрали что хотите удалить"));
 	}
 
 	$mysql->query("delete from " . prefix . "_zboard_cat where id = {$id}");
 
 	generate_catz_cache(true);
 
-	msg(array("type" => "info", "info" => "РљР°С‚РµРіРѕСЂРёСЏ СѓРґР°Р»РµРЅР°"));
+	msg(array("type" => "info", "info" => "Категория удалена"));
 }
 
 function modify()
@@ -1414,7 +1414,7 @@ function modify()
 	$subaction	=	$_REQUEST['subaction'];
 
 	if (empty($selected_news)) {
-		return msg(array("type" => "error", "text" => "РћС€РёР±РєР°, РІС‹ РЅРµ РІС‹Р±СЂР°Р»Рё РѕР±СЉСЏРІР»РµРЅРёРµ"));
+		return msg(array("type" => "error", "text" => "Ошибка, вы не выбрали объявление"));
 	}
 
 	switch ($subaction) {
@@ -1435,7 +1435,7 @@ function modify()
 					set ' . $active . '
 					WHERE id = ' . db_squote($id) . '
 					');
-			$result = 'РћР±СЉСЏРІР»РµРЅРёСЏ РђРєС‚РёРІРёСЂРѕРІР°РЅС‹/Р”РµР°РєС‚РёРІРёСЂРѕРІР°РЅС‹';
+			$result = 'Объявления Активированы/Деактивированы';
 		}
 		if (isset($del)) {
 
@@ -1446,7 +1446,7 @@ function modify()
 			$mysql->query("delete from " . prefix . "_zboard_images where zid = " . db_squote($id) . "");
 
 			$mysql->query('delete from ' . prefix . '_zboard where id = ' . db_squote($id));
-			$result = 'РћР±СЉСЏРІР»РµРЅРёСЏ СѓРґР°Р»РµРЅС‹';
+			$result = 'Объявления удалены';
 		}
 	}
 	generate_entries_cnt_cache(true);
@@ -1456,7 +1456,7 @@ function modify()
 
 function main()
 {
-	global $tpl, $mysql, $cron, $main_admin;
+	global $tpl, $mysql, $cron;
 
 	$tpath = locatePluginTemplates(array('config/main', 'config/general.from'), 'zboard', 1);
 
@@ -1574,9 +1574,9 @@ function main()
 	$admin_count = pluginGetVariable('zboard', 'admin_count');
 	$date = pluginGetVariable('zboard', 'date');
 	$notice_mail = pluginGetVariable('zboard', 'notice_mail');
-	$notice_mail = '<option value="0" ' . ($notice_mail == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($notice_mail == 1 ? 'selected' : '') . '>Р”Р°</option>';
+	$notice_mail = '<option value="0" ' . ($notice_mail == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($notice_mail == 1 ? 'selected' : '') . '>Да</option>';
 	$send_guest = pluginGetVariable('zboard', 'send_guest');
-	$send_guest = '<option value="0" ' . ($send_guest == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($send_guest == 1 ? 'selected' : '') . '>Р”Р°</option>';
+	$send_guest = '<option value="0" ' . ($send_guest == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($send_guest == 1 ? 'selected' : '') . '>Да</option>';
 	$template_mail = pluginGetVariable('zboard', 'template_mail');
 	$description = pluginGetVariable('zboard', 'description');
 	$keywords = pluginGetVariable('zboard', 'keywords');
@@ -1585,11 +1585,11 @@ function main()
 	$info_send = pluginGetVariable('zboard', 'info_send');
 	$info_edit = pluginGetVariable('zboard', 'info_edit');
 	$use_recaptcha = pluginGetVariable('zboard', 'use_recaptcha');
-	$use_recaptcha = '<option value="0" ' . ($use_recaptcha == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($use_recaptcha == 1 ? 'selected' : '') . '>Р”Р°</option>';
+	$use_recaptcha = '<option value="0" ' . ($use_recaptcha == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($use_recaptcha == 1 ? 'selected' : '') . '>Да</option>';
 	$views_count = pluginGetVariable('zboard', 'views_count');
-	$views_count = '<option value="0" ' . ($views_count == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($views_count == 1 ? 'selected' : '') . '>Р”Р°</option><option value="2" ' . ($views_count == 2 ? 'selected' : '') . '>РћС‚Р»РѕР¶РµРЅРЅРѕРµ</option>';
+	$views_count = '<option value="0" ' . ($views_count == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($views_count == 1 ? 'selected' : '') . '>Да</option><option value="2" ' . ($views_count == 2 ? 'selected' : '') . '>Отложенное</option>';
 	$use_expired = pluginGetVariable('zboard', 'use_expired');
-	$use_expired = '<option value="0" ' . ($use_expired == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($use_expired == 1 ? 'selected' : '') . '>Р”Р°</option>';
+	$use_expired = '<option value="0" ' . ($use_expired == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($use_expired == 1 ? 'selected' : '') . '>Да</option>';
 	$public_key = pluginGetVariable('zboard', 'public_key');
 	$private_key = pluginGetVariable('zboard', 'private_key');
 
@@ -1597,17 +1597,17 @@ function main()
 	$pay2pay_secret_key = pluginGetVariable('zboard', 'pay2pay_secret_key');
 	$pay2pay_hidden_key = pluginGetVariable('zboard', 'pay2pay_hidden_key');
 	$pay2pay_test_mode = pluginGetVariable('zboard', 'pay2pay_test_mode');
-	$pay2pay_test_mode = '<option value="0" ' . ($pay2pay_test_mode == 0 ? 'selected' : '') . '>РќРµС‚</option><option value="1" ' . ($pay2pay_test_mode == 1 ? 'selected' : '') . '>Р”Р°</option>';
+	$pay2pay_test_mode = '<option value="0" ' . ($pay2pay_test_mode == 0 ? 'selected' : '') . '>Нет</option><option value="1" ' . ($pay2pay_test_mode == 1 ? 'selected' : '') . '>Да</option>';
 
 	/*
 	if(empty($max_image_size))
-		msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> Р Р°Р·РјРµСЂ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РЅРµ СѓРєР°Р·Р°РЅ"), 1);
+		msg(array("type" => "error", "text" => "Критическая ошибка <br /> Размер для изображений не указан"), 1);
 	if(empty($width))
-		msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> РЁРёСЂРёРЅР° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РЅРµ СѓРєР°Р·Р°РЅР°"), 1);
+		msg(array("type" => "error", "text" => "Критическая ошибка <br /> Ширина изображения не указана"), 1);
 	if(empty($height))
-		msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> Р’С‹СЃРѕС‚Р° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РЅРµ СѓРєР°Р·Р°РЅР°"), 1);
+		msg(array("type" => "error", "text" => "Критическая ошибка <br /> Высота изображения не указана"), 1);
 	if(empty($ext_image))
-		msg(array("type" => "error", "text" => "РљСЂРёС‚РёС‡РµСЃРєР°СЏ РѕС€РёР±РєР° <br /> Р Р°СЃС€РёСЂРµРЅРёСЏ РґР»СЏ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РЅРµ СѓРєР°Р·Р°РЅРѕ"), 1);
+		msg(array("type" => "error", "text" => "Критическая ошибка <br /> Расширения для изображений не указано"), 1);
 */
 
 	$pvars['vars'] = array(
@@ -1649,12 +1649,12 @@ function main()
 	$tvars['vars'] = array(
 		'active' => !empty($count) ? '[ ' . $count . ' ]' : '',
 		'entries' => $tpl->show('general.from'),
-		'global' => 'РћР±С‰РёРµ'
+		'global' => 'Общие'
 	);
 
 	$tpl->template('main', $tpath['config/main'] . 'config');
 	$tpl->vars('main', $tvars);
-	$main_admin = $tpl->show('main');
+	print $tpl->show('main');
 }
 
 function zboard_upload_files($files_del)
@@ -1676,7 +1676,7 @@ function zboard_upload_files($files_del)
 							unlink(files_dir . 'zboard/' . $files_del);
 
 						if (file_exists(files_dir . 'zboard/' . $Ffile))
-							$error_text = 'РўР°РєРѕР№ С„Р°Р№Р» СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚';
+							$error_text = 'Такой файл уже существует';
 						else
 							unlink(files_dir . 'zboard/' . $files_del);
 
@@ -1684,20 +1684,20 @@ function zboard_upload_files($files_del)
 							if (move_uploaded_file($_FILES['plugin_files']['tmp_name'], files_dir . 'zboard/' . $Ffile)) {
 								chmod(files_dir . 'zboard/' . $Ffile, 0644);
 							} else {
-								$error_text = 'Р—Р°РіСЂСѓР·РєР° РЅРµ СѓРґР°Р»Р°СЃСЊ';
+								$error_text = 'Загрузка не удалась';
 							}
 						}
 					} else {
-						$error_text = 'РќРµС‚ РїСЂР°РІ РЅР° Р·Р°РїРёСЃСЊ';
+						$error_text = 'Нет прав на запись';
 					}
 				} else {
-					$error_text = 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° Р±РѕР»СЊС€Рµ РґРѕРїСѓСЃС‚РёРјРѕРіРѕ';
+					$error_text = 'Размер файла больше допустимого';
 				}
 			} else {
-				$error_text = 'Р—Р°РїСЂРµС‰РµРЅРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ';
+				$error_text = 'Запрещеное расширение';
 			}
 		} else {
-			$error_text = 'Р¤Р°Р№Р» РЅРµ Р·Р°РіСЂСѓР¶РµРЅ';
+			$error_text = 'Файл не загружен';
 		}
 	}
 	return array($Ffile, $error_text);
@@ -1790,22 +1790,22 @@ function zboard_upload_images($images_del, $w, $h, $quality = 100)
 								chmod($dir_image, 0644);
 								chmod(images_dir . 'zboard/thumb/' . $new, 0644);
 							} else {
-								$error_text = 'РћС€РёР±РєР° РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё';
+								$error_text = 'Ошибка при сохранении';
 							}
 						} else {
-							$error_text = 'Р Р°Р·РјРµСЂ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ Р±РѕР»СЊС€Рµ С‡РµРј ' . pluginGetVariable('zboard', 'width') . ' ?? ' . pluginGetVariable('zboard', 'height');
+							$error_text = 'Размер изображения больше чем ' . pluginGetVariable('zboard', 'width') . ' ?? ' . pluginGetVariable('zboard', 'height');
 						}
 					} else {
-						$error_text = 'Р—Р°РіСЂСѓР¶РµРЅС‹Р№ С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёР·РѕР±СЂР°Р¶РµРЅРёРµРј';
+						$error_text = 'Загруженый файл не является изображением';
 					}
 				} else {
-					$error_text = 'Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° Р±РѕР»СЊС€Рµ РґРѕРїСѓСЃС‚РёРјРѕРіРѕ';
+					$error_text = 'Размер файла больше допустимого';
 				}
 			} else {
-				$error_text = 'РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ';
+				$error_text = 'Недопустимое расширение';
 			}
 		} else {
-			$error_text = 'Р�Р·РѕР±СЂР°Р¶РµРЅРёРµ РЅРµ Р·Р°РіСЂСѓР¶РµРЅРѕ';
+			$error_text = 'Изображение не загружено';
 		}
 	}
 	return array($new, $error_text);

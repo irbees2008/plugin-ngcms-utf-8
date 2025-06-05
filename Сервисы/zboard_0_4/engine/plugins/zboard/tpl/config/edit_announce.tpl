@@ -8,37 +8,37 @@
 <form method="post" action="" name="form" enctype="multipart/form-data">
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-<td width="50%" class="contentEntry1">Р—Р°РіРѕР»РѕРІРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Заголовок объявления<br /><small></small></td>
 <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40" name="announce_name" value="{announce_name}"  /></td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РђРІС‚РѕСЂ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Автор<br /><small></small></td>
 <td width="50%" class="contentEntry2"><input type="text" class="form-control" size="40"  name="author" value="{author}"  /></td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РџРµСЂРёРѕРґ РѕР±СЉСЏРІР»РµРЅРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Период объявления<br /><small></small></td>
 <td width="50%" class="contentEntry2">
 <select name="announce_period">
 {list_period}
 </select></td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РљР°С‚РµРіРѕСЂРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Категория<br /><small></small></td>
 <td width="50%" class="contentEntry2"><select name="cat_id">
 {options}
 </select>
 </td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РўРµРєСЃС‚ РѕР±СЉСЏРІР»РµРЅРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Текст объявления<br /><small></small></td>
 <td width="50%" class="contentEntry2"><textarea type="text" name="announce_description" cols="100" rows="10">{announce_description}</textarea></td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РљРѕРЅС‚Р°РєС‚С‹<br /><small></small></td>
+<td width="50%" class="contentEntry1">Контакты<br /><small></small></td>
 <td width="50%" class="contentEntry2"><textarea type="text" name="announce_contacts" cols="100" rows="10">{announce_contacts}</textarea></td>
 </tr>
 <tr>
-<td width="50%" class="contentEntry1">РџСЂРёРєСЂРµРїРёС‚СЊ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Прикрепить изображения<br /><small></small></td>
 <td width="50%" class="contentEntry2">
 
 <script type="text/javascript">
@@ -88,7 +88,7 @@ $('.fix').capty({
 </tr>
 
 <tr>
-<td width="50%" class="contentEntry1">РџСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ<br /><small></small></td>
+<td width="50%" class="contentEntry1">Прикрепленные изображения<br /><small></small></td>
 <td width="50%" class="contentEntry2">
 <table>
 <tr>
@@ -99,7 +99,7 @@ $('.fix').capty({
 </tr>
 
 <tr>
-<td width="50%" class="contentEntry1">РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ РѕР±СЉСЏРІР»РµРЅРёРµ?<br /><small></small></td>
+<td width="50%" class="contentEntry1">Активировать объявление?<br /><small></small></td>
 <td width="50%" class="contentEntry2"><input type="checkbox" name="announce_activeme" {announce_activeme} value="1" > </td>
 </tr>
 
@@ -112,8 +112,8 @@ $('.fix').capty({
 <tr><td width="100%" colspan="2">&nbsp;</td></tr>
 <tr>
 <td width="100%" colspan="2" class="contentEdit" align="center">
-<input type="submit" name="submit" value="РћС‚СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ" onclick="javascript:$('#file_upload').uploadifive('upload')" class="button" />
-<input type="submit" name="delme" value="РЈРґР°Р»РёС‚СЊ" class="button" />
+<input type="submit" name="submit" value="Отредактировать" onclick="javascript:$('#file_upload').uploadifive('upload')" class="button" />
+<input type="submit" name="delme" value="Удалить" class="button" />
 </td>
 </tr>
 </table>

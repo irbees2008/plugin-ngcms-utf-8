@@ -5,12 +5,12 @@
 {% endif %}
 
 <div class="comment">
-<h3><span>РћРїР»Р°С‚Р° VIP РѕР±СЉСЏРІР»РµРЅРёСЏ</span></h3>
+<h3><span>Оплата VIP объявления</span></h3>
 <form method="post" action="" class="comment-form" name="form" enctype="multipart/form-data">
 <ul class="comment-author">
 
 <li class="item clearfix">
-<label>РџСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ</label><br/><br/>
+<label>Прикрепленные изображения</label><br/><br/>
 <table>
 <tr>
 {% for entry in entriesImg %}
@@ -26,6 +26,6 @@
 </li>
 
 </ul>
-<span class="submit"><button name="submit" type="submit"  tabindex="5" onclick="javascript:$('#file_upload').uploadifive('upload')" >РћС‚РїСЂР°РІРёС‚СЊ</button></span>
+<span class="submit"><button name="submit" type="submit"  tabindex="5" onclick="javascript:$('#file_upload').uploadifive('upload')" >Отправить</button></span>
 </form>
 </div>

@@ -50,7 +50,7 @@ function _recaptcha_qsencode ($data) {
                 $req .= $key . '=' . urlencode( stripslashes($value) ) . '&';
 
         // Cut the last '&'
-        $req=mb_substr($req,0,strlen($req)-1);
+        $req=substr($req,0,strlen($req)-1);
         return $req;
 }
 
@@ -108,7 +108,7 @@ function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
 	if ($pubkey == null || $pubkey == '') {
 		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");
 	}
-
+	
 	if ($use_ssl) {
                 $server = RECAPTCHA_API_SECURE_SERVER;
         } else {
@@ -159,8 +159,8 @@ function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $ex
 		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
 	}
 
-
-
+	
+	
         //discard spam submissions
         if ($challenge == null || strlen($challenge) == 0 || $response == null || strlen($response) == 0) {
                 $recaptcha_response = new ReCaptchaResponse();
@@ -215,7 +215,7 @@ function _recaptcha_aes_encrypt($val,$ky) {
 	if (! function_exists ("mcrypt_encrypt")) {
 		die ("To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.");
 	}
-	$mode=MCRYPT_MODE_CBC;
+	$mode=MCRYPT_MODE_CBC;   
 	$enc=MCRYPT_RIJNDAEL_128;
 	$val=_recaptcha_aes_pad($val);
 	return mcrypt_encrypt($enc, $ky, $val, $mode, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
@@ -232,11 +232,11 @@ function recaptcha_mailhide_url($pubkey, $privkey, $email) {
 		die ("To use reCAPTCHA Mailhide, you have to sign up for a public and private key, " .
 		     "you can do so at <a href='http://www.google.com/recaptcha/mailhide/apikey'>http://www.google.com/recaptcha/mailhide/apikey</a>");
 	}
-
+	
 
 	$ky = pack('H*', $privkey);
 	$cryptmail = _recaptcha_aes_encrypt ($email, $ky);
-
+	
 	return "http://www.google.com/recaptcha/mailhide/d?k=" . $pubkey . "&c=" . _recaptcha_mailhide_urlbase64 ($cryptmail);
 }
 
@@ -249,11 +249,11 @@ function _recaptcha_mailhide_email_parts ($email) {
 	$arr = preg_split("/@/", $email );
 
 	if (strlen ($arr[0]) <= 4) {
-		$arr[0] = mb_substr ($arr[0], 0, 1);
+		$arr[0] = substr ($arr[0], 0, 1);
 	} else if (strlen ($arr[0]) <= 6) {
-		$arr[0] = mb_substr ($arr[0], 0, 3);
+		$arr[0] = substr ($arr[0], 0, 3);
 	} else {
-		$arr[0] = mb_substr ($arr[0], 0, 4);
+		$arr[0] = substr ($arr[0], 0, 4);
 	}
 	return $arr;
 }
@@ -267,7 +267,7 @@ function _recaptcha_mailhide_email_parts ($email) {
 function recaptcha_mailhide_html($pubkey, $privkey, $email) {
 	$emailparts = _recaptcha_mailhide_email_parts ($email);
 	$url = recaptcha_mailhide_url ($pubkey, $privkey, $email);
-
+	
 	return htmlentities($emailparts[0]) . "<a href='" . htmlentities ($url) .
 		"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
 
