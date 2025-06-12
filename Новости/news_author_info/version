@@ -3,9 +3,9 @@ Name: News avatar info
 Version: 0.1
 Actions: news_short, news_full; news_author_info.php
 Type: plugin
-Title: Информации об авторе новости
-Description: Информации об авторе новости
-Information: Информации об авторе новости
+Title: РРЅС„РѕСЂРјР°С†РёРё РѕР± Р°РІС‚РѕСЂРµ РЅРѕРІРѕСЃС‚Рё
+Description: РРЅС„РѕСЂРјР°С†РёРё РѕР± Р°РІС‚РѕСЂРµ РЅРѕРІРѕСЃС‚Рё
+Information: РРЅС„РѕСЂРјР°С†РёРё РѕР± Р°РІС‚РѕСЂРµ РЅРѕРІРѕСЃС‚Рё
 Author: Rostunov S U
 Author_URI: http://rostunov.com/
 preinstall: no
