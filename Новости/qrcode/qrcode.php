@@ -1,68 +1,146 @@
 <?php
+if (!defined('NGCMS')) die('HAL');
 
-if (!defined('NGCMS')) die ('HAL');
+class QRcodeNewsFilter extends NewsFilter
+{
+	function showNews($newsID, $SQLnews, &$tvars, $mode = array())
+	{
+		global $config, $twig, $tpl;
 
-class QRcodeNewsFilter extends NewsFilter {
-	function showNews($newsID, $SQLnews, &$tvars) {
-		global $config, $CurrentHandler, $tpl;
+		require_once __DIR__ . '/phpqrcode/qrlib.php';
 
-		$cacheFileName = md5('qrcode'.$newsID.$config['home_url'].$config['theme'].$config['default_lang']).'.txt';
+		$cacheFileName = md5('qrcode' . $newsID . $config['theme'] . $config['default_lang']) . '.txt';
+		$cacheExpire = pluginGetVariable('qrcode', 'cacheExpire') ?: 3600;
 
-		$cacheData = cacheRetrieveFile($cacheFileName, pluginGetVariable('qrcode', 'cacheExpire'), 'qrcode');
-		if ($cacheData != false) {
-			$tvars['vars']['plugin_qrcode'] = $cacheData;
-			return 1;				
+		if ($cacheExpire > 0) {
+			$cacheData = cacheRetrieveFile($cacheFileName, $cacheExpire, 'qrcode');
+			if ($cacheData !== false) {
+				$tvars['vars']['plugin_qrcode'] = $cacheData;
+				return 1;
+			}
 		}
 
-		//$chl  = urlencode($chl);		
-		$chl = newsGenerateLink($SQLnews, false, 0, true);
-		
-		$chs	= (intval(pluginGetVariable('qrcode','chs'))>546)?546:intval(pluginGetVariable('qrcode','chs'));
-		$chs	= $chs .'x'. $chs;
-		$chld	= pluginGetVariable('qrcode','chld');
-		$margin	= intval(pluginGetVariable('qrcode','margin'));
-		
-	    $url  = 'http://chart.apis.google.com/chart?chs='.$chs.'&cht=qr&chl='.$chl.'&chld='.$chld.'|'.$margin;
-		if	(pluginGetVariable('qrcode','upload'))		
-			$url = uploadQRcode($newsID, $url);
+		$url = newsGenerateLink($SQLnews, false, 0, true);
+		$size = min((int)pluginGetVariable('qrcode', 'chs'), 500) ?: 150;
+		$margin = (int)pluginGetVariable('qrcode', 'margin') ?: 4;
+		$errorCorrection = pluginGetVariable('qrcode', 'chld') ?: 'L';
 
-		// Determine paths for all template files
-		$tpath = locatePluginTemplates(array('qrcode'), 'qrcode', pluginGetVariable('qrcode', 'localsource'));
-			$tpl -> template('qrcode', $tpath['qrcode']);
-		$tpl -> vars('qrcode', array ('vars' => array ('qrcode' => $url, 'title' => $SQLnews['title'])));
-		$tvars['vars']['plugin_qrcode'] = $tpl -> show('qrcode');	 
-		cacheStoreFile($cacheFileName, $tvars['vars']['plugin_qrcode'], 'qrcode');
+		// Генерация QR-кода
+		if (pluginGetVariable('qrcode', 'upload')) {
+			$qrData = $this->generateAndUploadQR($newsID, $url, $size, $margin, $errorCorrection);
+		} else {
+			$qrData = $this->generateQR($url, $size, $margin, $errorCorrection);
+		}
 
+		$tVars = [
+			'qrcode' => $qrData,
+			'title' => $SQLnews['title'],
+			'size' => $size
+		];
+
+		if (class_exists('Twig\Environment')) {
+			try {
+				$tpath = locatePluginTemplates(['qrcode'], 'qrcode', pluginGetVariable('qrcode', 'localsource'));
+				$template = $twig->load($tpath['qrcode'] . 'qrcode.tpl');
+				$output = $template->render($tVars);
+			} catch (Exception $e) {
+				$output = $this->renderLegacyTemplate($tVars);
+			}
+		} else {
+			$output = $this->renderLegacyTemplate($tVars);
+		}
+
+		$tvars['vars']['plugin_qrcode'] = $output;
+		if ($cacheExpire > 0) {
+			cacheStoreFile($cacheFileName, $output, 'qrcode');
+		}
 		return 1;
+	}
+
+	private function generateQR($text, $size, $margin, $errorCorrection)
+	{
+		ob_start();
+		$errorLevel = constant('QR_ECLEVEL_' . $errorCorrection);
+		QRcode::png($text, null, $errorLevel, $size / 25, $margin);
+		return 'data:image/png;base64,' . base64_encode(ob_get_clean());
+	}
+
+	private function generateAndUploadQR($newsID, $text, $size, $margin, $errorCorrection)
+	{
+		global $mysql, $fmanager;
+
+		@include_once root . 'includes/classes/upload.class.php';
+		@include_once root . 'includes/inc/file_managment.php';
+		@include_once root . 'includes/classes/image_managment.php';
+
+		$fmanager = new file_managment();
+		$imanager = new image_managment();
+
+		// Генерация временного файла
+		$tempFile = tempnam(sys_get_temp_dir(), 'qrcode_');
+		$errorLevel = constant('QR_ECLEVEL_' . $errorCorrection);
+		QRcode::png($text, $tempFile, $errorLevel, $size / 25, $margin);
+
+		// Загрузка на сервер
+		$fmanager->get_limits('image');
+		$dir = $fmanager->dname;
+
+		if (!is_dir($dir . '/qrcode')) {
+			$fmanager->category_create('image', 'qrcode');
+		}
+
+		$fparam = array(
+			'type' => 'image',
+			'category' => 'qrcode',
+			'manual' => 1,
+			'file' => $tempFile,
+			'name' => 'qrcode_' . $newsID . '.png',
+			'replace' => 1
+		);
+
+		$up = $fmanager->file_upload($fparam);
+		unlink($tempFile);
+
+		if (is_array($sz = $imanager->get_size($dir . '/qrcode/' . $up[1]))) {
+			$mysql->query("UPDATE " . prefix . "_" . $fmanager->tname . " SET 
+                width=" . db_squote($sz[1]) . ", 
+                height=" . db_squote($sz[2]) . ",
+                description=" . $newsID . " 
+                WHERE id=" . db_squote($up[0]));
+		}
+
+		return $fmanager->uname . '/qrcode/' . $up[1];
+	}
+
+	private function renderLegacyTemplate($vars)
+	{
+		global $tpl;
+
+		$tpath = locatePluginTemplates(['qrcode'], 'qrcode', pluginGetVariable('qrcode', 'localsource'));
+		$tpl->template('qrcode', $tpath['qrcode']);
+		$tpl->vars('qrcode', ['vars' => $vars]);
+		return $tpl->show('qrcode');
 	}
 }
 
 register_filter('news', 'qrcode', new QRcodeNewsFilter);
 
-function uploadQRcode($newsID, $url) {
-	global $mysql, $fmanager;
+if (function_exists('twigRegisterFunction')) {
+	function plugin_qrcode_twig($params)
+	{
+		global $mysql;
 
-	@include_once root.'includes/classes/upload.class.php';
-	@include_once root.'includes/inc/file_managment.php';
+		if (empty($params['news_id'])) return '';
 
-	$fmanager = new file_managment();
-	$imanager = new image_managment();
-	
-	$fmanager->get_limits('image');
-	$dir = $fmanager->dname;
+		$news = $mysql->record("SELECT * FROM " . prefix . "_news WHERE id=" . db_squote($params['news_id']));
+		if (!$news) return '';
 
-	if (!is_dir($dir.'/qrcode'))
-		$fmanager->category_create('image', 'qrcode');
+		$filter = new QRcodeNewsFilter();
+		$tvars = [];
+		$filter->showNews($params['news_id'], $news, $tvars);
 
-	$fparam = array('type' => 'image', 'category' => 'qrcode', 'manual' => 1, 'url' => $url.'.jpg', 'replace' => 1);
-	$up		= $fmanager->file_upload($fparam);
+		return $tvars['vars']['plugin_qrcode'] ?? '';
+	}
 
-	// Now write info about image into DB
-	if (is_array($sz = $imanager->get_size($dir.'/qrcode/'.$up[1])))
-		$mysql->query("update ".prefix."_".$fmanager->tname." set width=".db_squote($sz[1]).", height=".db_squote($sz[2]).",description=".$newsID." where id = ".db_squote($up[0]));
-
-	$url = $fmanager->uname;
-	$url .= '/qrcode/'.$up[1];
-
-	return $url;
+	twigRegisterFunction('qrcode', 'show', 'plugin_qrcode_twig');
 }
