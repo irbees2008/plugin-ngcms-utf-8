@@ -1,35 +1,29 @@
 <?php
-
 if (!defined('NGCMS')) {
     exit('HAL');
 }
-
+LoadPluginLang('uprofile', 'main', '', 'uprofile', '#');
 class news_author_info__NewsFilter extends NewsFilter
 {
     public function showNews($newsID, $SQLnews, &$tvars, $mode = array())
     {
-        global $mysql;
-
-        $urow = $mysql->record("SELECT * FROM ".uprefix."_users WHERE id = ".$SQLnews['author_id']." LIMIT 1");
-
+        global $mysql, $lang;
+        $urow = $mysql->record("SELECT * FROM " . uprefix . "_users WHERE id = " . $SQLnews['author_id'] . " LIMIT 1");
         unset($urow['pass'], $urow['newpw'], $urow['authcookie'], $urow['activation']);
-
+        // Преобразование статуса в текстовое представление
+        $urow['status_text'] = (($urow['status'] >= 1) && ($urow['status'] <= 4)) ?
+            $lang['uprofile']['st_' . $urow['status']] :
+            $lang['uprofile']['st_unknown'];
         $tvars['vars']['p']['news_author_info']['info'] = $urow;
-
         if (getPluginStatusActive('uprofile')) {
             loadPluginLibrary('uprofile', 'lib');
-            $photo = userGetPhoto($urow);
             $avatar = userGetAvatar($urow);
-            $tvars['vars']['p']['news_author_info']['photo'] = $photo;
             $tvars['vars']['p']['news_author_info']['avatar'] = $avatar;
         }
-
         if (getPluginStatusActive('xfields')) {
             $this->getUserXfields($urow, $tvars);
         }
     }
-
-
     public function getUserXfields($SQLrow, &$tvars) {
         global $mysql, $config, $twig, $parse;
         // Try to load config. Stop processing if config was not loaded
@@ -112,7 +106,5 @@ class news_author_info__NewsFilter extends NewsFilter
                 }
             }
     }
-
 }
-
 register_filter('news', 'news_author_info', new news_author_info__NewsFilter);
