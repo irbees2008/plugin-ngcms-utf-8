@@ -43,19 +43,20 @@
 				</ul>
 			</div>
 			<div class="content">
+				{{ notify }}
 				{% if pluginIsActive('zboard') %}
 					<div id="slide" class="slide">
 						<ol class="slide-content">
-{{ callPlugin('zboard.show', {'number' : 5, 'mode' : 'last', 'cat': '1,2,3', 'template': 'block_zboard'}) }}
+							{{ callPlugin('zboard.show', {'number' : 5, 'mode' : 'last', 'cat': '1,2,3', 'template': 'block_zboard'}) }}
 						</ol>
 						<span class="prev"></span>
 						<span class="next"></span>
 					</div>
 					<!--
-											<div id="slide-toggle" class="slide-toggle clearfix">
-												<span class="toggle">???????</span>
-											</div>
-											-->
+																<div id="slide-toggle" class="slide-toggle clearfix">
+																	<span class="toggle">???????</span>
+																</div>
+																-->
 					<br/>
 					<div class="search">
 						<form action="{{home}}/zboard/search/" method="get" class="searchform clearfix">
