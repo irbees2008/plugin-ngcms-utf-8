@@ -4,7 +4,9 @@ if (!defined('NGCMS'))
 pluginsLoadConfig();
 LoadPluginLang('zboard', 'config', '', '', '#');
 include_once(dirname(__FILE__) . '/cache.php');
-switch ($_REQUEST['action']) {
+// Безопасно получаем действие из запроса, чтобы избежать Notice: Undefined index
+$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+switch ($action) {
 	case 'list_announce':
 		list_announce();
 		break;
@@ -91,6 +93,9 @@ global $tpl, $config, $mysql;
 function cat_edit()
 {
 	global $tpl, $mysql;
+	// Инициализация, чтобы избежать Undefined variable
+	$error_text = array();
+	$error_input = '';
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_cat'), 'zboard', 1);
 	$id = intval($_REQUEST['id']);
 	$row = $mysql->record('SELECT * FROM ' . prefix . '_zboard_cat WHERE id = ' . db_squote($id) . ' LIMIT 1');
@@ -177,7 +182,6 @@ function getCats()
 }
 function getTree($arr, $flg, $l)
 {
-	$flg;
 	$out = '';
 	$ft = '&#8212; ';
 	foreach ($arr as $k => $v) {
@@ -197,10 +201,18 @@ function getTree($arr, $flg, $l)
 function send_cat($params)
 {
 	global $tpl, $template, $config, $mysql, $lang;
+	// Базовые значения по умолчанию, чтобы избежать Undefined variable
+	$error_text = array();
+	$error_input = '';
+	$cat_name = '';
+	$keywords = '';
+	$description = '';
+	$position = 1;
+	$parent_id = 0;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_cat'), 'zboard', 1);
 	if (isset($_REQUEST['submit'])) {
 		$cat_name = input_filter_com($_REQUEST['cat_name']);
-		$parent_id = intval($_REQUEST['parent']);
+		$parent_id = isset($_REQUEST['parent']) ? intval($_REQUEST['parent']) : 0;
 		if (empty($cat_name)) {
 			$error_text[] = 'Название категории не задано';
 		}
@@ -244,7 +256,7 @@ function send_cat($params)
 		'keywords' => $keywords,
 		'description' => $description,
 		'position' => $position,
-		'parent' => $parent,
+		'parent' => $parent_id,
 		'error' => $error_input,
 		'catz' => getTree($cats, 0, 0),
 	);
@@ -264,12 +276,14 @@ function list_cat()
 {
 	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_cat', 'config/list_cat_entries'), 'zboard', 1);
+	$cat = array();
 	foreach ($mysql->select('SELECT cat_id, COUNT(id) as num FROM ' . prefix . '_zboard GROUP BY cat_id') as $rows) {
-		$cat[$rows['cat_id']] .= $rows['num'];
+		$cat[$rows['cat_id']] = intval($rows['num']);
 	}
+	$entries = '';
 	foreach ($mysql->select('SELECT * from ' . prefix . '_zboard_cat ORDER BY position ASC') as $row) {
 		$gvars['vars'] = array(
-			'num' => $cat[$row['id']],
+			'num' => isset($cat[$row['id']]) ? $cat[$row['id']] : 0,
 			'id' => $row['id'],
 			'cat_name' => '<a href="?mod=extra-config&plugin=zboard&action=cat_edit&id=' . $row['id'] . '"  />' . $row['cat_name'] . '</a>',
 			'cat_name_del' => '<a href="?mod=extra-config&plugin=zboard&action=cat_name_del&id=' . $row['id'] . '"  /><i class="fa fa-trash-o" aria-hidden="true"></i></a>',
@@ -295,6 +309,7 @@ function list_order()
 {
 	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_order', 'config/list_order_entries'), 'zboard', 1);
+	$entries = '';
 	foreach ($mysql->select('SELECT *, po.id as id, zb.id as zid from ' . prefix . '_zboard_pay_order po LEFT JOIN ' . prefix . '_zboard zb  ON po.zid = zb.id ORDER BY po.id ASC') as $row) {
 		$gvars['vars'] = array(
 			'id' => $row['id'],
@@ -325,6 +340,7 @@ function list_price()
 {
 	global $tpl, $mysql;
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_price', 'config/list_price_entries'), 'zboard', 1);
+	$entries = '';
 	foreach ($mysql->select('SELECT * from ' . prefix . '_zboard_pay_price ORDER BY id ASC') as $row) {
 		$gvars['vars'] = array(
 			'id' => $row['id'],
@@ -352,6 +368,10 @@ function list_price()
 function send_price($params)
 {
 	global $tpl, $template, $config, $mysql, $lang;
+	$error_text = array();
+	$error_input = '';
+	$price = '';
+	$time = 0;
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_price'), 'zboard', 1);
 	if (isset($_REQUEST['submit'])) {
 		$price = input_filter_com($_REQUEST['price']);
@@ -399,6 +419,8 @@ function send_price($params)
 function price_edit()
 {
 	global $tpl, $mysql;
+	$error_text = array();
+	$error_input = '';
 	$tpath = locatePluginTemplates(array('config/main', 'config/send_price'), 'zboard', 1);
 	$id = intval($_REQUEST['id']);
 	$row = $mysql->record('SELECT * FROM ' . prefix . '_zboard_pay_price WHERE id = ' . db_squote($id) . ' LIMIT 1');
@@ -982,11 +1004,12 @@ function list_announce()
 	$tpath = locatePluginTemplates(array('config/main', 'config/list_announce', 'config/list_entries'), 'zboard', 1);
 	$news_per_page = pluginGetVariable('zboard', 'admin_count');
 	if (($news_per_page < 2) || ($news_per_page > 2000)) $news_per_page = 2;
-	$pageNo		= intval($_REQUEST['page']) ? $_REQUEST['page'] : 0;
+	$pageNo		= isset($_REQUEST['page']) && intval($_REQUEST['page']) ? intval($_REQUEST['page']) : 0;
 	if ($pageNo < 1)	$pageNo = 1;
-	if (!$start_from)	$start_from = ($pageNo - 1) * $news_per_page;
+	$start_from = ($pageNo - 1) * $news_per_page;
 	$count = $mysql->result('SELECT count(id) from ' . prefix . '_zboard');
 	$countPages = ceil($count / $news_per_page);
+	$entries = '';
 	foreach ($mysql->select('SELECT * from ' . prefix . '_zboard ORDER BY editdate DESC LIMIT ' . $start_from . ', ' . $news_per_page) as $row) {
 		switch ($row['active']) {
 			case 1:
@@ -1019,7 +1042,17 @@ function list_announce()
 		$entries .= $tpl->show('list_entries');
 	}
 	$count = $mysql->result('SELECT COUNT(id) FROM ' . prefix . '_zboard WHERE active = \'0\' ');
-	$pvars['vars']['pagesss'] = generateAdminPagelist(array('current' => $pageNo, 'count' => $countPages, 'url' => admin_url . '/admin.php?mod=extra-config&plugin=zboard&action=list_announce' . ($_REQUEST['news_per_page'] ? '&news_per_page=' . $news_per_page : '') . ($_REQUEST['author'] ? '&author=' . $_REQUEST['author'] : '') . ($_REQUEST['sort'] ? '&sort=' . $_REQUEST['sort'] : '') . ($postdate ? '&postdate=' . $postdate : '') . ($author ? '&author=' . $author : '') . ($status ? '&status=' . $status : '') . '&page=%page%'));
+	$pvars['vars']['pagesss'] = generateAdminPagelist(array(
+		'current' => $pageNo,
+		'count' => $countPages,
+		'url' => admin_url . '/admin.php?mod=extra-config&plugin=zboard&action=list_announce'
+			. (isset($_REQUEST['news_per_page']) ? ('&news_per_page=' . intval($news_per_page)) : '')
+			. (isset($_REQUEST['author']) ? ('&author=' . urlencode($_REQUEST['author'])) : '')
+			. (isset($_REQUEST['sort']) ? ('&sort=' . urlencode($_REQUEST['sort'])) : '')
+			. (isset($_REQUEST['postdate']) ? ('&postdate=' . urlencode($_REQUEST['postdate'])) : '')
+			. (isset($_REQUEST['status']) ? ('&status=' . urlencode($_REQUEST['status'])) : '')
+			. '&page=%page%'
+	));
 	$pvars['vars']['entries'] = $entries;
 	$tpl->template('list_announce', $tpath['config/list_announce'] . 'config');
 	$tpl->vars('list_announce', $pvars);
@@ -1039,6 +1072,7 @@ function edit_announce()
 	$id = intval($_REQUEST['id']);
 	if (!empty($id)) {
 		$row = $mysql->record('SELECT * FROM ' . prefix . '_zboard WHERE id = ' . db_squote($id) . ' LIMIT 1');
+		$list_period = '';
 		foreach (explode("|", pluginGetVariable('zboard', 'list_period')) as $line) {
 			$list_period .= str_replace(array('{line}', '{activ}'), array($line, ($line == $row['announce_period'] ? 'selected' : '')), $lang['zboard']['list_period']);
 		}
@@ -1051,6 +1085,8 @@ function edit_announce()
 		*/
 		$cats = getCats();
 		$options = getTree($cats, $row['cat_id'], 0);
+		$error_text = array();
+		$error_input = '';
 		if (isset($_REQUEST['submit'])) {
 			$SQL['editdate'] = time() + ($config['date_adjust'] * 60);
 			$SQL['announce_name'] = input_filter_com($_REQUEST['announce_name']);
@@ -1085,7 +1121,7 @@ function edit_announce()
 				$error_text[] = 'Нет контактов к объявлению';
 			}
 			$SQL['active'] = $_REQUEST['announce_activeme'];
-			if (is_array($SQLi)) {
+			if (isset($SQLi) && is_array($SQLi)) {
 				$vnamess = array();
 				foreach ($SQLi as $k => $v) {
 					$vnamess[] = $k . ' = ' . db_squote($v);
@@ -1139,6 +1175,7 @@ function edit_announce()
 	} else {
 		msg(array("type" => "error", "text" => "Вы выбрали неверное id"));
 	}
+	$entriesImg = '';
 	foreach ($mysql->select('select * from ' . prefix . '_zboard_images where zid=' . $id . '') as $row2) {
 		$gvars['vars'] = array(
 			'home' => home,
@@ -1455,6 +1492,8 @@ function main()
 }
 function zboard_upload_files($files_del)
 {
+	$Ffile = '';
+	$error_text = '';
 	$max_file_size = pluginGetVariable('zboard', 'max_file_size') * 1024 * 1024;
 	$extensions = explode(',', pluginGetVariable('zboard', 'ext_file'));
 	if (isset($_FILES['plugin_files']['name']) && !empty($_FILES['plugin_files']['name'])) {
@@ -1496,6 +1535,8 @@ function zboard_upload_files($files_del)
 }
 function zboard_upload_images($images_del, $w, $h, $quality = 100)
 {
+	$new = '';
+	$error_text = '';
 	$max_image_size = pluginGetVariable('zboard', 'max_image_size') * 1024 * 1024;
 	$extensions = explode(',', pluginGetVariable('zboard', 'ext_image'));
 	if (isset($_FILES['plugin_images']['name']) && !empty($_FILES['plugin_images']['name'])) {
