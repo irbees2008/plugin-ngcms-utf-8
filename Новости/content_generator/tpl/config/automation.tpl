@@ -2,7 +2,6 @@
 	.ui-progressbar {
 		position: relative;
 	}
-
 	.progress-label {
 		position: absolute;
 		left: 50%;
@@ -10,7 +9,6 @@
 		font-weight: bold;
 		text-shadow: 1px 1px 0 #fff;
 	}
-
 	/* Стиль для сообщений */
 	.message {
 		margin-top: 10px;
@@ -29,18 +27,43 @@
 		border: 1px solid #f5c6cb;
 	}
 </style>
-
 <div class="row mt-2">
+	<div class="col-12 mb-4">
+		<form method="post" class="card p-3" style="border:1px solid #ced4da;">
+			<h5>Настройки генератора</h5>
+			<div class="form-row" style="display:flex;gap:20px;flex-wrap:wrap;">
+				<div style="min-width:200px;">
+					<label>Количество новостей</label>
+					<input type="number" class="form-control" name="news_count" min="1" max="100000" value="{{ news_count }}">
+				</div>
+				<div style="min-width:200px;">
+					<label>Количество статических страниц</label>
+					<input type="number" class="form-control" name="static_count" min="1" max="100000" value="{{ static_count }}">
+				</div>
+				<div style="min-width:200px;">
+					<label>Максимум за один запуск (лимит)</label>
+					<input type="number" class="form-control" name="max_allowed" min="1" max="100000" value="{{ max_allowed }}">
+				</div>
+			</div>
+			<input type="hidden" name="save" value="1">
+			<div class="mt-3">
+				<button type="submit" class="btn btn-success">Сохранить настройки</button>
+				<small class="text-muted ml-3">После сохранения используйте кнопки запуска ниже.</small>
+			</div>
+		</form>
+	</div>
 	<div class="col-sm">
 		<form action="" method="post" name="generate_news">
 			<input type="hidden" name="actionName" value="generate_news">
 			<div class="card">
 				<div class="card-header">Новости</div>
 				<div class="card-body">
-					<div class="list">
-						Количество:
-						<input type="number" class="form-control" value="100" name="count" min="1" max="100000">
+					<div class="list mb-2">
+						Будет создано (новостей):
+						<strong>{{ news_count }}</strong>
 					</div>
+					<div class="list text-muted" style="font-size:12px;">Лимит за запуск:
+						{{ max_allowed }}</div>
 					<div class="list">
 						<div class="progressbar">
 							<div class="progress-label"></div>
@@ -61,10 +84,12 @@
 			<div class="card">
 				<div class="card-header">Статьи</div>
 				<div class="card-body">
-					<div class="list">
-						Количество:
-						<input type="number" class="form-control" value="100" name="count" min="1" max="100000">
+					<div class="list mb-2">
+						Будет создано (статических):
+						<strong>{{ static_count }}</strong>
 					</div>
+					<div class="list text-muted" style="font-size:12px;">Лимит за запуск:
+						{{ max_allowed }}</div>
 					<div class="list">
 						<div class="progressbar">
 							<div class="progress-label"></div>
@@ -80,97 +105,71 @@
 		</form>
 	</div>
 </div>
-
 <!-- Подключение jQuery и jQuery UI -->
 <script src="{{ home }}/lib/jq/jquery.min.js"></script>
 <script src="{{ home }}/lib/jqueryui/core/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="{{ home }}/lib/jqueryui/core/jquery-ui.min.css">
-
 <script>
 	$(document).ready(function () {
 let progressbar,
 progressLabel,
 button,
 message;
-
 $('form').on('submit', function (event) {
 event.preventDefault();
-
-// Определяем текущую форму
 const form = $(this);
 const actionName = form.find('input[name="actionName"]').val();
-const count = parseInt(form.find('input[name="count"]').val(), 10);
-
-if (isNaN(count) || count < 1 || count > 100000) {
-alert('Введите корректное количество (от 1 до 100000)');
+// Читаем количество из отображаемого текста
+let countText = '';
+if (actionName === 'generate_news') {
+countText = '{{ news_count }}';
+} else if (actionName === 'generate_static') {
+countText = '{{ static_count }}';
+}
+const count = parseInt(countText, 10) || 0;
+if (count < 1) {
+alert('Некорректное число в конфиге');
 return;
 }
-
-// Находим блок сообщений только в текущей форме
 message = form.find('.message');
 message.hide().removeClass('success error').text('');
-
 startAjaxProcess(form, actionName, count);
 });
-
 function startAjaxProcess(form, actionName, count) {
-const chunkSize = 1000;
-const chunkCount = Math.ceil(count / chunkSize);
-let currentChunk = 1;
-
 progressbar = form.find(".progressbar");
 progressLabel = form.find(".progress-label");
 button = form.find('input[type="submit"]');
-
 button.hide();
 progressbar.show().progressbar({
 value: false,
-change: function () {
-progressLabel.text(`${
-progressbar.progressbar("value")
-}%`);
-},
 complete: function () {
 progressLabel.text("Готово!");
 }
 });
-
-processChunk(currentChunk, chunkCount, actionName, count, chunkSize);
-}
-
-function processChunk(currentChunk, chunkCount, actionName, count, chunkSize) {
 $.ajax({
 method: "POST",
 cache: false,
-url: '/plugin/content_generator/', // Убедитесь, что путь правильный
+url: '/plugin/content_generator/',
 data: {
-actionName,
-real_count: Math.min(chunkSize, count - chunkSize * (currentChunk - 1))
+actionName
 },
 success: function (response) {
-console.log(`Чанк ${currentChunk} из ${chunkCount} завершен`);
-progressbar.progressbar("value", (100 / chunkCount) * currentChunk);
+progressbar.progressbar("value", 100);
 },
 error: function (xhr, status, error) {
 console.error("Ошибка AJAX:", error);
 showMessage('error', `Произошла ошибка: ${error}`);
 },
 complete: function () {
-if (currentChunk < chunkCount) {
-processChunk(currentChunk + 1, chunkCount, actionName, count, chunkSize);
-} else {
 finishProcess();
 showMessage('success', 'Генерация завершена!');
 }
-}
 });
 }
-
 function finishProcess() {
 button.show();
 progressbar.hide();
 }
-
 // Функция для отображения сообщений
 function showMessage(type, text) { // Используем только блок .message внутри текущей формы
 message.text(text).addClass(type).fadeIn();
@@ -180,4 +179,3 @@ message.fadeOut();
 }
 });
 </script>
-

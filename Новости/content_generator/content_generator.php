@@ -38,15 +38,29 @@ function plugin_content_generator()
 		'content-type'  => 'application/json; charset=utf-8',
 		'cache-control' => 'private',
 	];
-	$count = (int)($_REQUEST['real_count'] ?? 0);
+	pluginsLoadConfig();
+	// Берём настройки плагина
+	$newsCount   = intval(pluginGetVariable('content_generator', 'news_count')) ?: 50;
+	$staticCount = intval(pluginGetVariable('content_generator', 'static_count')) ?: 20;
+	$maxAllowed  = intval(pluginGetVariable('content_generator', 'max_allowed')) ?: 1000;
 	$action = $_REQUEST['actionName'] ?? '';
+	// Определяем количество на основании действия
+	switch ($action) {
+		case 'generate_news':
+			$count = $newsCount;
+			break;
+		case 'generate_static':
+			$count = $staticCount;
+			break;
+		default:
+			$count = 0;
+	}
 	if ($count < 1) {
-		echo json_encode(['error' => 'Invalid count']);
+		echo json_encode(['error' => 'Invalid count (config value)']);
 		exit();
 	}
 	try {
-		// Жёсткий лимит для защиты от случайной перегрузки (можно скорректировать)
-		$maxAllowed = 1000;
+		// Применяем лимит из конфигурации
 		if ($count > $maxAllowed) {
 			$count = $maxAllowed;
 		}
