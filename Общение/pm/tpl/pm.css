@@ -110,11 +110,6 @@ input.pm:focus, textarea.pm_content:focus {
 	margin: 5px;
 }
 
-#newpm {
-	text-decoration: blink;
-	display: inline;
-}
-
 #pm .check, #pm .check:focus {
 	border: 0;
 	background: transparent;

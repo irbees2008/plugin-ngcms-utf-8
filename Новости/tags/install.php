@@ -1,6 +1,6 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
+if (!defined('NGCMS')) die('HAL');
 //
 // Configuration file for plugin
 //
@@ -11,7 +11,8 @@ if (!defined('NGCMS')) die ('HAL');
 //	apply		- apply installation, with handy confirmation
 //	autoapply       - apply installation in automatic mode [INSTALL script]
 //
-function plugin_tags_install($action) {
+function plugin_tags_install($action)
+{
 
 	global $lang;
 	if ($action != 'autoapply')
@@ -22,7 +23,7 @@ function plugin_tags_install($action) {
 			'table'  => 'news',
 			'action' => 'modify',
 			'fields' => array(
-				array('action' => 'cmodify', 'name' => 'tags', 'type' => 'varchar(255)', 'params' => ''),
+				array('action' => 'cmodify', 'name' => 'tags', 'type' => 'text', 'params' => ''),
 			)
 		),
 		array(
@@ -31,8 +32,8 @@ function plugin_tags_install($action) {
 			'key'    => 'primary key(`id`), unique key `tag` (`tag`)',
 			'fields' => array(
 				array('action' => 'cmodify', 'name' => 'id', 'type' => 'int', 'params' => 'not null auto_increment'),
-				array('action' => 'cmodify', 'name' => 'tag', 'type' => 'varchar(60)', 'params' => ''),
-				array('action' => 'cmodify', 'name' => 'posts', 'type' => 'int', 'params' => 'default 1'),
+				array('action' => 'cmodify', 'name' => 'tag', 'type' => 'varchar(100)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'posts', 'type' => 'int', 'params' => 'not null default 0'),
 			)
 		),
 		array(
@@ -41,8 +42,8 @@ function plugin_tags_install($action) {
 			'key'    => 'primary key(`id`), key `tagID` (`tagID`), key `newsID` (`newsID`) ',
 			'fields' => array(
 				array('action' => 'cmodify', 'name' => 'id', 'type' => 'int', 'params' => 'not null auto_increment'),
-				array('action' => 'cmodify', 'name' => 'newsID', 'type' => 'int'),
-				array('action' => 'cmodify', 'name' => 'tagID', 'type' => 'varchar(60)', 'params' => ''),
+				array('action' => 'cmodify', 'name' => 'newsID', 'type' => 'int', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'tagID', 'type' => 'int', 'params' => 'not null'),
 			)
 		),
 	);
@@ -67,6 +68,7 @@ function plugin_tags_install($action) {
 				'localsource'   => 0,
 				'cache'         => 1,
 				'cacheExpire'   => 120,
+				'suggestHelper' => 1,
 			);
 			foreach ($params as $k => $v) {
 				extra_set_param('tags', $k, $v);
@@ -77,4 +79,3 @@ function plugin_tags_install($action) {
 
 	return true;
 }
-

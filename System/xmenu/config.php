@@ -1,76 +1,189 @@
 <?php
-//
-// Configuration file for plugin
-//
-// Preload config file
+if (!defined('NGCMS')) die('HAL');
 pluginsLoadConfig();
-// Preload header data
-$header = file_get_contents(root . 'extras/xmenu/tpl/mhead.tpl');
-// Make an activity array - to mark menu's that are activated
-$activity = array();
-for ($i = 1; $i <= 9; $i++) {
-	if ((is_array($var = extra_get_param('xmenu', 'activate'))) && ($var[$i]))
-		$activity[] = "#go_" . $i . " { color: red; }";
+LoadPluginLang('xmenu', 'config');
+function showXMenuConfig()
+{
+    global $mysql, $tpl;
+    $tpath = locatePluginTemplates(['mhead', 'ehead', 'efoot'], 'xmenu', 1);
+    if (!$tpath) {
+        return 'Ошибка: не найдены шаблоны плагина';
+    }
+    // Получаем количество меню из конфига
+    $menu_count = intval(extra_get_param('xmenu', 'menu_count')) ?: 9;
+    // Получаем категории
+    $catz = $mysql->select("SELECT id, name, poslevel, xmenu FROM " . prefix . "_category ORDER BY posorder");
+    if ($mysql->error) {
+        return 'Ошибка при получении категорий: ' . $mysql->error;
+    }
+    // Получаем статические страницы
+    $static_pages = $mysql->select("SELECT id, title, alt_name, xmenu FROM " . prefix . "_static ORDER BY id");
+    if ($mysql->error) {
+        return 'Ошибка при получении статических страниц: ' . $mysql->error;
+    }
+    // Формируем таблицу категорий
+    $categories_html = '<div class="xmenu-section"><h3>Категории</h3>';
+    $categories_html .= '<table class="table table-striped"><thead><tr><th>Категория</th>';
+    for ($i = 1; $i <= $menu_count; $i++) {
+        $categories_html .= '<th>Меню ' . $i . '</th>';
+    }
+    $categories_html .= '</tr></thead><tbody>';
+    foreach ($catz as $cat) {
+        $xmenu = isset($cat['xmenu']) ? $cat['xmenu'] : str_repeat('_', $menu_count);
+        $xmenu = str_pad(substr($xmenu, 0, $menu_count), $menu_count, '_');
+        $categories_html .= '<tr><td>' . str_repeat('&nbsp;&nbsp;', $cat['poslevel'] ?? 0) . htmlspecialchars($cat['name']) . '</td>';
+        for ($i = 1; $i <= $menu_count; $i++) {
+            $checked = (isset($xmenu[$i - 1]) && $xmenu[$i - 1] === '#') ? ' checked' : '';
+            $categories_html .= '<td><input type="checkbox" name="cmenu[' . $cat['id'] . '][' . $i . ']" value="1"' . $checked . '></td>';
+        }
+        $categories_html .= '</tr>';
+    }
+    $categories_html .= '</tbody></table></div>';
+    // Формируем таблицу статических страниц
+    $static_html = '<div class="xmenu-section"><h3>Статические страницы</h3>';
+    $static_html .= '<table class="table table-striped"><thead><tr><th>Страница</th>';
+    for ($i = 1; $i <= $menu_count; $i++) {
+        $static_html .= '<th>Меню ' . $i . '</th>';
+    }
+    $static_html .= '</tr></thead><tbody>';
+    foreach ($static_pages as $page) {
+        $xmenu = isset($page['xmenu']) ? $page['xmenu'] : str_repeat('_', $menu_count);
+        $xmenu = str_pad(substr($xmenu, 0, $menu_count), $menu_count, '_');
+        $page_title = htmlspecialchars($page['title'] ?? 'Без названия');
+        $page_altname = isset($page['alt_name']) ? ' (' . htmlspecialchars($page['alt_name']) . ')' : '';
+        $static_html .= '<tr><td>' . $page_title . $page_altname . '</td>';
+        for ($i = 1; $i <= $menu_count; $i++) {
+            $checked = (isset($xmenu[$i - 1]) && $xmenu[$i - 1] === '#') ? ' checked' : '';
+            $static_html .= '<td><input type="checkbox" name="smenu[' . $page['id'] . '][' . $i . ']" value="1"' . $checked . '></td>';
+        }
+        $static_html .= '</tr>';
+    }
+    $static_html .= '</tbody></table></div>';
+    // Вывод интерфейса
+    $output = '';
+    if (isset($tpath['mhead'])) {
+        $tpl->template('mhead', $tpath['mhead']);
+        $tpl->vars('mhead', []);
+        $output .= $tpl->show('mhead');
+    }
+    if (isset($tpath['ehead'])) {
+        $tpl->template('ehead', $tpath['ehead']);
+        $tpl->vars('ehead', ['id' => 0, 'display' => 'block']);
+        $output .= $tpl->show('ehead');
+    }
+    $output .= $categories_html . $static_html;
+    if (isset($tpath['efoot'])) {
+        $tpl->template('efoot', $tpath['efoot']);
+        $tpl->vars('efoot', []);
+        $output .= $tpl->show('efoot');
+    }
+    return $output;
 }
-// Prepare configuration array
-$cfg = array();
-array_push($cfg, array('type' => 'flat', 'input' => str_replace('{activity}', join("\n", $activity), $header) . '</table>'));
-// FIRST: Category list with menu mapping
-$cfgX = array();
-array_push($cfg, array('type' => 'flat', 'input' => '<div id="menu_0" style="display: block;">' . "\n" . '<table class="content" border="0" cellspacing="0" cellpadding="0" align="center">' . "\n"));
-$outline = array('<tr><td rowspan=2><b>Название категории</b></td><td colspan=9><b>Меню, в которых данная категория отображается</b></td></tr><tr><td>Меню 1</td><td>Меню 2</td><td>Меню 3</td><td>Меню 4</td><td>Меню 5</td><td>Меню 6</td><td>Меню 7</td><td>Меню 8</td><td>Меню 9</td><td width="20%"></td></tr>');
-foreach ($catz as $name => $val) {
-	$line = '<tr><td>' . str_repeat('&#8212; ', $val['poslevel']) . $val['name'] . '</td>';
-	for ($i = 1; $i <= 9; $i++) {
-		$line .= '<td><input name="cmenu[' . $catz[$name]['id'] . '][' . $i . ']" value="1" type="checkbox"' . (($catz[$name]['xmenu']{$i - 1} == '#') ? ' checked ' : '') . '/></td>';
-	}
-	$line .= '</tr>';
-	$outline [] = $line;
+// Обработка сохранения
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'commit') {
+    // Сохраняем основные настройки
+    $params = [
+        'localsource' => intval($_REQUEST['localsource'] ?? 0),
+        'cache' => intval($_REQUEST['cache'] ?? 0),
+        'cacheExpire' => intval($_REQUEST['cacheExpire'] ?? 3600),
+        'menu_count' => intval($_REQUEST['menu_count'] ?? 9)
+    ];
+    // Сохраняем каждую настройку отдельно
+    foreach ($params as $key => $value) {
+        extra_set_param('xmenu', $key, $value);
+    }
+    $menu_count = $params['menu_count'];
+    // Получаем текущие данные для сравнения
+    $current_catz = $mysql->select("SELECT id, xmenu FROM " . prefix . "_category");
+    $current_static = $mysql->select("SELECT id, xmenu FROM " . prefix . "_static");
+    // ОБРАБОТКА КАТЕГОРИЙ
+    foreach ($current_catz as $cat) {
+        $new_xline = str_repeat('_', $menu_count);
+        // Устанавливаем флаги из формы
+        if (isset($_REQUEST['cmenu'][$cat['id']]) && is_array($_REQUEST['cmenu'][$cat['id']])) {
+            foreach ($_REQUEST['cmenu'][$cat['id']] as $menu_id => $val) {
+                if ($menu_id >= 1 && $menu_id <= $menu_count && $val == '1') {
+                    $new_xline[$menu_id - 1] = '#';
+                }
+            }
+        }
+        // Обновляем только если изменилось
+        $current_xmenu = isset($cat['xmenu']) ? str_pad(substr($cat['xmenu'], 0, $menu_count), $menu_count, '_') : str_repeat('_', $menu_count);
+        if ($current_xmenu !== $new_xline) {
+            $mysql->query("UPDATE " . prefix . "_category SET xmenu = " . db_squote($new_xline) . " WHERE id = " . db_squote($cat['id']));
+        }
+    }
+    // ОБРАБОТКА СТАТИЧЕСКИХ СТРАНИЦ
+    foreach ($current_static as $page) {
+        $new_xline = str_repeat('_', $menu_count);
+        // Устанавливаем флаги из формы
+        if (isset($_REQUEST['smenu'][$page['id']]) && is_array($_REQUEST['smenu'][$page['id']])) {
+            foreach ($_REQUEST['smenu'][$page['id']] as $menu_id => $val) {
+                if ($menu_id >= 1 && $menu_id <= $menu_count && $val == '1') {
+                    $new_xline[$menu_id - 1] = '#';
+                }
+            }
+        }
+        // Обновляем только если изменилось
+        $current_xmenu = isset($page['xmenu']) ? str_pad(substr($page['xmenu'], 0, $menu_count), $menu_count, '_') : str_repeat('_', $menu_count);
+        if ($current_xmenu !== $new_xline) {
+            $mysql->query("UPDATE " . prefix . "_static SET xmenu = " . db_squote($new_xline) . " WHERE id = " . db_squote($page['id']));
+        }
+    }
+    pluginsSaveConfig();
+    msg(['type' => 'info', 'text' => 'Настройки успешно сохранены']);
+    header("Location: " . admin_url . "/admin.php?mod=extra-config&plugin=xmenu");
+    exit;
 }
-array_push($cfgX, array('type' => 'flat', 'input' => join("\n", $outline)));
-array_push($cfg, array('mode' => 'group', 'title' => '<b>Распределение категорий</b>', 'entries' => $cfgX));
-array_push($cfg, array('type' => 'flat', 'input' => "\n</table></div>\n\n"));
-// SECOND: Populate config parameters for menus 1-9
-for ($i = 1; $i <= 9; $i++) {
-	$cfgX = array();
-	array_push($cfg, array('type' => 'flat', 'input' => '<div id="menu_' . $i . '" style="display: ' . (!$i ? 'block' : 'none') . ';">' . "\n" . '<table class="content" border="0" cellspacing="0" cellpadding="0" align="center">' . "\n"));
-	array_push($cfgX, array('type' => 'select', 'name' => 'activate[' . $i . ']', 'title' => 'Активация меню', 'descr' => '<b>Да</b> - данное меню активно<br/><b>Нет</b> - меню неактивно', 'values' => array('0' => 'Нет', '1' => 'Да'), value => (is_array($var = extra_get_param('xmenu', 'activate')) ? $var[$i] : 0)));
-	array_push($cfgX, array('type' => 'select', 'name' => 'mode[' . $i . ']', 'title' => 'Режим отображения меню', 'descr' => '<b>Выбранные категории</b> - отображаются категории, по которым выставлен флаг для данного меню<br/><b>Текущие подкатегории</b> - подкатегории текущей категории. В случае главной страницы - все категории 1 уровня', 'values' => array('0' => 'Выбранные категории', '1' => 'Текущие подкатегории'), value => (is_array($var = extra_get_param('xmenu', 'mode')) ? $var[$i] : 0)));
-	array_push($cfgX, array('type' => 'select', 'name' => 'news[' . $i . ']', 'title' => 'Добавить новость категории', 'descr' => '<b>Да</b> - для каждой категории будет выводиться последняя новость из этой категории<br/><b>Нет</b> - будет отображаться только сама категория', 'values' => array('0' => 'Нет', '1' => 'Да'), value => (is_array($var = extra_get_param('xmenu', 'news')) ? $var[$i] : 0)));
-	array_push($cfgX, array('type' => 'select', 'name' => 'skin[' . $i . ']', 'title' => 'Шаблон отображения меню', 'descr' => 'Выберите шаблон, с помощью которого будет отображаться данное меню', 'values' => array('default' => 'default'), value => (is_array($var = extra_get_param('xmenu', 'skin')) ? $var[$i] : 0)));
-	array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки меню # ' . $i . '</b>', 'entries' => $cfgX));
-	array_push($cfg, array('type' => 'flat', 'input' => "\n</table></div>\n\n"));
-}
-// Print footer
-array_push($cfg, array('type' => 'flat', 'input' => '<table class="content" border="0" cellspacing="0" cellpadding="0" align="center">'));
-// RUN
-if ($_REQUEST['action'] == 'commit') {
-	// If submit requested, do config save
-	// 1. Menus
-	extra_set_param('xmenu', 'activate', $_REQUEST['activate']);
-	extra_set_param('xmenu', 'mode', $_REQUEST['mode']);
-	extra_set_param('xmenu', 'news', $_REQUEST['news']);
-	extra_set_param('xmenu', 'skin', $_REQUEST['skin']);
-	extra_commit_changes();
-	// 2. Categories menu mapping
-	if (!is_array($_REQUEST['cmenu'])) {
-		// No menus activated
-		$mysql->query("update " . prefix . "_category set xmenu=''");
-	} else {
-		$cmenu = $_REQUEST['cmenu'];
-		foreach ($catz as $catname => $catdata) {
-			$xline = '';
-			if (is_array($cmenu[$catdata['id']])) {
-				for ($i = 1; $i <= 9; $i++)
-					$xline .= ($cmenu[$catdata['id']][$i]) ? '#' : '_';
-			} else {
-				$xline = str_repeat('_', 9);
-			}
-			$mysql->query("update " . prefix . "_category set xmenu=" . db_squote($xline) . " where id = " . db_squote($catdata['id']));
-		}
-	}
-	//print "<pre>"; var_dump($_REQUEST); print "</pre>";
-	print_commit_complete($plugin);
-} else {
-	generate_config_page($plugin, $cfg);
-}
+// Формируем конфигурационную страницу
+$cfg = [
+    [
+        'type' => 'hidden',
+        'name' => 'action',
+        'value' => 'commit'
+    ],
+    [
+        'mode' => 'group',
+        'title' => 'Основные настройки',
+        'entries' => [
+            [
+                'name' => 'menu_count',
+                'title' => "Количество меню",
+                'type' => 'input',
+                'value' => intval(extra_get_param('xmenu', 'menu_count')) ?: 9,
+                'help' => 'Укажите количество различных меню, которые будут использоваться в плагине'
+            ],
+            [
+                'name' => 'localsource',
+                'title' => "Источник шаблонов",
+                'type' => 'select',
+                'values' => ['0' => 'Шаблон сайта', '1' => 'Плагин'],
+                'value' => intval(extra_get_param('xmenu', 'localsource'))
+            ]
+        ]
+    ],
+    [
+        'mode' => 'group',
+        'title' => 'Настройки кеширования',
+        'entries' => [
+            [
+                'name' => 'cache',
+                'title' => "Кеширование",
+                'type' => 'select',
+                'values' => ['1' => 'Да', '0' => 'Нет'],
+                'value' => intval(extra_get_param('xmenu', 'cache'))
+            ],
+            [
+                'name' => 'cacheExpire',
+                'title' => "Время жизни кеша (сек)",
+                'type' => 'input',
+                'value' => extra_get_param('xmenu', 'cacheExpire') ?: '3600'
+            ]
+        ]
+    ],
+    [
+        'type' => 'flat',
+        'input' => showXMenuConfig()
+    ]
+];
+generate_config_page($plugin, $cfg);

@@ -1,20 +1,16 @@
 <?php
-
 // Protect against hack attempts
 if (!defined('NGCMS')) die ('HAL');
-
 //LoadPluginLang('uprofile', 'main', '', '', ':');
 LoadPluginLang('uprofile', 'main', '', 'uprofile', '#');
 register_plugin_page('uprofile', 'edit', 'uprofile_editProfile', 0);
 register_plugin_page('uprofile', 'apply', 'uprofile_applyProfile', 0);
 register_plugin_page('uprofile', 'show', 'uprofile_showProfile', 0);
 LoadPluginLibrary('uprofile', 'lib');
-
 // =============================================================
 // External functions of plugin
 // =============================================================
 function uprofile_showProfile($params) {
-
 	global $mysql, $userROW, $config, $lang, $twig, $twigLoader, $template, $SYSTEM_FLAGS, $PFILTERS;
 	//LoadPluginLang('uprofile', 'users', '', '', ':');
 	// Check if valid user identity is specified
@@ -30,7 +26,6 @@ function uprofile_showProfile($params) {
 	}
 	if (!is_array($urow)) {
 		error404();
-
 		return;
 	}
 	if (is_array($PFILTERS['plugin.uprofile']))
@@ -43,9 +38,9 @@ function uprofile_showProfile($params) {
 	$SYSTEM_FLAGS['info']['title']['group'] = $lang['uprofile']['header.view'];
 	$SYSTEM_FLAGS['info']['title']['item'] = $urow['name'];
 	$status = (($urow['status'] >= 1) && ($urow['status'] <= 4)) ? $lang['uprofile']['st_' . $urow['status']] : $lang['uprofile:st_unknown'];
-	// Get user's photo and avatar
-	$userPhoto = userGetPhoto($urow);
+	// Get user's  and avatar
 	$userAvatar = userGetAvatar($urow);
+	$bookmarksCount = $mysql->result("SELECT COUNT(*) FROM " . prefix . "_bookmarks WHERE user_id = " . intval($urow['id']));
 	$tVars = array(
 		'userRec' => $urow,
 		'user'    => array(
@@ -56,22 +51,85 @@ function uprofile_showProfile($params) {
 			'status'      => $status,
 			'last'        => ($urow['last'] > 0) ? LangDate("l, j Q Y - H:i", $urow['last']) : $lang['no_last'],
 			'reg'         => langdate("j Q Y", $urow['reg']),
-			'site'        => secure_html($urow['site']),
-			'icq'         => secure_html($urow['icq']),
 			'from'        => secure_html($urow['where_from']),
 			'info'        => secure_html($urow['info']),
-			'photo_thumb' => $userPhoto[1],
-			'photo'       => $userPhoto[2],
 			'avatar'      => $userAvatar[1],
 			'flags'       => array(
-				'hasPhoto'     => $config['use_photos'] && $userPhoto[0],
 				'hasAvatar'    => $config['use_avatars'] && $userAvatar[0],
-				'hasIcq'       => is_numeric($urow['icq']) ? 1 : 0,
 				'isOwnProfile' => (isset($userROW) && is_array($userROW) && ($userROW['id'] == $urow['id'])) ? 1 : 0,
 			),
+			'write_pm_link' => generatePluginLink('pm', null, array('action' => 'write', 'name' => $urow['name'])),
+			'bookmarks_count' => $bookmarksCount,
+			'bookmarks_link' => generatePluginLink('bookmarks', null),
+			//'edit_profile' => generateLink('uprofile', 'edit', array(), array(), false, true),
 		),
+		'edit_profile' => generateLink('uprofile', 'edit', array(), array(), false, true),
 		'token'   => genUToken('uprofile.editForm'),
 	);
+	// --- НАЧАЛО: Генерация содержимого для $template['vars']['plugin_bookmarks'] ---
+	global $bookmarksLoaded, $bookmarksList; // Объявляем нужные глобальные переменные из bookmarks
+	// 1. Получаем ID пользователя, чей профиль просматривается.
+	$targetUserID = $urow['id'];
+	// 2. Проверяем, включено ли отображение bookmarks в sidebar (используем настройки bookmarks)
+	// Если bookmarks отключены в sidebar, выводим пусто
+	if (!pluginGetVariable('bookmarks', 'sidebar')) {
+		$template['vars']['plugin_bookmarks'] = '';
+	} else {
+		// 3. Загружаем закладки целевого пользователя
+		$targetUserBookmarksList = $mysql->select("SELECT n.id, n.title, n.alt_name, n.catid, n.postdate, n.content FROM " . prefix . "_bookmarks AS b LEFT JOIN " . prefix . "_news n ON n.id = b.news_id WHERE b.user_id = " . db_squote($targetUserID));
+		// 4. Проверяем настройки отображения
+		$hideEmpty = pluginGetVariable('bookmarks', 'hide_empty');
+		$count = count($targetUserBookmarksList);
+		if ((!$count) && $hideEmpty) {
+			$template['vars']['plugin_bookmarks'] = '';
+		} else {
+			// 5. Ограничиваем количество записей
+			$maxEntries = intval(pluginGetVariable('bookmarks', 'max_sidebar'));
+			$displayEntries = array_slice($targetUserBookmarksList, 0, $maxEntries > 0 ? $maxEntries : null);
+			$result = array();
+			$maxlength = intval(pluginGetVariable('bookmarks', 'maxlength')) ?: 100;
+			// 6. Обрабатываем каждую запись
+			foreach ($displayEntries as $row) {
+				// Извлекаем изображения из BBCode [img]
+				$image = '';
+				if (preg_match('/\[img\=["\']?([^\]"\']+)["\']?[^\]]*\](?:[^\[]+)?\[\/img\]/i', $row['content'], $matches)) {
+					$image = $matches[1];
+					if (strpos($image, 'http') !== 0) {
+						$image = $config['home_url'] . $image;
+					}
+				}
+				$title = (strlen($row['title']) > $maxlength) ?
+					substr(secure_html($row['title']), 0, $maxlength) . "..." :
+					secure_html($row['title']);
+				$result[] = array(
+					'link' => newsGenerateLink($row), // Предполагается, что эта функция доступна
+					'title' => $title,
+					'image' => $image ?: (tpl_url . '/img/img-none.png')
+				);
+			}
+			// 7. Определяем пути к шаблонам (используем стандартные bookmarks)
+			// Используем те же настройки localsource, что и uprofile, или можно взять из bookmarks
+			$tpathBookmarks = locatePluginTemplates(array('bookmarks', 'entries'), 'bookmarks', pluginGetVariable('bookmarks', 'localsource'));
+			// 8. Подготавливаем переменные для шаблона bookmarks
+			$tVarsBookmarks = array(
+				'tpl_url' => tpl_url,
+				'entries' => $result,
+				'bookmarks_page' => generatePluginLink('bookmarks', null),
+				'count' => $count
+			);
+			// 9. Рендерим шаблон bookmarks
+			try {
+				// Загружаем Twig для bookmarks, если он еще не загружен в этом контексте
+				// Но так как мы используем общий $twig, этого должно быть достаточно
+				$xtBookmarks = $twig->loadTemplate($tpathBookmarks['bookmarks'] . 'bookmarks.tpl');
+				$template['vars']['plugin_bookmarks'] = $xtBookmarks->render($tVarsBookmarks);
+			} catch (Exception $e) {
+				// В случае ошибки отображаем пустую строку или сообщение об ошибке
+				$template['vars']['plugin_bookmarks'] = '<!-- Bookmarks Error: ' . $e->getMessage() . ' -->';
+			}
+		}
+	}
+	// --- КОНЕЦ: Генерация содержимого для $template['vars']['plugin_bookmarks'] ---
 	$conversionConfig = array(
 		'{user}'       => '{{ user.name }}',
 		'{news}'       => '{{ user.news }}',
@@ -79,12 +137,8 @@ function uprofile_showProfile($params) {
 		'{status}'     => '{{ user.status }}',
 		'{last}'       => '{{ user.last }}',
 		'{reg}'        => '{{ user.reg }}',
-		'{site}'       => '{{ user.site }}',
-		'{icq}'        => '{{ user.icq }}',
 		'{from}'       => '{{ user.from }}',
 		'{info}'       => '{{ user.info }}',
-		'{photo}'      => '{{ user.photo_thumb }}',
-		'{photo_link}' => '{{ user.photo }}',
 		'{avatar}'     => '{{ user.avatar }}',
 		'{tpl_url}'    => '{{ tpl_url }}',
 	);
@@ -99,20 +153,15 @@ function uprofile_showProfile($params) {
 	$xt = $twig->loadTemplate($tpath['users'] . 'users.tpl');
 	$template['vars']['mainblock'] .= $xt->render($tVars);
 }
-
 function uprofile_editProfile() {
-
 	// Call editForm routine
 	uprofile_editForm();
 }
-
 function uprofile_applyProfile() {
-
 	global $template, $userROW, $lang;
 	// Check if user is logged in
 	if (!is_array($userROW)) {
 		msg(array("type" => "error", "text" => $lang['uprofile']['msge_notlogged']));
-
 		return;
 	}
 	// Call Apply changes routine
@@ -126,19 +175,16 @@ function uprofile_applyProfile() {
 		uprofile_editForm();
 	}
 }
-
 // =============================================================
 // Internal functions of plugin
 // =============================================================
 // Show EDIT FORM for current user's profile
 function uprofile_editForm($ajaxMode = false) {
-
 	global $mysql, $userROW, $lang, $config, $tpl, $template, $twig, $twigLoader, $SYSTEM_FLAGS, $PFILTERS, $DSlist;
 	$SYSTEM_FLAGS['info']['title']['group'] = $lang['uprofile']['header.edit'];
 	// Check if user is logged in
 	if (!is_array($userROW)) {
 		msg(array("type" => "error", "text" => $lang['uprofile']['msge_notlogged']));
-
 		return;
 	}
 	// Notify about `EDIT COMPLETE` if editComplete parameter is passed
@@ -160,8 +206,7 @@ function uprofile_editForm($ajaxMode = false) {
 	// Determine paths for all template files
 	$tpath = locatePluginTemplates(array('profile'), 'uprofile', pluginGetVariable('uprofile', 'localsource'));
 	$status = ((($urow['status'] >= 1) && ($urow['status'] <= 4)) ? $lang['uprofile']['st_' . $urow['status']] : $lang['uprofile']['st_unknown']);
-	// Get user's photo and avatar
-	$userPhoto = userGetPhoto($urow);
+	// Get user's avatar
 	$userAvatar = userGetAvatar($urow);
 	$tVars = array(
 		'userRec'             => $urow,
@@ -174,22 +219,15 @@ function uprofile_editForm($ajaxMode = false) {
 			'last'        => ($urow['last'] > 0) ? LangDate("l, j Q Y - H:i", $urow['last']) : $lang['no_last'],
 			'reg'         => langdate("j Q Y", $urow['reg']),
 			'email'       => secure_html($urow['mail']),
-			'site'        => secure_html($urow['site']),
-			'icq'         => secure_html($urow['icq']),
 			'from'        => secure_html($urow['where_from']),
 			'info'        => secure_html($urow['info']),
-			'photo_thumb' => $userPhoto[1],
-			'photo'       => $userPhoto[2],
 			'avatar'      => $userAvatar[1],
 			'php_self'    => $PHP_SELF,
 			'flags'       => array(
-				'hasPhoto'  => $config['use_photos'] && $userPhoto[0],
 				'hasAvatar' => $config['use_avatars'] && $userAvatar[0],
-				'hasIcq'    => is_numeric($urow['icq']) ? 1 : 0,
-			),
+							),
 		),
 		'flags'               => array(
-			'photoAllowed'  => $config['use_photos'] ? 1 : 0,
 			'avatarAllowed' => $config['use_avatars'] ? 1 : 0,
 		),
 		'form_action'         => generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'apply')),
@@ -207,12 +245,9 @@ function uprofile_editForm($ajaxMode = false) {
 		'{comments}'             => '{{ user.com }}',
 		'{email}'                => '{{ user.email }}',
 		'{from}'                 => '{{ user.from }}',
-		'{site}'                 => '{{ user.site }}',
-		'{icq}'                  => '{{ user.icq }}',
 		'{about}'                => '{{ user.info }}',
 		'{about_sizelimit_text}' => '{{ info_sizelimit_text }}',
 		'{about_sizelimit}'      => '{{ info_sizelimit }}',
-		'{photo}'                => '{% if (flags.photoAllowed) %}<input type="file" name="newphoto" size="40" /><br />{% if (user.flags.hasPhoto) %}<a href="{{ user.photo }}" target="_blank"><img src="{{ user.photo_thumb }}" style="margin: 5px; border: 0px; alt=""/></a><br/><input type="checkbox" name="delphoto" id="delphoto" class="check" />&nbsp;<label for="delphoto">{{ lang.uprofile[\'delete\'] }}</label>{% endif %}{% else %}{{ lang.uprofile[\'photos_denied\'] }}{% endif %}',
 		'{avatar}'               => '{% if (flags.avatarAllowed) %}<input type="file" name="newavatar" size="40" /><br />{% if (user.flags.hasAvatar) %}<img src="{{ user.avatar }}" style="margin: 5px; border: 0px; alt=""/><br/><input type="checkbox" name="delavatar" id="delavatar" class="check" />&nbsp;<label for="delavatar">{{ lang.uprofile[\'delete\'] }}</label>{% endif %}{% else %}{{ lang.uprofile[\'avatars_denied\'] }}{% endif %}',
 		'{form_action}'          => '{{ form_action }}',
 		'{token}'                => '{{ token }}',
@@ -233,16 +268,13 @@ function uprofile_editForm($ajaxMode = false) {
 		return $render;
 	$template['vars']['mainblock'] .= $render;
 }
-
 function uprofile_editApply() {
-
 	global $mysql, $tpl, $lang, $template, $userROW, $auth_db, $config, $PFILTERS, $DSlist;
 	// Load required library
 	@include_once root . 'includes/classes/upload.class.php';
 	// Check if user is logged in
 	if (!is_array($userROW)) {
 		msg(array("type" => "error", "text" => $lang['uprofile']['msge_notlogged']));
-
 		return;
 	}
 	$currentUser = $userROW;
@@ -254,7 +286,6 @@ function uprofile_editApply() {
 		// Correct OLD password must be presented
 		if (!isset($_POST['oldpass']) || (EncodePassword($_POST['oldpass']) != $currentUser['pass'])) {
 			msg(array("type" => "error", "text" => $lang['uprofile']['msge_needoldpass']));
-
 			return;
 		}
 	} else {
@@ -263,7 +294,6 @@ function uprofile_editApply() {
 			(!isset($_POST['oldpass']) || (EncodePassword($_POST['oldpass']) != $currentUser['pass']))
 		) {
 			msg(array("type" => "error", "text" => $lang['uprofile']['msge_needoldpass']));
-
 			return;
 		}
 	}
@@ -272,12 +302,6 @@ function uprofile_editApply() {
 		uprofile_manageDelete('avatar', $currentUser['id']);
 	} else {
 		$avatar = $currentUser['avatar'];
-	}
-	// Delete photo if requested
-	if ($_REQUEST['delphoto']) {
-		uprofile_manageDelete('photo', $currentUser['id']);
-	} else {
-		$photo = $currentUser['photo'];
 	}
 	// UPLOAD AVATAR
 	if ($_FILES['newavatar']['name']) {
@@ -307,44 +331,9 @@ function uprofile_editApply() {
 			}
 		}
 	}
-	// UPLOAD PHOTO
-	if ($_FILES['newphoto']['name']) {
-		// Delete a photo if user already has it
-		uprofile_manageDelete('photo', $currentUser['id']);
-		$fmanage = new file_managment();
-		$imanage = new image_managment();
-		$up = $fmanage->file_upload(array('type' => 'photo', 'http_var' => 'newphoto', 'replace' => 1, 'manualfile' => $currentUser['id'] . '.' . strtolower($_FILES['newphoto']['name'])));
-		if (is_array($up)) {
-			// Now write info about image into DB
-			if (is_array($sz = $imanage->get_size($config['photos_dir'] . $subdirectory . '/' . $up[1]))) {
-				$fmanage->get_limits('photo');
-				// Create preview for photo
-				$tsx = intval($config['photos_thumb_size_x']) ? intval($config['photos_thumb_size_x']) : intval($config['photos_thumb_size']);
-				$tsy = intval($config['photos_thumb_size_y']) ? intval($config['photos_thumb_size_y']) : intval($config['photos_thumb_size']);
-				if (($tsx < 10) || ($tsx > 1000)) $tsx = 150;
-				if (($tsy < 10) || ($tsy > 1000)) $tsy = 150;
-				$thumb = $imanage->create_thumb($config['photos_dir'] . $subdirectory, $up[1], $tsx, $tsy);
-				// If we were unable to create thumb - delete photo, it's damaged!
-				if (!$thumb) {
-					msg(array("type" => "error", "text" => $lang['uprofile']['msge_damaged']));
-					$fmanage->file_delete(array('type' => 'avatar', 'id' => $up[0]));
-				} else {
-					$mysql->query("update " . prefix . "_" . $fmanage->tname . " set width=" . db_squote($sz[1]) . ", height=" . db_squote($sz[2]) . ", preview=1 where id = " . db_squote($up[0]));
-					$photo = $up[1];
-				}
-			} else {
-				// We were unable to fetch image size. Damaged file, delete it!
-				msg(array("type" => "error", "text" => $lang['uprofile']['msge_damaged']));
-				$fmanage->file_delete(array('type' => 'avatar', 'id' => $up[0]));
-			}
-		}
-	}
 	$sqlFields = array(
 		'avatar'     => $avatar,
-		'photo'      => $photo,
 		'mail'       => $_REQUEST['editmail'],
-		'site'       => $_REQUEST['editsite'],
-		'icq'        => is_numeric($_REQUEST['editicq']) ? $_REQUEST['editicq'] : '',
 		'where_from' => $_REQUEST['editfrom'],
 		'info'       => (intval($config['user_aboutsize']) ? substr($_REQUEST['editabout'], 0, $config['user_aboutsize']) : $_REQUEST['editabout'])
 	);
@@ -372,12 +361,9 @@ function uprofile_editApply() {
 		foreach ($PFILTERS['plugin.uprofile'] as $k => $v) {
 			$v->editProfileNotify($currentUser['id'], $currentUser, $sqlFields);
 		}
-
 	return true;
 }
-
 function uprofile_manageDelete($type, $userID) {
-
 	global $mysql, $userROW;
 	// Load required library
 	@include_once root . 'includes/classes/upload.class.php';
@@ -400,16 +386,11 @@ function uprofile_manageDelete($type, $userID) {
 		// Try to delete all avatars of this user
 		@unlink($avatar_dir . $uRow['id'] . '.*');
 	}
-	$mysql->query("update " . uprefix . "_users set " . ($type == 'photo' ? 'photo' : 'avatar') . " = '' where id = " . $userID);
+	$mysql->query("update " . uprefix . "_users set avatar = '' where id = " . $userID);
 	if ($localUpdate) $userROW[$type] = '';
 }
-
 function uprofile_rpc_manage($params) {
-
 	$uprofileOutput = uprofile_editForm(true);
-
 	return array('status' => 1, 'errorCode' => 0, 'data' => arrayCharsetConvert(0, $uprofileOutput));
 }
-
 rpcRegisterFunction('plugin.uprofile.editForm', 'uprofile_rpc_manage');
-

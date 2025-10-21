@@ -191,6 +191,20 @@ function comments_add() {
 	$SQL['text'] = str_replace("\r\n", "<br />", $SQL['text']);
 	$SQL['ip'] = $ip;
 	$SQL['reg'] = ($is_member) ? '1' : '0';
+	// Модерация: проверяем группы пользователей
+	$needModeration = false;
+	if (pluginGetVariable('comments', 'moderation')) {
+		$moderationGroups = pluginGetVariable('comments', 'moderation_groups');
+		if ($moderationGroups) {
+			$groups = array_map('trim', explode(',', $moderationGroups));
+			$userStatus = is_array($userROW) ? $userROW['status'] : 0;
+			$needModeration = in_array($userStatus, $groups);
+		} else {
+			// Старая логика: незарегистрированные и пользователи со статусом > 2
+			$needModeration = (!is_array($userROW) || ($userROW['status'] > 2));
+		}
+	}
+	$SQL['moderated'] = $needModeration ? 0 : 1;
 	// RUN interceptors
 	load_extras('comments:add');
 	if (is_array($PFILTERS['comments']))
@@ -212,8 +226,10 @@ function comments_add() {
 	$mysql->query("insert into " . prefix . "_comments (" . implode(",", $vnames) . ") values (" . implode(",", $vparams) . ")");
 	// Retrieve comment ID
 	$comment_id = $mysql->result("select LAST_INSERT_ID() as id");
-	// Update comment counter in news
-	$mysql->query("update " . prefix . "_news set com=com+1 where id=" . db_squote($SQL['post']));
+	// Update comment counter in news (only if comment is approved)
+	if ($SQL['moderated'] == 1) {
+		$mysql->query("update " . prefix . "_news set com=com+1 where id=" . db_squote($SQL['post']));
+	}
 	// Update counter for user
 	if ($SQL['author_id']) {
 		$mysql->query("update " . prefix . "_users set com=com+1 where id = " . db_squote($SQL['author_id']));

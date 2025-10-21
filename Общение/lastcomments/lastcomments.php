@@ -2,11 +2,11 @@
 // Protect against hack attempts
 if (!defined('NGCMS')) die ('HAL');
 define('lastcomments_version', '0.10');
+loadPluginLang('lastcomments', 'main', '', '', ':');
 // ==============================================
 // Side bar widget
 // ==============================================
 function lastcomments_block() {
-
 	global $template;
 	// Action if sidepanel is enabled
 	if (pluginGetVariable('lastcomments', 'sidepanel')) {
@@ -15,31 +15,28 @@ function lastcomments_block() {
 		$template['vars']['plugin_lastcomments'] = "";
 	}
 }
-
 registerActionHandler('index', 'lastcomments_block');
 // ==============================================
 // ==============================================
 // Plugin page
 // ==============================================
 function lastcomments_page() {
-
-	global $SYSTEM_FLAGS, $template, $CurrentHandler;
+	loadPluginLang('lastcomments', 'main', '', '', ':');
+	global $SYSTEM_FLAGS, $template, $lang, $CurrentHandler;
 	// Action if ppage is enabled
 	if (pluginGetVariable('lastcomments', 'ppage') && ($CurrentHandler['handlerParams']['value']['pluginName'] == 'core')) {
-		$SYSTEM_FLAGS['info']['title']['group'] = "lastcomments";
+				$SYSTEM_FLAGS['info']['title']['group'] = $lang['lastcomments:lastcomments'];
 		$template['vars']['mainblock'] = lastcomments(1);
 	} else {
 		error404();
 	}
 }
-
 register_plugin_page('lastcomments', '', 'lastcomments_page', 0);
 // ==============================================
 // ==============================================
 // Rss feed
 // ==============================================
 function lastcomments_rssfeed() {
-
 	global $SUPRESS_TEMPLATE_SHOW, $SUPRESS_MAINBLOCK_SHOW, $CurrentHandler;
 	// Action if rssfeed is enabled
 	if (pluginGetVariable('lastcomments', 'rssfeed') && !(checkLinkAvailable('lastcomments', 'rss') && $CurrentHandler['handlerParams']['value']['pluginName'] == 'core')) {
@@ -56,14 +53,12 @@ function lastcomments_rssfeed() {
 		error404();
 	}
 }
-
 register_plugin_page('lastcomments', 'rss', 'lastcomments_rssfeed', 0);
 // ==============================================
 // ==============================================
 // Some magic
 // ==============================================
 function lastcomments($mode = 0) {
-
 	global $config, $mysql, $twig, $twigLoader, $parse, $TemplateCache;
 	switch ($mode) {
 		case 1:
@@ -77,12 +72,11 @@ function lastcomments($mode = 0) {
 			$tpl_prefix = "";        // sidepanel widget
 			break;
 	}
-	// Generate cache file name [ we should take into account SWITCHER plugin & calling parameters ]
-	$cacheFileName = md5('lastcomments' . $config['theme'] . $config['default_lang'] . $tpl_prefix) . '.txt';
+	// Generate cache file name
+	$cacheFileName = md5('lastcomments' . $config['theme'] . $config['default_lang'] . $tpl_prefix . (isset($_REQUEST['page']) ? intval($_REQUEST['page']) : 0)) . '.txt';
 	if (pluginGetVariable('lastcomments', 'cache')) {
 		$cacheData = cacheRetrieveFile($cacheFileName, pluginGetVariable('lastcomments', 'cacheExpire'), 'lastcomments');
 		if ($cacheData != false) {
-			// We got data from cache. Return it and stop
 			return $cacheData;
 		}
 	}
@@ -173,7 +167,7 @@ function lastcomments($mode = 0) {
 		}
 		$data[] = array(
 			'link'          => newsGenerateLink(array('id' => $row['nid'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['npostdate'])),
-			'date'          => langdate('d.m.Y', $row['postdate']),
+			'date'          => langdate('d.m.Y H:i', $row['postdate']),
 			'author'        => str_replace('<', '&lt;', $row['author']),
 			'author_id'     => $row['author_id'],
 			'title'         => str_replace('<', '&lt;', $row['title']),
@@ -230,11 +224,12 @@ function lastcomments($mode = 0) {
 		'description' => $config['description'],
 		'generator' => 'Plugin Lastcomments (' . lastcomments_version . ') // Next Generation CMS (' . engineName . ' ' . engineVersion . ')',
 	);
+	$tVars['lastcomments_url'] = generatePluginLink('lastcomments', null);
+	$tVars['lastcomments_url_rss'] = generatePluginLink('lastcomments', 'rss');
 	$output = $xt->render($tVars);
 	if ($mode == 2) setlocale(LC_TIME, $old_locale);
 	if (pluginGetVariable('lastcomments', 'cache')) {
 		cacheStoreFile($cacheFileName, $output, 'lastcomments');
 	}
-
 	return $output;
 }
