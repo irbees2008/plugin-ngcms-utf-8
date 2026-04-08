@@ -1,0 +1,21 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+ID: freelance_market
+Name: Freelance Market
+Version: 0.1.0
+Acts: core
+Actions: index; block_freelance_market.php
+File: freelance_market.php
+Config: config.php
+Install: install.php
+Deinstall: deinstall.php
+Type: plugin
+Title: Фриланс биржа
+Description: Заявки на физические работы, скрытие контактов, доступ по подписке (10/30 дней), оплата через Robokassa
+Author: NGCMS Community
+Author_URI: http://ngcms.org
+Information: Биржа: заявки, просмотр, покупка доступа, продление, база для рейтингов/откликов
+Preinstall: no
+MinEngineBuild: 111111
+Icons: <i class="fa fa-briefcase fa-3x" aria-hidden="true"></i>
