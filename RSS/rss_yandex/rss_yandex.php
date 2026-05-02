@@ -19,11 +19,11 @@ function plugin_rss_yandex_category($params) {
 function plugin_rss_yandex_generate($catname = '') {
 
 	global $lang, $PFILTERS, $template, $config, $SUPRESS_TEMPLATE_SHOW, $SUPRESS_MAINBLOCK_SHOW, $mysql, $catz, $parse;
-	
+
 	// Initiate instance of TWIG engine with string loader
 	//$twigString = new Twig_Environment($twigStringLoader);
 	// Disable executing of `index` action (widget plugins and so on..)
-	
+
 	actionDisable('index');
 	// Suppress templates
 	$SUPRESS_TEMPLATE_SHOW = 1;
@@ -59,11 +59,19 @@ function plugin_rss_yandex_generate($catname = '') {
 	$old_locale = setlocale(LC_TIME, 0);
 	setlocale(LC_TIME, 'en_EN');
 	$query = '';
-	$orderBy = "id desc";
 	if (is_array($xcat)) {
 		$orderBy = ($xcat['orderby'] && in_array($xcat['orderby'], array('id desc', 'id asc', 'postdate desc', 'postdate asc', 'title desc', 'title asc'))) ? $xcat['orderby'] : 'id desc';
-		$query = "select * from " . prefix . "_news where catid regexp '[[:<:]](" . $xcat['id'] . ")[[:>:]]' and approve=1 ";
+		$query = "select * from " . prefix . "_news where catid regexp '[[:<:]](' . $xcat['id'] . ')[[:>:]]' and approve=1 ";
 	} else {
+		$allowedOrders = array('id desc', 'id asc', 'postdate desc', 'postdate asc', 'title desc', 'title asc');
+		$pluginOrder = pluginGetVariable('rss_yandex', 'news_order');
+		if (!empty($pluginOrder) && $pluginOrder !== 'auto' && in_array($pluginOrder, $allowedOrders)) {
+			$orderBy = $pluginOrder;
+		} elseif (!empty($config['default_newsorder']) && in_array($config['default_newsorder'], $allowedOrders)) {
+			$orderBy = $config['default_newsorder'];
+		} else {
+			$orderBy = 'id desc';
+		}
 		$query = "select * from " . prefix . "_news where approve=1 ";
 	}
 	$query .= (($delay > 0) ? (" and ((postdate + " . intval($delay * 60) . ") < unix_timestamp(now())) ") : '');
@@ -219,7 +227,7 @@ function plugin_rss_yandex_mk_header($xcat) {
 	global $config;
 	// Initiate instance of TWIG engine with string loader
 
-	$feedTitleFormat = str_replace('%site_title%', $config['home_title'], pluginGetVariable('rss_yandex', 'feed_title')); 
+	$feedTitleFormat = str_replace('%site_title%', $config['home_title'], pluginGetVariable('rss_yandex', 'feed_title'));
 	// Generate RSS header
 	$line = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 $line .= ' <rss xmlns:yandex="http://news.yandex.ru" xmlns:media="http://search.yahoo.com/mrss/"

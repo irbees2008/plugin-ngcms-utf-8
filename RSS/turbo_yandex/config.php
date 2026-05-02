@@ -71,11 +71,16 @@ array_push($cfg, [
             'name' => 'sortOrder',
             'title' => trans($plugin . ':sortOrder'),
             'descr' => trans($plugin . ':sortOrder#descr'),
-            'type' => 'select', // Выпадающий список
-            'value' => setting($plugin, 'sortOrder', 'desc'), // Значение по умолчанию: desc
+            'type' => 'select',
+            'value' => setting($plugin, 'sortOrder', 'auto'),
             'values' => [
-                'desc' => trans($plugin . ':sortOrder_desc'), // С последних (по убыванию)
-                'asc' => trans($plugin . ':sortOrder_asc'),   // С первых (по возрастанию)
+                'auto'         => trans($plugin . ':sortOrder_auto'),
+                'id desc'      => trans($plugin . ':sortOrder_id_desc'),
+                'id asc'       => trans($plugin . ':sortOrder_id_asc'),
+                'postdate desc' => trans($plugin . ':sortOrder_postdate_desc'),
+                'postdate asc' => trans($plugin . ':sortOrder_postdate_asc'),
+                'title desc'   => trans($plugin . ':sortOrder_title_desc'),
+                'title asc'    => trans($plugin . ':sortOrder_title_asc'),
             ],
         ],
     ],
@@ -98,7 +103,8 @@ array_push($cfg, [
             ],
             'value' => (int) setting($plugin, 'extractImages', false),
 
-        ], [
+        ],
+        [
             'name' => 'localsource',
             'title' => trans($plugin . ':localsource'),
             'descr' => trans($plugin . ':localsource#descr'),
@@ -133,7 +139,8 @@ array_push($cfg, [
             ],
             'value' => (int) setting($plugin, 'cache', 0),
 
-        ], [
+        ],
+        [
             'name' => 'cacheExpire',
             'title' => trans($plugin . ':cacheExpire'),
             'descr' => trans($plugin . ':cacheExpire#descr'),

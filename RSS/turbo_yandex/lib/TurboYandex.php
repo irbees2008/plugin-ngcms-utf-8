@@ -94,7 +94,7 @@ class TurboYandex
     {
         // Сначала зададим настройки из плагина.
         $this->countItems = setting($this->plugin, 'countItems', 200);
-        $this->sortOrder = setting($this->plugin, 'sortOrder', 'desc');
+        $this->sortOrder = setting($this->plugin, 'sortOrder', 'auto');
         $this->extractImages = setting($this->plugin, 'extractImages', false);
         $this->localsource = setting($this->plugin, 'localsource', 0);
         $this->templatePath = $this->findTemplates($this->localsource);
@@ -127,7 +127,7 @@ class TurboYandex
             $cacheFilename .= $this->category->id;
         }
 
-        return md5($cacheFilename).'.txt';
+        return md5($cacheFilename) . '.txt';
     }
 
     public function generate()
@@ -171,16 +171,16 @@ class TurboYandex
     protected function fetchNewsList()
     {
         $showResult = news_showlist([], [], [
-    		'plugin' => $this->plugin,
-    		'extractEmbeddedItems' => $this->extractImages,
-    		'extendedReturn' => true,
-    		'extendedReturnData' => true,
-    		'twig' => true,
-    		'overrideSQLquery' => $this->overrideSQLquery(),
-    		'overrideTemplatePath' => $this->templatePath('entries'),
-    		'overrideTemplateName' => 'entries',
+            'plugin' => $this->plugin,
+            'extractEmbeddedItems' => $this->extractImages,
+            'extendedReturn' => true,
+            'extendedReturnData' => true,
+            'twig' => true,
+            'overrideSQLquery' => $this->overrideSQLquery(),
+            'overrideTemplatePath' => $this->templatePath('entries'),
+            'overrideTemplateName' => 'entries',
 
-    	]);
+        ]);
 
         return $showResult['data'];
     }
@@ -197,10 +197,19 @@ class TurboYandex
 
         $start = ($this->page - 1) * $this->countItems;
 
-        // Получаем выбранный порядок сортировки из настроек
-        $sortOrder = setting($this->plugin, 'sortOrder', 'desc');
+        // Порядок сортировки: «auto» → берём из $config['default_newsorder'], иначе из настроек плагина
+        $allowedOrders = ['id desc', 'id asc', 'postdate desc', 'postdate asc', 'title desc', 'title asc'];
+        $sortValue = setting($this->plugin, 'sortOrder', 'auto');
 
-        return "select * from " . prefix . "_news " . $where . " order by id " . $sortOrder . " limit " . $start . "," . $this->countItems;
+        if (!empty($sortValue) && $sortValue !== 'auto' && in_array($sortValue, $allowedOrders)) {
+            $orderBy = $sortValue;
+        } elseif (($sysOrder = config('default_newsorder', '')) && in_array($sysOrder, $allowedOrders)) {
+            $orderBy = $sysOrder;
+        } else {
+            $orderBy = 'id desc';
+        }
+
+        return "select * from " . prefix . "_news " . $where . " order by " . $orderBy . " limit " . $start . "," . $this->countItems;
     }
 
     /**
@@ -237,8 +246,8 @@ class TurboYandex
      */
     protected function template(string $tpl)
     {
-        $file = ('url:' == substr($tpl, 0, 4)) ? '/'.substr($tpl, 5) : ($tpl . '.tpl');
+        $file = ('url:' == substr($tpl, 0, 4)) ? '/' . substr($tpl, 5) : ($tpl . '.tpl');
 
-        return $this->templatePath($tpl).$file;
+        return $this->templatePath($tpl) . $file;
     }
 }
