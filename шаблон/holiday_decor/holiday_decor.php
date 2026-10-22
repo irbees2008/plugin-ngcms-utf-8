@@ -17,6 +17,7 @@ $enableBigSnow = intval(extra_get_param('holiday_decor', 'enable_big_snow'));
 $enableFallingStars = intval(extra_get_param('holiday_decor', 'enable_falling_stars'));
 $enableCountdownSanta = intval(extra_get_param('holiday_decor', 'enable_countdown_santa'));
 $enableCountdownBanner = intval(extra_get_param('holiday_decor', 'enable_countdown_banner'));
+$countdownShowSeconds = intval(extra_get_param('holiday_decor', 'countdown_show_seconds'));
 if (!$snowCount) {
     $snowCount = 150;
 }
@@ -24,8 +25,8 @@ if (!$snowSpeed) {
     $snowSpeed = 1.5;
 }
 $tpath = locatePluginTemplates([':holiday_decor.css', ':holiday_decor.js'], 'holiday_decor', 1);
-register_stylesheet($tpath['url::holiday_decor.css'] . '/holiday_decor.css?v=2');
-register_htmlvar('js', $tpath['url::holiday_decor.js'] . '/holiday_decor.js?v=2');
+register_stylesheet($tpath['url::holiday_decor.css'] . '/holiday_decor.css?v=3');
+register_htmlvar('js', $tpath['url::holiday_decor.js'] . '/holiday_decor.js?v=3');
 
 // If simple sprite garland is enabled, inject inline CSS tailored to selected style and position
 if ($enableGarland && ($garlandMode == 'sprite')) {
@@ -67,6 +68,7 @@ $cfg = [
     'bigSnow' => !!$enableBigSnow,
     'fallingStars' => !!$enableFallingStars,
     'countdownSanta' => !!$enableCountdownSanta,
-    'countdownBanner' => !!$enableCountdownBanner
+    'countdownBanner' => !!$enableCountdownBanner,
+    'countdownShowSeconds' => !!$countdownShowSeconds
 ];
 register_htmlvar('plain', '<script>window.holidayDecorConfig=' . json_encode($cfg, JSON_UNESCAPED_UNICODE) . ';</script>');

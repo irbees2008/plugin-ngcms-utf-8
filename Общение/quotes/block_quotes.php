@@ -8,84 +8,79 @@
  Jabber: ROZARD@ya.ru
  E-mail: ROZARD@list.ru
 -----------------------------------------------------
- © Настоящий программист никогда не ставит 
- комментариев. То, что писалось с трудом, должно 
+ © Настоящий программист никогда не ставит
+ комментариев. То, что писалось с трудом, должно
  пониматься с трудом. :))
 -----------------------------------------------------
  Данный код защищен авторскими правами
 =====================================================
 */
 if (!defined('NGCMS')) {
-	die('HAL');
+    die('HAL');
 }
+
+require_once __DIR__ . '/lib/runtime.php';
 
 add_act('index', 'plugin_quotes_block');
 
 function plugin_quotes_block()
 {
-	global $template, $tpl, $mysql, $config, $parse;
+    global $template, $twig, $mysql, $config, $parse;
 
-	$tpath = locatePluginTemplates(array('quotes_block', 'show_block'), 'quotes', pluginGetVariable('quotes', 'localsource'), '', 'block');
+    $tpath = locatePluginTemplates(array('quotes_block', 'show_block'), 'quotes', pluginGetVariable('quotes', 'localsource'), '', 'block');
 
-	switch (pluginGetVariable('quotes', 'rand')) {
-		case 0:
-			$res = $mysql->select('SELECT MAX(id) FROM ' . prefix . '_quotes', -1);
-			$rnd = rand(1, $res[0][0]);
-			$rand = "where id = ${rnd}";
-			break;
-		case 1:
-			$rand = 'order by rand() limit 1';
-			break;
-		default:
-			$rand = 'order by rand() limit 1';
-	}
+    $randomMode = (int)pluginGetVariable('quotes', 'rand');
+    switch ($randomMode) {
+        case 0:
+            $quoteCount = (int)$mysql->result('SELECT COUNT(id) FROM ' . prefix . '_quotes');
+            if ($quoteCount < 1) {
+                quotes_log('block_no_quotes', ['random_mode' => $randomMode]);
+                $template['vars']['quotes_block'] = $twig->render($tpath['show_block'] . 'show_block.tpl', [
+                    'name' => 'Цитат не существует',
+                ]);
+                return;
+            }
+            $offset = mt_rand(0, $quoteCount - 1);
+            $result = $mysql->select('SELECT content FROM ' . prefix . '_quotes ORDER BY id LIMIT ' . $offset . ', 1');
+            break;
+        case 1:
+        default:
+            $result = $mysql->select('SELECT content FROM ' . prefix . '_quotes ORDER BY RAND() LIMIT 1');
+    }
 
-	$result = $mysql->select("SELECT content FROM " . prefix . "_quotes ${rand}");
+    if (empty($result)) {
+        quotes_log('block_query_empty', ['random_mode' => $randomMode]);
+        $template['vars']['quotes_block'] = $twig->render($tpath['show_block'] . 'show_block.tpl', [
+            'name' => 'Цитат не существует',
+        ]);
+        return;
+    }
 
-	if (empty($result)) {
-		$template['vars']['quotes_block'] = 'Цитат не существует';
-		return;
-	}
+    quotes_log('block_quote_selected', ['random_mode' => $randomMode, 'result_count' => count($result)]);
 
-	$output = '';
+    $output = '';
 
-	foreach ($result as $row) {
-		$content = $row['content'];
+    foreach ($result as $row) {
+        $content = $row['content'];
 
-		if ($config['blocks_for_reg']) {
-			$content = userblocks_quotes($content);
-		}
-		if ($config['use_htmlformatter']) {
-			$content = $parse->htmlformatter($content);
-		}
-		if ($config['use_bbcodes']) {
-			$content = $parse->bbcodes($content);
-		}
-		if ($config['use_smilies']) {
-			$content = $parse->smilies($content);
-		}
+        $content = quotes_filter_hidden_blocks($content);
+        if ($config['use_htmlformatter']) {
+            $content = $parse->htmlformatter($content);
+        }
+        if ($config['use_bbcodes']) {
+            $content = $parse->bbcodes($content);
+        }
+        if ($config['use_smilies']) {
+            $content = $parse->smilies($content);
+        }
 
-		$pvars['vars'] = array(
-			'name' => $content
-		);
+        $output .= $twig->render($tpath['show_block'] . 'show_block.tpl', [
+            'name' => $content,
+        ]);
+    }
 
-		$tpl->template('show_block', $tpath['show_block']);
-		$tpl->vars('show_block', $pvars);
-		$output .= $tpl->show('show_block');
-	}
-
-	$tvars['vars']['entries'] = $output;
-
-	$tpl->template('quotes_block', $tpath['quotes_block']);
-	$tpl->vars('quotes_block', $tvars);
-	$template['vars']['quotes_block'] = $tpl->show('quotes_block');
-}
-
-function userblocks_quotes($content)
-{
-	global $config, $lang, $userROW;
-	if (!$config['blocks_for_reg']) {
-		return $content;
-	}
-	return preg_replace("#\[hide\]\s*(.*?)\s*\[/hide\]#is", is_array($userROW) ? "$1" : str_replace("{text}", $lang['quotes_not_logged'], $lang['quotes_not_logged_html']), $content);
+    $template['vars']['quotes_block'] = $twig->render($tpath['quotes_block'] . 'quotes_block.tpl', [
+        'entries' => $output,
+        'tpl_url' => tpl_url,
+    ]);
 }

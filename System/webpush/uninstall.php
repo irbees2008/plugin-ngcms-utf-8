@@ -18,8 +18,11 @@ if (($_REQUEST['action'] ?? '') === 'commit') {
         // Удаляем директорию конфигурации (опционально)
         // @unlink($root . '/engine/conf/extras/webpush/config.php');
 
-        // Service worker в корне удаляется вручную при необходимости
-        // @unlink($root . '/webpush-sw.js');
+        // Удаляем service worker из корня сайта
+        $swDst = $root . '/webpush-sw.js';
+        if (file_exists($swDst)) {
+            @unlink($swDst);
+        }
 
         plugin_mark_deinstalled('webpush');
     }
@@ -27,8 +30,8 @@ if (($_REQUEST['action'] ?? '') === 'commit') {
     generate_install_page(
         'webpush',
         '<p>Плагин Web Push будет удалён, таблица подписок будет удалена.</p>' .
-            '<p><strong>Внимание:</strong> Service worker файл (webpush-sw.js) в корне сайта ' .
-            'и директория uploads/webpush останутся. Удалите их вручную при необходимости.</p>',
+            '<p>Service worker файл (webpush-sw.js) в корне сайта будет удалён автоматически.</p>' .
+            '<p>Директория uploads/webpush останется (иконки/бейджи) — при необходимости удалите её вручную.</p>',
         'deinstall'
     );
 }

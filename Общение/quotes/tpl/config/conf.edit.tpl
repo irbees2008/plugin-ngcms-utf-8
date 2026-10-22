@@ -1,30 +1,25 @@
-{error}
-[latent]
 <script>
 function NumChar() {
 	p_msg = document.form.content.value.toString();
-	if (p_msg.length > {max_char}) {
-		alert ("Текст сообщения не должен быть не больше {max_char} символов");
+	if ({{ max_char }} > 0 && p_msg.length > {{ max_char }}) {
+		alert({{ max_char_alert|raw }});
 		document.form.content.focus();
-	return false;
+		return false;
 	}
+	return true;
 }
 </script>
-[/latent]
-<table border="0" cellspacing="1" cellpadding="1" class="content">
-<tr>
-<td colspan="2" width=100% class="contentHead"><img src="{skins_url}/images/nav.gif" hspace="8"><a href="?mod=extra-config&plugin=quotes" title="Общие настройки плагина">Общие настройки плагина</a> <b>=></b> <a href="?mod=extra-config&plugin=quotes&action=showlist">Спискок всех цитат</a></td>
-</tr>
-</table>
-<form name="form" method="post" action="" onSubmit="return NumChar();">
-<table width="100%" border="0">
-<tr>
-<td colspan="2" class="contentHead"><img src="{skins_url}/images/nav.gif" hspace="8">Редактирование формы ID {id}</td>
-</tr>
-<tr align="left"><td class="contentRow" width="170"><b>Текст цитаты:</b></td><td>{smilies}<br />{bbcodes}<textarea style="margin-left: 0px;" cols="80" rows="6" id="content" name="content">{content}</textarea></td></tr>
-<tr align="left"><td class="contentRow" width="170"><b>Активна:</b></td><td><select name="active" style="width:auto">{active}</select></td></tr>
-<tr align="left"><td class="contentRow" width="170"><b>Выставить рейтинг:</b></td><td><input type="text" class="form-control" size="3" name="rating" value="{rating}" /></td></tr>
-<tr><td colspan="2"><input type="submit" name="actions" value="Сохранить" /></td></tr>
-</table>
-<hr/>
+{{ error|raw }}
+<h4 class="mb-3">{{ edit_form_title }}</h4>
+<form name="form" method="post" action="" accept-charset="UTF-8" onSubmit="return NumChar();">
+    <div class="form-group">
+        <label for="content">{{ content_label }}</label>
+        <div>{{ smilies|raw }}<br>{{ bbcodes|raw }}</div>
+        <textarea class="form-control" id="content" name="content" rows="6">{{ content }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="quote-active">{{ active_label }}</label>
+        <select class="form-control" id="quote-active" name="active">{{ active_options|raw }}</select>
+    </div>
+    <button class="btn btn-primary" type="submit" name="actions" value="1">{{ save_button }}</button>
 </form>

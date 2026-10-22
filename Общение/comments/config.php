@@ -1,6 +1,17 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
+if (!defined('NGCMS')) die('HAL');
+
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\array_get')) {
+	$ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+	if (file_exists($ngHelpersPath)) {
+		require_once $ngHelpersPath;
+	}
+}
+
+use function Plugins\{array_get};
+
 //
 // Configuration file for plugin
 //
@@ -39,20 +50,18 @@ array_push($cfgX, array('name' => 'default_news', 'title' => "Значение �
 array_push($cfgX, array('name' => 'default_categories', 'title' => "Значение доступности при добавлении категорий", 'descr' => 'При добавлении категорий по умолчанию будет устанавливаться:<br/><b>запретить</b> - по умолчанию комментарии в новостях этой категории запрещены<br/><b>разрешить</b> - по умолчанию комментарии в этой категории будут разрешены<br/><b>по умолчанию</b> - флаг разрешения/запрета комментариев будет браться из параметра "по умолчанию комментарии"', 'type' => 'select', 'values' => array('0' => 'запрещены', '1' => 'разрешены', '2' => 'по умолчанию'), 'value' => intval(pluginGetVariable($plugin, 'default_categories'))));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки по умолчанию</b>', 'entries' => $cfgX, 'toggle' => true, 'toggle.mode' => 'hide'));
 $cfgX = array();
-array_push($cfgX, array('name' => 'multipage', 'title' => "Использовать многостраничное отображение", 'descr' => '<b>Да</b> - на странице новости будет отображаться только часть комментариев, остальные будут доступны на отдельной страничке<br/><b>Нет</b> - все комментарии будут отображаться на странице новости', 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'multipage'))));
-array_push($cfgX, array('name' => 'multi_mcount', 'title' => "Кол-во комментариев на странице новости", 'descr' => "Укажите кол-во комментариев, отображаемых на странице новости<br/>(<b>0</b> - не отображать ни одного комментария)", 'type' => 'input', 'html_flags' => 'size="4"', 'value' => pluginGetVariable($plugin, 'multi_mcount')));
-array_push($cfgX, array('name' => 'multi_scount', 'title' => "Кол-во комментариев на странице с комментариями", 'descr' => "Укажите кол-во комментариев, отображаемых на каждой странице с комментариями<br/>(<b>0</b> - отображать все на одной странице)", 'type' => 'input', 'html_flags' => 'size="4"', 'value' => pluginGetVariable($plugin, 'multi_scount')));
-array_push($cfg, array('mode' => 'group', 'title' => '<b>Многостраничное отображение</b>', 'entries' => $cfgX, 'toggle' => true, 'toggle.mode' => 'hide'));
+// Единый параметр количества комментариев на страницу (используется для AJAX и отдельного просмотра)
+array_push($cfgX, array('name' => 'multi_mcount', 'title' => "Кол-во комментариев на страницу", 'descr' => "Укажите лимит комментариев на одну страницу (и при AJAX подгрузке).<br/>(<b>0</b> - не показывать комментарии автоматически)", 'type' => 'input', 'html_flags' => 'size=\"4\"', 'value' => pluginGetVariable($plugin, 'multi_mcount')));
+array_push($cfg, array('mode' => 'group', 'title' => '<b>Постраничное отображение</b>', 'entries' => $cfgX, 'toggle' => true, 'toggle.mode' => 'hide'));
 $cfgX = array();
 array_push($cfgX, array('name' => 'inform_author', 'title' => "Оповещать автора новости по email о новом комментарии", 'descr' => "<b>Да</b> - при добавлении каждого комментария автор будет получать e-mail сообщение<br/><b>Нет</b> - автор не будет получать e-mail нотификаций", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_author'))));
 array_push($cfgX, array('name' => 'inform_admin', 'title' => "Оповещать администратора о новом комментарии", 'descr' => "<b>Да</b> - при добавлении каждого комментария администратор будет получать e-mail сообщение<br/><b>Нет</b> - администратор(ы) не будет получать e-mail нотификаций", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_admin'))));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки оповещений</b>', 'entries' => $cfgX, 'toggle' => true, 'toggle.mode' => 'hide'));
 // RUN
-if ($_REQUEST['action'] == 'commit') {
+if (array_get($_REQUEST, 'action', '') == 'commit') {
 	// If submit requested, do config save
 	commit_plugin_config_changes($plugin, $cfg);
 	print_commit_complete($plugin);
 } else {
 	generate_config_page($plugin, $cfg);
 }
-?>

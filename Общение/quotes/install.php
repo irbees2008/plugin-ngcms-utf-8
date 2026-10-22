@@ -19,9 +19,13 @@ if (!defined('NGCMS')) {
     die('HAL');
 }
 
+require_once __DIR__ . '/lib/runtime.php';
+
 function plugin_quotes_install($action)
 {
-    global $lang;
+    global $lang, $mysql;
+
+    quotes_log('install_action_started', ['action' => (string)$action]);
 
     if ($action != 'autoapply') {
         loadPluginLang('quotes', 'config', '', '', ':');
@@ -31,25 +35,15 @@ function plugin_quotes_install($action)
         [
             'table' => 'quotes',
             'action' => 'cmodify',
-            'key' => 'primary key(id), key `approve` (`approve`), key `postdate` (`postdate`), key `rating` (`rating`)',
+            'charset' => 'utf8mb4',
+            'key' => 'primary key(id), key `approve` (`approve`), key `postdate` (`postdate`)',
             'fields' => [
                 ['action' => 'cmodify', 'name' => 'id', 'type' => 'int(11)', 'params' => 'UNSIGNED NOT NULL AUTO_INCREMENT'],
                 ['action' => 'cmodify', 'name' => 'postdate', 'type' => 'int(10)', 'params' => 'UNSIGNED NOT NULL DEFAULT \'0\''],
                 ['action' => 'cmodify', 'name' => 'content', 'type' => 'text', 'params' => 'NOT NULL'],
                 ['action' => 'cmodify', 'name' => 'approve', 'type' => 'tinyint(1)', 'params' => 'UNSIGNED DEFAULT \'0\''],
-                ['action' => 'cmodify', 'name' => 'rating', 'type' => 'int(10)', 'params' => 'NOT NULL DEFAULT \'0\''],
                 ['action' => 'cmodify', 'name' => 'author', 'type' => 'varchar(100)', 'params' => 'NOT NULL DEFAULT \'\''],
                 ['action' => 'cmodify', 'name' => 'author_id', 'type' => 'int(11)', 'params' => 'UNSIGNED NOT NULL DEFAULT \'0\''],
-            ],
-        ],
-        [
-            'table' => 'quotes_flood',
-            'action' => 'cmodify',
-            'key' => 'primary key(id_quotes)',
-            'fields' => [
-                ['action' => 'cmodify', 'name' => 'id_user', 'type' => 'int(11)', 'params' => 'DEFAULT NULL'],
-                ['action' => 'cmodify', 'name' => 'time', 'type' => 'int(10)', 'params' => 'DEFAULT NULL'],
-                ['action' => 'cmodify', 'name' => 'id_quotes', 'type' => 'int(11)', 'params' => 'DEFAULT NULL'],
             ],
         ],
     ];
@@ -62,7 +56,6 @@ function plugin_quotes_install($action)
 
     $ULIB->registerCommand('quotes', '', [
         'vars' => [
-            'sort' => ['matchRegex' => '.+?', 'descr' => ['russian' => 'Сортировка по лучшим/худшим']],
             'page' => ['matchRegex' => '\d{1,4}', 'descr' => ['russian' => 'Постраничная навигация']],
         ],
         'descr' => ['russian' => 'Главная страница цитатника'],
@@ -94,15 +87,22 @@ function plugin_quotes_install($action)
         case 'autoapply':
         case 'apply':
             if (fixdb_plugin_install('quotes', $db_update, 'install', $action === 'autoapply')) {
-                plugin_mark_installed('quotes');
+                quotes_log('install_database_ready', ['action' => (string)$action]);
             } else {
+                quotes_log('install_database_failed', ['action' => (string)$action]);
                 return false;
             }
 
+            $charsetResult = $mysql->query('ALTER TABLE ' . prefix . '_quotes CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+            if ($charsetResult === null || $charsetResult === false) {
+                quotes_log('install_charset_migration_failed');
+                return false;
+            }
+            quotes_log('install_charset_migration_completed', ['charset' => 'utf8mb4']);
+            plugin_mark_installed('quotes');
+
             // Now we need to set some default params
             $params = [
-                'users_rating' => 0,
-                'flood' => 10800,
                 'count' => 5,
                 'adm_count' => 10,
                 'redirect_delay' => 5,
@@ -118,6 +118,7 @@ function plugin_quotes_install($action)
                 extra_set_param('quotes', $k, $v);
             }
             extra_commit_changes();
+            quotes_log('install_completed', ['action' => (string)$action]);
             break;
     }
     return true;

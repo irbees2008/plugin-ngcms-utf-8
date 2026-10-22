@@ -1,97 +1,120 @@
 <?php
+if (!defined('NGCMS')) {
+    die('HAL');
+}
 
-if (!defined('NGCMS')) die ('HAL');
+class SocialNewsFilter extends NewsFilter
+{
+    public function showNews($newsID, $SQLnews, &$tvars, $mode = [])
+    {
+        global $config, $twig;
 
-class socialNewsFilter extends NewsFilter {
-  
-  function showNews($newsID, $SQLnews, &$tvars) {
-	global $config, $tpl, $parse;
-
-	if (pluginGetVariable('social', 'cache')) {
-		$cacheFileName = md5('social'.$newsID.$config['home_url'].$config['theme'].$config['default_lang']).'.txt';
-        
-		$cacheData = cacheRetrieveFile($cacheFileName, pluginGetVariable('social', 'cacheExpire'), 'social');
-		if ($cacheData != false) {
-	   	   $tvars['vars']['plugin_social'] = $cacheData;
-		  return 1;				
-	   }
-	}
-
-	// Determine paths for all template files
-    $tpath  = locatePluginTemplates(array('social', 'entries'), 'social', pluginGetVariable('social', 'localsource'), pluginGetVariable('social', 'skin')?pluginGetVariable('social', 'skin'):'default');
-
-	$link	= pluginGetVariable('social','integration')?make_bitly_url(newsGenerateLink($SQLnews, false, 0, true),pluginGetVariable('social','login'),pluginGetVariable('social','api_key'),'json'):newsGenerateLink($SQLnews, false, 0, true);
-
-	$title	= $SQLnews['title'];
-	list ($short_news, $full_news) = explode('<!--more-->', $SQLnews['content'], 2);
-    $content= arrayCharsetConvert(0, $parse->truncateHTML(strip_tags($short_news?$short_news:$full_news), 30));
-	
-	$services = pluginGetVariable('social', 'services');
-	
-	$entries = '';
-	if (is_array($services)) {
-		foreach($services as $id=>$row) {
-	       if ($row['active']) {		
-                $pvars['vars'] = array (
-				    'tpl_url'	=> tpl_url,
-                    'url'		=> str_replace(array('%title%','%content%','%link%'),array(urlencode(arrayCharsetConvert(0,$title)), urlencode($content), urlencode($link)), $row['link']),
-                    'title'		=> $title,
-				    'desc'		=> $row['title']?$row['title']:''
-                );
-        		
-                $pvars['regx']['/\[img\](.*?)\[\/img\]/si']       = '$1';
-        		$pvars['regx']['/\[no-img\](.*?)\[\/no-img\]/si'] = '';
-                
-                if ((!pluginGetVariable('social', 'localsource'))&&(is_dir(tpl_site.'/plugins/social/images'))) {
-                    $pvars['vars']['img'] = tpl_url.'/plugins/social/images/'.$row['img'];
-                } elseif ((pluginGetVariable('social', 'localsource'))&&(pluginGetVariable('social', 'skin'))&&(is_dir(extras_dir.'/social/tpl/skins/'.pluginGetVariable('social', 'skin').'/images'))) {
-                    $pvars['vars']['img'] = admin_url.'/plugins/social/tpl/skins/'.pluginGetVariable('social', 'skin').'/images/'.$row['img'];
-                } elseif (is_dir(extras_dir.'/social/tpl/skins/default/images')){
-                    $pvars['vars']['img'] = admin_url.'/plugins/social/tpl/skins/default/images/'.$row['img'];
-                } else {
-                    $pvars['regx']['/\[img\](.*?)\[\/img\]/si']       = '';
-            		$pvars['regx']['/\[no-img\](.*?)\[\/no-img\]/si'] = '$1';
-                    $pvars['vars']['img'] = '';
-                }
-                
-                $tpl -> template('entries', $tpath['entries']);
-			    $tpl -> vars('entries', $pvars);
-			    $entries .= $tpl -> show('entries');
-    	   }
+        $services = pluginGetVariable('social', 'services');
+        if (!is_array($services) || !$services) {
+            $tvars['vars']['plugin_social'] = '';
+            return 1;
         }
-	}
-    
-	$tpl -> template('social', $tpath['social']);
-	$tpl -> vars('social', array ('vars' => array ('entries' => $entries, 'tpl_url' => tpl_url)));
-	$tvars['vars']['plugin_social'] = $tpl -> show('social');	 
 
-    if (pluginGetVariable('social', 'cache')) cacheStoreFile($cacheFileName, $tvars['vars']['plugin_social'], 'social');
-   
-	return 1;
-  }
+        $localsource = (int) pluginGetVariable('social', 'localsource');
+        $skin = (string) pluginGetVariable('social', 'skin');
+        $skin = preg_match('/^[a-zA-Z0-9_-]+$/', $skin) ? $skin : 'default';
+        $theme = (string) ($config['theme'] ?? 'default');
+        $link = newsGenerateLink($SQLnews, false, 0, true);
+        $title = (string) ($SQLnews['title'] ?? '');
+        $newsContent = (string) ($SQLnews['short_story'] ?? '');
+        if ($newsContent === '') {
+            $newsContent = (string) ($SQLnews['full_story'] ?? ($SQLnews['content'] ?? ''));
+        }
+        $content = trim(strip_tags($newsContent));
+        $content = function_exists('mb_substr') ? mb_substr($content, 0, 200, 'UTF-8') : substr($content, 0, 200);
+
+        $cacheEnabled = (int) pluginGetVariable('social', 'cache') === 1;
+        $cacheExpire = max(1, (int) pluginGetVariable('social', 'cacheExpire'));
+        $cacheKey = hash('sha256', serialize([
+            'news_id' => (int) $newsID,
+            'title' => $title,
+            'content' => $content,
+            'link' => $link,
+            'services' => $services,
+            'localsource' => $localsource,
+            'skin' => $skin,
+            'theme' => $theme,
+            'language' => $config['default_lang'] ?? '',
+        ])) . '.cache';
+
+        if ($cacheEnabled) {
+            $cacheData = cacheRetrieveFile($cacheKey, $cacheExpire, 'social');
+            if (is_string($cacheData)) {
+                $tvars['vars']['plugin_social'] = $cacheData;
+                return 1;
+            }
+        }
+
+        $templatePath = locatePluginTemplates(['social'], 'social', $localsource, $skin);
+        if (empty($templatePath['social'])) {
+            throw new RuntimeException('The social display template could not be located.');
+        }
+
+        $themeIconDirectory = '';
+        $themeIconUrl = '';
+        if (!$localsource) {
+            $themeIconDirectory = site_root . 'templates/' . $theme . '/plugins/social/images';
+            if (is_dir($themeIconDirectory)) {
+                $themeIconUrl = rtrim(home, '/') . '/templates/' . rawurlencode($theme) . '/plugins/social/images';
+            }
+        }
+        $pluginIconDirectory = __DIR__ . '/tpl/skins/' . $skin . '/images';
+        if (!is_dir($pluginIconDirectory)) {
+            $pluginIconDirectory = __DIR__ . '/tpl/skins/default/images';
+            $skin = 'default';
+        }
+        $pluginIconUrl = rtrim(home, '/') . '/engine/plugins/social/tpl/skins/' . rawurlencode($skin) . '/images';
+
+        $entries = [];
+        foreach ($services as $service) {
+            if (!is_array($service) || empty($service['active'])) {
+                continue;
+            }
+            $serviceTitle = (string) ($service['title'] ?? '');
+            $serviceUrl = html_entity_decode((string) ($service['link'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $serviceUrl = strtr($serviceUrl, [
+                '%title%' => rawurlencode($title),
+                '%content%' => rawurlencode($content),
+                '%link%' => rawurlencode($link),
+            ]);
+            $imageName = (string) ($service['img'] ?? '');
+            $safeImageName = $imageName !== '' && basename($imageName) === $imageName;
+            $hasThemeImage = $safeImageName
+                && $themeIconDirectory !== ''
+                && is_file($themeIconDirectory . DIRECTORY_SEPARATOR . $imageName);
+            $hasPluginImage = $safeImageName
+                && is_file($pluginIconDirectory . DIRECTORY_SEPARATOR . $imageName);
+            $hasImage = $hasThemeImage || $hasPluginImage;
+            $imageUrl = $hasThemeImage ? $themeIconUrl : $pluginIconUrl;
+
+            $entries[] = [
+                'url' => htmlspecialchars($serviceUrl, ENT_QUOTES, 'UTF-8'),
+                'title' => htmlspecialchars($title, ENT_QUOTES, 'UTF-8'),
+                'desc' => htmlspecialchars($serviceTitle, ENT_QUOTES, 'UTF-8'),
+                'img' => $hasImage
+                    ? htmlspecialchars($imageUrl . '/' . rawurlencode($imageName), ENT_QUOTES, 'UTF-8')
+                    : '',
+                'has_img' => $hasImage,
+            ];
+        }
+
+        $tVars = [
+            'home' => $config['home_url'] ?? '',
+            'entries' => $entries,
+        ];
+        $tvars['vars']['plugin_social'] = $twig->render($templatePath['social'] . 'social.tpl', $tVars);
+
+        if ($cacheEnabled) {
+            cacheStoreFile($cacheKey, $tvars['vars']['plugin_social'], 'social');
+        }
+
+        return 1;
+    }
 }
 
-register_filter('news', 'social', new socialNewsFilter);
-
-/*	
-	Bit.ly shortener 
-	Based on code from David Walsh  
-	http://davidwalsh.name/bitly-php  
-*/   
-function make_bitly_url($url,$login,$appkey,$format = 'xml',$version = '2.0.1') {   
-	//create the URL   
-	$bitly = 'http://api.bit.ly/shorten?version='.$version.'&longUrl='.urlencode($url).'&login='.$login.'&apiKey='.$appkey.'&format='.$format;   
-  
-    //get the url   
-    //could also use cURL here   
-    $response = file_get_contents($bitly);   
-  
-    //parse depending on desired format   
-    if(strtolower($format) == 'json') {   
-		$json = @json_decode($response,true);   
-        return $json['results'][$url]['shortUrl'];   
-	} else {//xml     
-		$xml = simplexml_load_string($response);   
-		return 'http://bit.ly/'.$xml->results->nodeKeyVal->hash;   
-	}   
-}
+register_filter('news', 'social', new SocialNewsFilter());

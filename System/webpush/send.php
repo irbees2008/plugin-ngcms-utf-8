@@ -3,6 +3,10 @@
 /**
  * Web Push Send - отправка уведомлений
  * Защищено секретным ключом
+ *
+ * Modified with ng-helpers inspired approach (2026)
+ * - Added logging support
+ * - Added validation
  */
 
 // Отключаем отображение ошибок
@@ -14,6 +18,23 @@ header('Content-Type: application/json; charset=utf-8');
 
 // Минимальная инициализация без core.php
 $root = dirname(__DIR__, 3);
+
+/**
+ * Simple logger for standalone scripts
+ */
+function webpush_log($message, $level = 'info')
+{
+    global $root;
+    $logDir = $root . '/engine/plugins/webpush/logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0755, true);
+    }
+    $logFile = $logDir . '/webpush.log';
+    $timestamp = date('Y-m-d H:i:s');
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $entry = "[$timestamp] [$level] $message | IP: $ip\n";
+    @file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
+}
 
 // Подключаем только конфигурацию
 require_once $root . '/engine/conf/config.php';
@@ -44,6 +65,7 @@ $secret = $_GET['secret'] ?? $_POST['secret'] ?? '';
 $configSecret = $pluginConfig['webpush']['send_secret'] ?? '';
 
 if (!$secret || !$configSecret || $secret !== $configSecret) {
+    webpush_log('Send attempt with invalid secret', 'warning');
     http_response_code(403);
     echo json_encode(['ok' => false, 'error' => 'Forbidden'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -126,12 +148,14 @@ function removeDeadSubscriptions(PDO $pdo, array $hashes): int
 if (($_GET['action'] ?? '') === 'genkeys') {
     try {
         $keys = generateVapidKeys();
+        webpush_log('VAPID keys generated');
         echo json_encode([
             'ok' => true,
             'publicKey' => $keys['publicKey'],
             'privateKey' => $keys['privateKey'],
         ], JSON_UNESCAPED_UNICODE);
     } catch (\Exception $e) {
+        webpush_log('VAPID key generation failed: ' . $e->getMessage(), 'error');
         http_response_code(500);
         echo json_encode(['ok' => false, 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
     }
@@ -237,6 +261,14 @@ try {
 }
 
 // Удаляем мёртвые подписки
+webpush_log(sprintf(
+    'Push sent: title="%s", sent=%d, removed=%d, total=%d',
+    substr($title, 0, 50),
+    $sent,
+    $removed,
+    count($subscriptions)
+));
+
 $removed = removeDeadSubscriptions($pdo, $deadHashes);
 
 echo json_encode([

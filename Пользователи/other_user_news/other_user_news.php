@@ -1,6 +1,14 @@
 <?php
 // Protect against hack attempts
 if (!defined('NGCMS')) die('HAL');
+
+// Modernized with ng-helpers v0.2.2 (2026)
+// - Replaced cacheRetrieveFile/cacheStoreFile with cache_get/cache_put
+// - Added logger for cache operations tracking
+// - Requires PHP 8.0+
+
+use function Plugins\{cache_get, cache_put, logger};
+
 function plugin_other_user_news($number, $mode, $overrideTemplateName, $cacheExpire)
 {
 
@@ -50,8 +58,10 @@ function plugin_other_user_news($number, $mode, $overrideTemplateName, $cacheExp
 	// Generate cache file name [ we should take into account SWITCHER plugin ]
 	$cacheFileName = md5('other_user_news' . $config['theme'] . $templateName . $config['default_lang'] . join('', $cacheKeys)) . '.txt';
 	if (!$cacheDisabled && ($cacheExpire > 0)) {
-		$cacheData = cacheRetrieveFile($cacheFileName, $cacheExpire, 'other_user_news');
-		if ($cacheData != false) {
+		$cacheKey = 'other_user_news:' . $cacheFileName;
+		$cacheData = cache_get($cacheKey);
+		if ($cacheData !== null) {
+			logger('[other_user_news] Cache hit: author_id=' . $current_author_id . ', mode=' . $mode, 'debug', 'other_user_news.log');
 			// We got data from cache. Return it and stop
 			return $cacheData;
 		}
@@ -83,7 +93,9 @@ function plugin_other_user_news($number, $mode, $overrideTemplateName, $cacheExp
 	$xt = $twig->loadTemplate($tpath[$templateName] . $templateName . '.tpl');
 	$output = $xt->render($tVars);
 	if (!$cacheDisabled && ($cacheExpire > 0)) {
-		cacheStoreFile($cacheFileName, $output, 'other_user_news');
+		$cacheKey = 'other_user_news:' . $cacheFileName;
+		cache_put($cacheKey, $output);
+		logger('[other_user_news] Cached: author_id=' . $current_author_id . ', mode=' . $mode . ', size=' . strlen($output), 'info', 'other_user_news.log');
 	}
 
 	return $output;
@@ -99,9 +111,9 @@ function plugin_other_user_news($number, $mode, $overrideTemplateName, $cacheExp
 function plugin_other_user_news_showTwig($params)
 {
 
-
+	global $CurrentHandler, $config;
 
 	return plugin_other_user_news($params['number'], $params['mode'], $params['template'], isset($params['cacheExpire']) ? $params['cacheExpire'] : 0);
 }
 
-twigRegisterFunction('other_user_news', 'show', plugin_other_user_news_showTwig);
+twigRegisterFunction('other_user_news', 'show', 'plugin_other_user_news_showTwig');

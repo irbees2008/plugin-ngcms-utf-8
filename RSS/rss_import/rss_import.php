@@ -1,96 +1,227 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
-add_act('index', 'rss_import_block');
-function rss_import_block() {
-    global $config, $tpl, $template, $parse;
-    $count = extra_get_param('rss_import', 'count');
-    if ((intval($count) < 1) || (intval($count) > 20))
-        $count = 1;
-    for ($i = 1; $i <= $count; $i++) {
-        $vv = 'rss' . $i;
-        $number = intval(extra_get_param('rss_import', $vv . '_number'));
-        $maxlength = intval(extra_get_param('rss_import', $vv . '_maxlength'));
-        $newslength = intval(extra_get_param('rss_import', $vv . '_newslength'));
-        // Determine paths for all template files
-        if (intval(extra_get_param('rss_import', 'localsource')) == 1) $overrideTemplatePath = root . '/plugins/rss_import/tpl/' . $vv . '';
-        else $overrideTemplatePath = tpl_site . 'plugins/rss_import/' . $vv . '';
-        $tpath = array('entries' => $overrideTemplatePath, 'rss' => $overrideTemplatePath);
-        // Generate cache file name [ we should take into account SWITCHER plugin ]
-        $cacheFileName = md5($vv . $config['theme'] . $config['default_lang']) . '.txt';
-        if (extra_get_param('rss_import', 'cache')) {
-            $cacheData = cacheRetrieveFile($cacheFileName, extra_get_param('rss_import', 'cacheExpire'), 'rss_import');
-            if ($cacheData != false) {
-                // We got data from cache. Return it and stop
-                $template['vars'][$vv] = $cacheData;
-                return;
-            }
-        }
-        if (!$number) {
-            $number = 10;
-        }
-        if (!$maxlength) {
-            $maxlength = 100;
-        }
-        if (!$newslength) {
-            $newslength = 100;
-        }
-        $url = extra_get_param('rss_import', $vv . '_url');       //адрес RSS ленты
-        $rss = simplexml_load_file($url);       //Интерпретирует XML-файл в объект
-        if (empty($rss))
-            return $template['vars'][$vv] = 'RSS не доступен';
-        //цикл для обхода всей RSS ленты
-        $j = 1;
-        $result = '';
-        foreach ($rss->xpath('//item') as $item) {
-            $tvars = array('vars' => array());
-            $title = $item->title;
-            // Обработка заголовка
-            if (strlen($title) > $maxlength) {
-                $tvars['vars']['title'] = substr(secure_html($title), 0, $maxlength) . "";
-            } else {
-                $tvars['vars']['title'] = secure_html($title);
-            }
-            // Обработка изображения (новая переменная)
-            $tvars['vars']['image'] = ''; // По умолчанию пусто
-            if (isset($item->enclosure)) {
-                $enclosure = $item->enclosure;
-                if (strpos($enclosure['type'], 'image/') !== false) {
-                    $image_url = (string)$enclosure['url'];
-                    if (!extra_get_param('rss_import', $vv . '_img')) {
-                        $tvars['vars']['image'] = '<div class="rss-image-wrapper"><img src="' . secure_html($image_url) . '" alt="' . secure_html($title) . '" /></div>';
-                    }
-                }
-            }
-            // Обработка short_news
-            // Обработка short_news
-            if (extra_get_param('rss_import', $vv . '_content')) {
-                $short_news = strip_tags($item->description, '<p><a><br><strong><em><ul><ol><li>');
-                // Применяем обработку BB-кодов и смайлов
-                if ($config['blocks_for_reg']) $short_news = $parse->userblocks($short_news);
-                if ($config['use_bbcodes']) $short_news = $parse->bbcodes($short_news);
-                if ($config['use_smilies']) $short_news = $parse->smilies($short_news);
-                // Удаляем все HTML теги после обработки (если нужно чисто текст)
-                $short_news = strip_tags($short_news);
-                // ОБРЕЗКА ТЕКСТА ДО УКАЗАННОЙ ДЛИНЫ
-                if (strlen($short_news) > $newslength) {
-                    $short_news = substr($short_news, 0, $newslength) . '...';
-                }
-                $tvars['vars']['short_news'] = $short_news;
-            }
-            $tvars['vars']['link'] = (string)$item->link;
-            $tpl->template('entries', $tpath['entries']);
-            $tpl->vars('entries', $tvars);
-            $result .= $tpl->show('entries');
-            if ($j == $number) break;
-            $j++;
-        }
-        $tpl->template('rss', $tpath['rss']);
-        $tpl->vars('rss', array('vars' => array('entries' => $result, 'author' => extra_get_param('rss_import', $vv . '_name'))));
-        $output = $tpl->show('rss');
-        $template['vars'][$vv] = $output;
-        if (extra_get_param('rss_import', 'cache')) {
-            cacheStoreFile($cacheFileName, $output, 'rss_import');
-        }
+if (!defined('NGCMS')) die('HAL');
+
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\logger')) {
+    $ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+    if (file_exists($ngHelpersPath)) {
+        require_once $ngHelpersPath;
+    } else {
+        die('ng-helpers plugin is required for rss_import plugin');
     }
 }
+
+// Modernized with ng-helpers v0.2.2 (2026)
+// - Using cache_get/cache_put for caching
+// - Added logger() for enhanced logging
+// - Requires PHP 8.0+
+
+use function Plugins\{cache_get, cache_put, logger};
+
+LoadPluginLang('rss_import', 'main', '', '', ':');
+
+add_act('index', 'rss_import_block');
+// Рендер одного блока RSS (rss1, rss2, ... ) через Twig
+function rss_import_render_block($index)
+{
+    global $config, $template, $parse, $twig, $lang;
+    $vv = 'rss' . intval($index);
+    $number     = intval(extra_get_param('rss_import', $vv . '_number'));
+    $maxlength  = intval(extra_get_param('rss_import', $vv . '_maxlength'));
+    $newslength = intval(extra_get_param('rss_import', $vv . '_newslength'));
+    if ($number < 1) {
+        $number = 10;
+    }
+    if ($maxlength < 1) {
+        $maxlength = 100;
+    }
+    if ($newslength < 1) {
+        $newslength = 100;
+    }
+    // Пути шаблонов через локатор (учитываем подкаталог rssN как block)
+    $tpath = locatePluginTemplates(array('rss', 'entries'), 'rss_import', intval(extra_get_param('rss_import', 'localsource')), '', $vv);
+    // Кэш на блок
+    $cacheFileName = md5($vv . $config['theme'] . $config['default_lang']) . '.txt';
+    $cacheExpire = extra_get_param('rss_import', 'cache') ? intval(extra_get_param('rss_import', 'cacheExpire')) * 60 : 0;
+    if ($cacheExpire > 0) {
+        $cacheKey = 'rss_import_' . $cacheFileName;
+        $cached = cache_get($cacheKey);
+        if ($cached !== null) {
+            logger('[rss_import] Cache hit: block=' . $vv, 'debug', 'rss_import.log');
+            return $cached;
+        }
+    }
+    $url = extra_get_param('rss_import', $vv . '_url');
+    // Проверка наличия URL
+    if (empty($url)) {
+        return $lang['rss_import:error.no_url'];
+    }
+    // Загружаем содержимое с таймаутом
+    $context = stream_context_create([
+        'http' => [
+            'timeout' => 10,
+            'user_agent' => 'Mozilla/5.0 (compatible; NGCMS RSS Import)',
+            'follow_location' => true
+        ]
+    ]);
+    $xmlContent = @file_get_contents($url, false, $context);
+    if ($xmlContent === false) {
+        return $lang['rss_import:error.load_failed'] . htmlspecialchars($url);
+    }
+    // Проверяем на PHP ошибки в начале
+    $xmlContent = trim($xmlContent);
+    if (preg_match('/^(Notice|Warning|Fatal|Error|Parse error|Deprecated|Strict Standards):/i', $xmlContent)) {
+        // Извлекаем первую строку ошибки
+        $firstLine = explode("\n", $xmlContent)[0];
+        return $lang['rss_import:error.php_errors'] . htmlspecialchars(mb_substr($firstLine, 0, 200));
+    }
+    // Проверяем, что это XML, а не HTML
+    if (stripos($xmlContent, '<?xml') !== 0 && stripos($xmlContent, '<rss') !== 0) {
+        // Показываем первые 500 символов для диагностики
+        $preview = mb_substr($xmlContent, 0, 500);
+        return $lang['rss_import:error.not_rss'] . htmlspecialchars($preview);
+    }
+    // Включаем отображение ошибок для диагностики
+    libxml_use_internal_errors(true);
+    $rss = simplexml_load_string($xmlContent);
+    if (empty($rss)) {
+        $errors = libxml_get_errors();
+        libxml_clear_errors();
+        // Формируем сообщение об ошибке
+        $errorMsg = $lang['rss_import:error.parse_failed'];
+        if (!empty($errors)) {
+            $errorMsg .= ': ' . trim($errors[0]->message);
+            // Показываем проблемную строку
+            if (!empty($errors[0]->line)) {
+                $lines = explode("\n", $xmlContent);
+                $lineNum = $errors[0]->line - 1;
+                if (isset($lines[$lineNum])) {
+                    $errorMsg .= '. ' . sprintf($lang['rss_import:error.line'], $errors[0]->line) . ': ' . htmlspecialchars(mb_substr($lines[$lineNum], 0, 100));
+                }
+            }
+        }
+        return $errorMsg;
+    }
+    $entries = array();
+    $imageSource = extra_get_param('rss_import', $vv . '_imageSource');
+    if (!$imageSource) {
+        $imageSource = 'enclosure';
+    }
+    $j = 0;
+    foreach ($rss->xpath('//item') as $item) {
+        $entry = array();
+        $title = (string)$item->title;
+        $title = secure_html($title);
+        if (mb_strlen($title) > $maxlength) {
+            $title = mb_substr($title, 0, $maxlength);
+        }
+        $entry['title'] = $title;
+        // Изображение из enclosure (как HTML, совместимо с текущими шаблонами)
+        $entry['image'] = '';
+        if (isset($item->enclosure)) {
+            $enclosure = $item->enclosure;
+            if (strpos($enclosure['type'], 'image/') !== false) {
+                $image_url = (string)$enclosure['url'];
+                // Показываем картинку из <enclosure> независимо от опции rssN_img (она относится к short_news)
+                $entry['image'] = '<div class="rss-image-wrapper"><img src="' . secure_html($image_url) . '" alt="' . $title . '" /></div>';
+            }
+        }
+        // Первое изображение из тела описания (<description>), выводим в `images`
+        $entry['images'] = '';
+        try {
+            $descRaw = (string)$item->description;
+            if ($descRaw) {
+                $m = [];
+                // Ищем src в первом img
+                if (preg_match('#<img[^>]+src\s*=\s*([\"\'])(.*?)\1#is', $descRaw, $m) && !empty($m[2])) {
+                    $imgUrl = trim($m[2]);
+                } else if (preg_match('#<img[^>]+data-(?:src|original)\s*=\s*([\"\'])(.*?)\1#is', $descRaw, $m) && !empty($m[2])) {
+                    // Популярные lazy-атрибуты
+                    $imgUrl = trim($m[2]);
+                } else {
+                    $imgUrl = '';
+                }
+                if ($imgUrl !== '') {
+                    $entry['images'] = '<div class="rss-image-wrapper"><img src="' . secure_html($imgUrl) . '" alt="' . $title . '" /></div>';
+                }
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+        // Короткая новость
+        if (extra_get_param('rss_import', $vv . '_content')) {
+            $short_news = strip_tags((string)$item->description, '<p><a><br><strong><em><ul><ol><li>');
+            if ($config['blocks_for_reg']) {
+                $short_news = $parse->userblocks($short_news);
+            }
+            if ($config['use_bbcodes']) {
+                $short_news = $parse->bbcodes($short_news);
+            }
+            if ($config['use_smilies']) {
+                $short_news = $parse->smilies($short_news);
+            }
+            $short_news = strip_tags($short_news);
+            if (mb_strlen($short_news) > $newslength) {
+                $short_news = mb_substr($short_news, 0, $newslength) . '...';
+            }
+            $entry['short_news'] = $short_news;
+        } else {
+            $entry['short_news'] = '';
+        }
+        $entry['link'] = (string)$item->link;
+        // Выбор изображения по настройке (desc|enclosure) БЕЗ фолбэка на другой источник
+        if ($imageSource == 'desc') {
+            $entry['pic'] = $entry['images'];
+        } else { // enclosure
+            $entry['pic'] = $entry['image'];
+        }
+        // Глобальный флаг показа изображения для блока (по умолчанию — показывать)
+        $showImage = extra_get_param('rss_import', $vv . '_showImage');
+        $showImage = ($showImage === null || $showImage === '') ? 1 : intval($showImage);
+        if (!$showImage) {
+            $entry['pic'] = '';
+        }
+        $entries[] = $entry;
+        $j++;
+        if ($j >= $number) {
+            break;
+        }
+    }
+    $tVars = array(
+        'entries' => $entries,
+        'tpl_url' => tpl_url,
+        'author'  => extra_get_param('rss_import', $vv . '_name'),
+    );
+    // Рендер Twig шаблона блока
+    $xt = $twig->loadTemplate($tpath['rss'] . 'rss.tpl');
+    $output = $xt->render($tVars);
+    if ($cacheExpire > 0) {
+        $cacheKey = 'rss_import_' . $cacheFileName;
+        cache_put($cacheKey, $output, $cacheExpire / 60);
+        logger('[rss_import] Cached: block=' . $vv . ', size=' . strlen($output), 'info', 'rss_import.log');
+    }
+    return $output;
+}
+// Автоматическая вставка блоков как раньше: {rss1}, {rss2}, ...
+function rss_import_block()
+{
+    global $template;
+    $count = intval(extra_get_param('rss_import', 'count'));
+    if ($count < 1 || $count > 20) {
+        $count = 1;
+    }
+    for ($i = 1; $i <= $count; $i++) {
+        $template['vars']['rss' . $i] = rss_import_render_block($i);
+    }
+}
+// Вызов из Twig: {{ rss_import.show({ index: 1 }) }}
+function plugin_rss_import_showTwig($params)
+{
+    $idx = isset($params['index']) ? intval($params['index']) : 1;
+    if ($idx < 1) {
+        $idx = 1;
+    }
+    return rss_import_render_block($idx);
+}
+twigRegisterFunction('rss_import', 'show', 'plugin_rss_import_showTwig');

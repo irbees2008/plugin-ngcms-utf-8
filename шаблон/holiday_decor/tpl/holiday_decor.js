@@ -631,13 +631,33 @@
       (function () {
         var st = document.createElement("style");
         st.textContent =
-          ".hd-countdown-container{background:url(https://mycrib.ru/wp-content/uploads/2025/01/bg_new.png) repeat-x 0 0/auto 100%;width:100%;padding:20px 0;text-align:center;color:#fff;position:fixed;left:0;bottom:0;z-index:10001}.hd-count-title{font-size:24px;margin-bottom:10px}.hd-count-timer{display:flex;justify-content:center;gap:10px}.hd-count-item{display:flex;flex-direction:column;align-items:center}.hd-count-digits{display:flex;gap:5px}.hd-count-square{background:#fff;color:#333;font-size:24px;font-weight:bold;width:40px;height:40px;display:flex;justify-content:center;align-items:center;border-radius:5px}.hd-count-label{font-size:14px;color:#fff;margin-top:5px}";
+          ".hd-countdown-container{background:url(https://mycrib.ru/wp-content/uploads/2025/01/bg_new.png) repeat-x 0 0/auto 100%;width:100%;padding:20px 0;text-align:center;color:#fff;position:fixed;left:0;bottom:0;z-index:10001}.hd-count-title{font-size:24px;margin-bottom:10px}.hd-count-timer{display:flex;justify-content:center;gap:10px}.hd-count-item{display:flex;flex-direction:column;align-items:center}.hd-count-digits{display:flex;gap:5px}.hd-count-square{background:#fff;color:#333;font-size:24px;font-weight:bold;width:40px;height:40px;display:flex;justify-content:center;align-items:center;border-radius:5px}.hd-count-label{font-size:14px;color:#fff;margin-top:5px}@media(max-width:480px){.hd-count-title{font-size:18px}.hd-count-timer{gap:6px}.hd-count-square{width:30px;height:30px;font-size:18px}}";
         document.head.appendChild(st);
         var c = document.createElement("div");
         c.className = "hd-countdown-container";
-        c.innerHTML =
-          '<div class="hd-count-title">До нового года осталось...</div><div class="hd-count-timer" id="hd-timer"><div class="hd-count-item"><div class="hd-count-digits" id="hd-days"><div class="hd-count-square">0</div><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Дней</div></div><div class="hd-count-item"><div class="hd-count-digits" id="hd-hours"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Часов</div></div><div class="hd-count-item"><div class="hd-count-digits" id="hd-mins"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Минут</div></div><div class="hd-count-item"><div class="hd-count-digits" id="hd-secs"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Секунд</div></div></div>';
+        var html =
+          '<div class="hd-count-title">До нового года осталось...</div>' +
+          '<div class="hd-count-timer" id="hd-timer">' +
+          '<div class="hd-count-item"><div class="hd-count-digits" id="hd-days"><div class="hd-count-square">0</div><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Дней</div></div>' +
+          '<div class="hd-count-item"><div class="hd-count-digits" id="hd-hours"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Часов</div></div>' +
+          '<div class="hd-count-item"><div class="hd-count-digits" id="hd-mins"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Минут</div></div>';
+        if (cfg.countdownShowSeconds) {
+          html +=
+            '<div class="hd-count-item"><div class="hd-count-digits" id="hd-secs"><div class="hd-count-square">0</div><div class="hd-count-square">0</div></div><div class="hd-count-label">Секунд</div></div>';
+        }
+        html += "</div>";
+        c.innerHTML = html;
         document.body.appendChild(c);
+        var intervalId = null;
+        var desiredMs = 60000;
+        function schedule(ms) {
+          if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+          }
+          desiredMs = ms;
+          intervalId = setInterval(upd, ms);
+        }
         function upd() {
           var now = new Date(),
             ny = new Date("January 1, " + (now.getFullYear() + 1)),
@@ -656,9 +676,46 @@
           set("hd-days", d, 3);
           set("hd-hours", h, 2);
           set("hd-mins", m, 2);
-          set("hd-secs", s, 2);
+          if (cfg.countdownShowSeconds) {
+            var secsNode = document.getElementById("hd-secs");
+            if (secsNode) set("hd-secs", s, 2);
+          }
+          // CPU-friendly scheduling: per minute if days>0 or seconds disabled; per second if today
+          var wantMs = cfg.countdownShowSeconds && d === 0 ? 1000 : 60000;
+          if (wantMs !== desiredMs && !document.hidden) {
+            schedule(wantMs);
+          }
+          // Auto-collapse after New Year
+          if (left <= 0) {
+            var title = c.querySelector(".hd-count-title");
+            if (title) title.textContent = "С Новым годом!";
+            var timer = document.getElementById("hd-timer");
+            if (timer) timer.style.display = "none";
+            setTimeout(function () {
+              if (c && c.parentNode) {
+                c.parentNode.removeChild(c);
+              }
+            }, 10000);
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+          }
         }
-        setInterval(upd, 1000);
+        // Initial scheduling based on settings
+        schedule(cfg.countdownShowSeconds ? 1000 : 60000);
+        // Pause when tab hidden, resume when visible
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+          } else {
+            upd();
+            schedule(desiredMs);
+          }
+        });
         upd();
       })();
     }

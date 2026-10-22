@@ -1,12 +1,19 @@
 <tr>
-	<td>{date} {time}</td>
-	<td><a target="_blank" href="{link}">{title}</a></td>
-	<td>{error} {ccount}</td>
-	<td>{author_name}</td>
-	<td><b>{publisher_name}</b>
-		<small>[<a href="http://www.nic.ru/whois/?ip={publisher_ip}" target="_blank">{publisher_ip}</a>]</small>
+	<td>
+		<input type="checkbox" name="inc_{{ id }}" value="1">
 	</td>
-	<td>{owner_name}</td>
-	<td>{status}</td>
-	<td>[perm]<input type="checkbox" name="inc_{id}" value="1"/>[/perm]</td>
+	<td>{{ date }}<br><small class="text-muted">{{ time }}</small>
+	</td>
+	<td>{{ error|raw }}
+		{{ ccount|raw }}</td>
+	<td>
+		<a href="{{ link }}" target="_blank">{{ title }}</a>
+	</td>
+	<td>
+		{% if publisher_name %}
+			{{ publisher_name }}<br><small class="text-muted">{{ publisher_ip }}</small>
+		{% endif %}
+	</td>
+	<td>{{ owner_name|raw }}</td>
+	<td>{{ status }}</td>
 </tr>

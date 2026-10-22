@@ -1,51 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-	<title>Сообщить об ошибке</title>
-	<style type="text/css">
-		body {
-			font: normal 12px verdana, sans-serif;
-		}
-
-		#senderror {
-			padding-top: 10px;
-			background: #fff7e1;
-			border: 1px dashed #e8e8e8;
-			margin-top: 10px;
-			padding-bottom: 20px;
-		}
-
-		#senderror select.error {
-			border: 1px solid #e8e8e8;
-			background: #fff;
-		}
-
-		#senderror input.report {
-			border: 1px solid #e8e8e8;
-			background: #fff;
-		}
-
-		#senderror .texth {
-			position: relative;
-			left: 10px;
-		}
-	</style>
-</head>
-<body>
-<form method="post" action="{form_url}">
-	<input type="hidden" name="ds_id" value="{ds_id}"/>
-	<input type="hidden" name="entry_id" value="{entry_id}"/>
-
-	<div id="senderror">
-		<div class="texth">
-			<u>Сообщить об ошибке:</u><br/><br/>
-			Тип ошибки: <select name="error" class="error" id="errorSelect">{errorlist}</select><br/><br/>
-			[email]Ваш e-mail: <input type="text" name="mail"/><br/>[/email]
-			[notify]<input type="checkbox" name="notify" value="1"/> информировать о решении проблемы <br/>[/notify]
-			[text]Детальное описание проблемы:<br/><textarea cols="80" rows="4" name="error_text"></textarea><br/>[/text]
-			<input type="submit" class="report" onclick="if (document.getElementById('errorSelect').value==''){alert('Необходимо выбрать тип ошибки!'); return false;};" value="Отправить"/>
-		</div>
+<form method="post" action="{{ form_url }}" class="complain-form" data-ajax="true">
+	<input type="hidden" name="ds_id" value="{{ ds_id }}">
+	<input type="hidden" name="entry_id" value="{{ entry_id }}">
+<div class="col-auto">
+		<label class="form-label">{{ lang['complain:lbl.error']|default('Что не так?') }}</label>
+		<select name="error" class="form-select" required>
+			{{ errorlist|raw }}
+		</select>
+	</div>
+	[text]
+<div class="col-auto">
+		<label class="form-label">{{ lang['complain:lbl.text']|default('Комментарий (необязательно)') }}</label>
+		<textarea name="error_text" class="form-control" rows="3"></textarea>
+	</div>
+	[/text]
+		[notify]
+<div class="col-auto">
+		<input class="form-check-input" type="checkbox" name="notify" id="complain_notify_ext">
+		<label class="form-check-label" for="complain_notify_ext">{{ lang['complain:lbl.notify']|default('Уведомлять меня об изменениях') }}</label>
+	</div>
+	[/notify]
+	[email]
+<div class="col-auto">
+		<label class="form-label">E-mail</label>
+		<input type="email" name="mail" class="form-control" placeholder="name@example.com">
+	</div>
+	[/email]
+<div class="col-auto">
+		<button type="submit" class="btn btn-primary">{{ lang['complain:btn.send']|default('Отправить') }}</button>
+		<button type="button" class="btn btn-outline-secondary" data-close-modal>{{ lang['complain:btn.cancel']|default('Отмена') }}</button>
 	</div>
 </form>
-</body>
-</html>

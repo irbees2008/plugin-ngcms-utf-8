@@ -24,8 +24,10 @@
 </div>
 
 <div class="container mt-5">
-	<div class="card">
-		<h5 class="card-header">suser</h5>
+	<div class="card plugin-settings-card">
+		<h5 class="card-header d-flex justify-content-between align-items-center" data-plugin-settings-header>
+			<span>suser</span>{documentation_button}
+		</h5>
 
 		<div class="card-body">
 			<div class="btn-group mb-3" role="group">

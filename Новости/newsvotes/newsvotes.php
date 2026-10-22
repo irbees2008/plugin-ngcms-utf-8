@@ -5,12 +5,24 @@ if (!defined('NGCMS')) die ('HAL');
 
 class NewsvoteNewsfilter extends NewsFilter {
 	function addNewsForm(&$tvars) {
-	        global $tpl;
+	    global $tpl, $lang;
+		LoadPluginLang('newsvotes', 'main', '', '', ':');
 		$tpath = locatePluginTemplates(array('nv_addnews'), 'newsvotes', 0, 'default');
 
 		$tpl -> template('nv_addnews', $tpath['nv_addnews']);
-		$tpl -> vars('nv_addnews', array ( 'vars' => array ()));
-		$tvars['vars']['newsvote'] = $tpl -> show('nv_addnews');
+		$tpl -> vars('nv_addnews', array('vars' => array(
+			'form_heading' => $lang['newsvotes:form_heading'],
+			'form_enable' => $lang['newsvotes:form_enable'],
+			'form_question' => $lang['newsvotes:form_question'],
+			'form_default_question' => $lang['newsvotes:form_default_question'],
+			'form_answers' => $lang['newsvotes:form_answers'],
+			'form_answers_hint' => $lang['newsvotes:form_answers_hint'],
+			'form_default_answers' => $lang['newsvotes:answer_yes']."\n".$lang['newsvotes:answer_no'],
+			'form_access' => $lang['newsvotes:form_access'],
+			'form_registered' => $lang['newsvotes:form_registered'],
+			'form_guests' => $lang['newsvotes:form_guests'],
+		)));
+		$tvars['plugin']['newsvote'] = $tpl -> show('nv_addnews');
 
 		return 1;
 	}
@@ -18,7 +30,7 @@ class NewsvoteNewsfilter extends NewsFilter {
 
     ///////////
     function addNews(&$tvars, &$SQL) {
-        if($_REQUEST['nvenable'])
+        if (!empty($_REQUEST['nvenable']))
            $SQL['nvote'] = 1;
         
 		return 1;
@@ -26,61 +38,98 @@ class NewsvoteNewsfilter extends NewsFilter {
 
 	function addNewsNotify(&$tvars, $SQL, $newsid) {
 		global $mysql;
-
-		$answers = array();
-        if(!$_REQUEST['nvenable'])
+        
+        if (empty($_REQUEST['nvenable']))
            return 1;
            
-        $vtitle = trim($_REQUEST['nvtitle']);
+        $vtitle = trim($_REQUEST['nvtitle'] ?? '');
         if (!strlen($vtitle)) return 1;
         $vtitle = db_squote($vtitle);
         
-        $mysql->query("insert into ".prefix."_newsvote (newsid, title) values (".$newsid.", ".$vtitle.")");
+        if (!empty($_REQUEST['nvpu']) && !empty($_REQUEST['nvpg'])) $whovote = 3;
+        elseif (!empty($_REQUEST['nvpg'])) $whovote = 2;
+        else $whovote = 1;
+        
+        $mysql->query("insert into ".prefix."_newsvote (newsid, title, whovote) values (".$newsid.", ".$vtitle.", ".$whovote.")");
         $vid = $mysql->lastid("newsvote");
         
-        addAnswers($_REQUEST['nvanswers'], $vid);
+        addAnswers($_REQUEST['nvanswers'] ?? '', $vid);
         
 		return 1;
 	}
 
 	function editNewsForm($newsID, $SQLold, &$tvars) {
-	        global $tpl, $mysql;
-        
-        if($SQLold['nvote'] > 0)
-        {
+	    global $tpl, $mysql, $lang;
+		LoadPluginLang('newsvotes', 'main', '', '', ':');
+            
+        $vote = $SQLold['nvote'] > 0
+            ? $mysql->record("select id, title, whovote from ".prefix."_newsvote where newsid=".intval($newsID))
+            : false;
+
+        if (is_array($vote)) {
             $result = '';
             $k = 1;
-            foreach ($mysql->select("select v.id AS voteid, v.title, a.id, a.name from ".prefix."_newsvote v inner join ".prefix."_newsanswer a on a.voteid=v.id where v.newsid=".$newsID) as $ad) {
+            foreach ($mysql->select("select id, name from ".prefix."_newsanswer where voteid=".intval($vote['id'])." order by id ASC") as $answer) {
                     $dt['vars']['num'] = $k++;
-                    $dt['vars']['id'] = $ad['id'];
-                    $dt['vars']['name'] = $ad['name'];
+                    $dt['vars']['id'] = $answer['id'];
+                    $dt['vars']['name'] = $answer['name'];
                    
                    $tpath = locatePluginTemplates(array('edit_answer'), 'newsvotes', 0, 'default');
                    $tpl -> template('edit_answer', $tpath['edit_answer']);
                    $tpl -> vars('edit_answer', $dt);
                    $result .= $tpl -> show('edit_answer');
                 }
+            
+            $selvu = ''; $selvg = '';
+            if($vote['whovote'] == 1 || $vote['whovote'] == 3) $selvu = ' checked="checked"';
+            if($vote['whovote'] == 2 || $vote['whovote'] == 3) $selvg = ' checked="checked"';
     
             $tpath = locatePluginTemplates(array('nv_editnews'), 'newsvotes', 0, 'default');
     		$tpl -> template('nv_editnews', $tpath['nv_editnews']);
-    		$tpl -> vars('nv_editnews', array ( 'vars' => array ( 'answers' => $result, 'title' => secure_html($ad['title']), 'voteid' => intval($ad['voteid']))));
-    		$tvars['vars']['newsvote_edit'] = $tpl -> show('nv_editnews');
+    		$tpl -> vars('nv_editnews', array('vars' => array(
+				'answers' => $result,
+				'title' => secure_html($vote['title']),
+				'voteid' => intval($vote['id']),
+				'selvu' => $selvu,
+				'selvg' => $selvg,
+				'edit_heading' => $lang['newsvotes:edit_heading'],
+				'edit_delete' => $lang['newsvotes:edit_delete'],
+				'edit_question' => $lang['newsvotes:edit_question'],
+				'edit_answers' => $lang['newsvotes:edit_answers'],
+				'edit_add_answers' => $lang['newsvotes:edit_add_answers'],
+				'edit_update_answers' => $lang['newsvotes:edit_update_answers'],
+				'edit_access' => $lang['newsvotes:edit_access'],
+				'edit_registered' => $lang['newsvotes:edit_registered'],
+				'edit_guests' => $lang['newsvotes:edit_guests'],
+				'edit_reset' => $lang['newsvotes:edit_reset'],
+			)));
+    		$tvars['plugin']['newsvote_edit'] = $tpl -> show('nv_editnews');
         }
         else
         {
             $tpath = locatePluginTemplates(array('nv_addnews'), 'newsvotes', 0, 'default');
 
     		$tpl -> template('nv_addnews', $tpath['nv_addnews']);
-    		$tpl -> vars('nv_addnews', array ( 'vars' => array ()));
-    		$tvars['vars']['newsvote_edit'] = $tpl -> show('nv_addnews');
+    		$tpl -> vars('nv_addnews', array('vars' => array(
+				'form_heading' => $lang['newsvotes:form_heading'],
+				'form_enable' => $lang['newsvotes:form_enable'],
+				'form_question' => $lang['newsvotes:form_question'],
+				'form_default_question' => $lang['newsvotes:form_default_question'],
+				'form_answers' => $lang['newsvotes:form_answers'],
+				'form_answers_hint' => $lang['newsvotes:form_answers_hint'],
+				'form_default_answers' => $lang['newsvotes:answer_yes']."\n".$lang['newsvotes:answer_no'],
+				'form_access' => $lang['newsvotes:form_access'],
+				'form_registered' => $lang['newsvotes:form_registered'],
+				'form_guests' => $lang['newsvotes:form_guests'],
+			)));
+            $tvars['plugin']['newsvote_edit'] = $tpl -> show('nv_addnews');
         }
         
-
 		return 1;
 	}
 
 	function editNews($newsID, $SQLold, &$SQLnew, &$tvars) {
-        if($_REQUEST['nvenable']) $SQLnew['nvote'] = 1;
+        if (!empty($_REQUEST['nvenable'])) $SQLnew['nvote'] = 1;
         return 1;
 	}
     
@@ -88,45 +137,50 @@ class NewsvoteNewsfilter extends NewsFilter {
 	function editNewsNotify($newsID, $SQLnews, &$SQLnew, &$tvars) {
 		global $mysql;
         
-        if($_REQUEST['mode'] == "addv")
+        if (($_REQUEST['mode'] ?? '') === "addv")
         {
-            $answers = array();
-
-            if(!$_REQUEST['nvenable'])
+            if (empty($_REQUEST['nvenable']))
                return 1;
                
-            $vtitle = trim($_REQUEST['nvtitle']);
+            $vtitle = trim($_REQUEST['nvtitle'] ?? '');
             if (!strlen($vtitle)) return 1;
             $vtitle = db_squote($vtitle);
             
-            $mysql->query("insert into ".prefix."_newsvote (newsid, title) values (".$newsID.", ".$vtitle.")");
+            if (!empty($_REQUEST['nvpu']) && !empty($_REQUEST['nvpg'])) $whovote = 3;
+            elseif (!empty($_REQUEST['nvpg'])) $whovote = 2;
+            else $whovote = 1;
+            
+            $mysql->query("insert into ".prefix."_newsvote (newsid, title, whovote) values (".$newsID.", ".$vtitle.", ".$whovote.")");
             $vid = $mysql->lastid("newsvote");
             
-            addAnswers($_REQUEST['nvanswers'], $vid);
-            
+            addAnswers($_REQUEST['nvanswers'] ?? '', $vid);
         }
         else
         {
-            $vid = intval($_REQUEST['voteid']);
-            if($_REQUEST['nvdelete'])
+            $vid = intval($_REQUEST['voteid'] ?? 0);
+            if (!empty($_REQUEST['nvdelete']))
             {
                 deleteVote($vid, $newsID);
                 return 1;
             }
             
-            $mysql->query("update ".prefix."_newsvote set title = ".db_squote(trim($_REQUEST['nvtitle']))." where newsid = ".intval($newsID));
+            if (!empty($_REQUEST['nvpu']) && !empty($_REQUEST['nvpg'])) $whovote = 3;
+            elseif (!empty($_REQUEST['nvpg'])) $whovote = 2;
+            else $whovote = 1;
             
-            if(isSet($_REQUEST['nvupdate']))
+            $mysql->query("update ".prefix."_newsvote set title = ".db_squote(trim($_REQUEST['nvtitle'] ?? '')).", whovote=".$whovote." where newsid = ".intval($newsID));
+            
+            if (isset($_REQUEST['nvupdate']))
             {
-                foreach($_REQUEST['ans'] as $aid => $aval)
+                foreach ((array) ($_REQUEST['ans'] ?? []) as $aid => $aval)
                 {
                     $mysql->query("update ".prefix."_newsanswer set name = ".db_squote(trim(htmlspecialchars($aval, ENT_QUOTES)))." where id = ".intval($aid));
                 }
                 
-                addAnswers($_REQUEST['nvanswers'], $_REQUEST['voteid']);
+                addAnswers($_REQUEST['nvanswers'] ?? '', $vid);
             }
             
-            if($_REQUEST['nvrefresh'])
+            if (!empty($_REQUEST['nvrefresh']))
             {
                 $mysql->query("update ".prefix."_newsanswer set number = 0 where voteid = ".$vid);
                 $mysql->query("update ".prefix."_newsvote set count = 0 where id = ".$vid);
@@ -139,55 +193,85 @@ class NewsvoteNewsfilter extends NewsFilter {
 	}
 
 	function showNews($newsID, $SQLnews, &$tvars, $mode = array()) {
-		global $mysql, $tpl, $userROW, $ip;
-        
-        if (!$SQLnews['nvote']) {$tvars['vars']['newsvote'] = ''; return 1;}
-        
-        if(isSet($_POST['mode']))
-        {
+		global $mysql, $tpl, $userROW, $ip, $lang;
+        if (empty($SQLnews['nvote'])) {
+            $tvars['vars']['newsvote'] = '';
+            return 1;
+        }
+
+        LoadPluginLang('newsvotes', 'main', '', '', ':');
+
+        if (
+            isset($_POST['mode'], $_REQUEST['voteid'], $_REQUEST['ans'])
+            && $_POST['mode'] === 'vote'
+        ) {
             process_voting($_REQUEST['voteid'], $_REQUEST['ans'], $newsID);
             unset($_POST['mode']);
         }
-        
-          $notrate = 0;
-          if($mysql->result("select id from ".prefix."_newsvoted where ip=".db_squote($ip)." AND voteid=(select id from ".prefix."_newsvote where newsid=".intval($newsID).")"))
-               $notrate = 1;
-           
-        
-        $result = '';
-        foreach ($mysql->select("select v.id AS voteid, v.title, v.count, a.id, a.name, a.number from ".prefix."_newsvote v inner join ".prefix."_newsanswer a on a.voteid=v.id where v.newsid=".$newsID) as $SQL) {
-            $n = $SQL['title'];
-           
-            $dt['vars']['id'] = $SQL['id'];
-            $dt['vars']['answer'] = $SQL['name'];
-            $dt['vars']['number'] = $SQL['number'];
-            $dt['vars']['width'] = @round(($SQL['number']/$SQL['count'])*100, 2);
-            
-            $dt['regx']['#\[is-rate\](.*?)\[\/is-rate\]#is'] = (!$notrate)?'$1':'';
-            $dt['regx']['#\[not-rate\](.*?)\[\/not-rate\]#is'] = ($notrate)?'$1':'';
-               
+
+        $nvdata = $mysql->record(
+            "select id, title, count, whovote from ".prefix."_newsvote where newsid=".intval($newsID)
+        );
+        if (!is_array($nvdata)) {
+            $tvars['vars']['newsvote'] = '';
+            return 1;
+        }
+
+        $notrate = 0;
+        if ($nvdata['whovote'] == 1 && !is_array($userROW)) {
+            $notrate = 1;
+        } elseif ($nvdata['whovote'] == 2 && is_array($userROW)) {
+            $notrate = 1;
+        }
+
+        if (
+            !$notrate
+            && $mysql->result(
+                "select id from ".prefix."_newsvoted where ip=".db_squote($ip)." AND voteid=".intval($nvdata['id'])
+            )
+        ) {
+            $notrate = 1;
+        }
+
+        $colors = array("DarkBlue", "Blue", "DodgerBlue", "LightSeaGreen", "BlueViolet", "Aquamarine4", "Gainsboro", "CornflowerBlue");
+        $answers = '';
+        $colorIndex = 0;
+        $answerRows = $mysql->select(
+            "select id, name, number from ".prefix."_newsanswer where voteid=".intval($nvdata['id'])." order by id ASC"
+        );
+        foreach ($answerRows as $answer) {
+            $dt['vars']['id'] = $answer['id'];
+            $dt['vars']['answer'] = $answer['name'];
+            $dt['vars']['number'] = (int) $answer['number'];
+            $dt['vars']['width'] = (int) $nvdata['count'] > 0
+                ? round(((int) $answer['number'] / (int) $nvdata['count']) * 100, 2)
+                : 0;
+            $dt['vars']['color'] = $colors[$colorIndex];
+            $colorIndex = ($colorIndex + 1) % count($colors);
+            $dt['regx']['#\[is-rate\](.*?)\[\/is-rate\]#is'] = (!$notrate) ? '$1' : '';
+            $dt['regx']['#\[not-rate\](.*?)\[\/not-rate\]#is'] = ($notrate) ? '$1' : '';
+
             $tpath = locatePluginTemplates(array('answer'), 'newsvotes', 0, 'default');
-            $tpl -> template('answer', $tpath['answer']);
-		    $tpl -> vars('answer', $dt);
-		    $result .= $tpl -> show('answer');
-            }
+            $tpl->template('answer', $tpath['answer']);
+            $tpl->vars('answer', $dt);
+            $answers .= $tpl->show('answer');
+        }
 
         $tpath = locatePluginTemplates(array('vote'), 'newsvotes', 0, 'default');
-        $ptvars['vars']['vote'] = $SQL['title'];
-        $ptvars['vars']['voteid'] = $SQL['voteid'];
-        $ptvars['vars']['total'] = $SQL['count'];
-        $ptvars['regx']['#\[is-rate\](.*?)\[\/is-rate\]#is'] = ($notrate)?'':'$1';
-        $ptvars['regx']['#\[not-rate\](.*?)\[\/not-rate\]#is'] = ($notrate)?'$1':'';
-    $ptvars['vars']['answers'] = $result;
-    $ptvars['vars']['self'] = $_SERVER["REQUEST_URI"];
-    
-     //print_r($_POST);
+        $ptvars['vars']['vote'] = secure_html($nvdata['title']);
+        $ptvars['vars']['voteid'] = (int) $nvdata['id'];
+        $ptvars['vars']['total'] = (int) $nvdata['count'];
+        $ptvars['vars']['answers'] = $answers;
+        $ptvars['vars']['self'] = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $ptvars['vars']['vote_submit'] = $lang['newsvotes:vote_submit'];
+        $ptvars['vars']['total_votes_label'] = $lang['newsvotes:total_votes'];
+        $ptvars['regx']['#\[is-rate\](.*?)\[\/is-rate\]#is'] = (!$notrate) ? '$1' : '';
+        $ptvars['regx']['#\[not-rate\](.*?)\[\/not-rate\]#is'] = ($notrate) ? '$1' : '';
 
-    $tpl -> template('vote', $tpath['vote']);
-	$tpl -> vars('vote', $ptvars);
-    $tvars['vars']['newsvote'] = $tpl -> show('vote');
-    
-       
+        $tpl->template('vote', $tpath['vote']);
+        $tpl->vars('vote', $ptvars);
+        $tvars['vars']['newsvote'] = $tpl->show('vote');
+
 		return 1;
 	}
 
@@ -213,18 +297,21 @@ class NewsvoteNewsfilter extends NewsFilter {
 register_filter('news','newsvotes', new NewsvoteNewsfilter);
 
 function addAnswers($area, $voteID) {
-	        global $mysql;
-            
-            foreach (explode("\n", $area) as $answer) {
-			$answer = trim(htmlspecialchars($answer, ENT_QUOTES));
-			if (!strlen($answer)) continue;
-			$answers[] = db_squote($answer);
-		}
+    global $mysql;
 
-		if (count($answers))
-			foreach ($answers as $answer)
-				$mysql->query("insert into ".prefix."_newsanswer (voteid, name) values (".intval($voteID).", ".$answer.")");
+    $answers = [];
+    foreach (explode("\n", is_string($area) ? $area : '') as $answer) {
+        $answer = trim(htmlspecialchars($answer, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+        if ($answer === '') {
+            continue;
+        }
+        $answers[] = db_squote($answer);
     }
+
+    foreach ($answers as $answer) {
+        $mysql->query("insert into ".prefix."_newsanswer (voteid, name) values (".intval($voteID).", ".$answer.")");
+    }
+}
             
    function deleteVote($voteID, $newsID) {
 	        global $mysql;

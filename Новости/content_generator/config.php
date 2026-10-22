@@ -3,26 +3,50 @@
 if (!defined('NGCMS')) {
     exit('HAL');
 }
+
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\logger')) {
+    $ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+    if (file_exists($ngHelpersPath)) {
+        require_once $ngHelpersPath;
+    }
+}
+
+use function Plugins\{array_get, logger, get_ip};
 // Подключаем конфигурацию плагина
 pluginsLoadConfig();
+global $lang;
+$plugin = 'content_generator';
+LoadPluginLang($plugin, 'config', '', 'content_generator.', '');
+LoadPluginLang($plugin, 'main', '', '', '#');
 // Основная функция для отображения интерфейса автоматизации
 function automation()
 {
-    global $twig, $PHP_SELF;
+    global $twig, $PHP_SELF, $lang;
     // Обработка сохранения настроек
-    if (isset($_POST['save']) && $_POST['save'] == '1') {
-        // Значения из формы
-        $newsCount   = max(1, intval($_POST['news_count'] ?? 50));
-        $staticCount = max(1, intval($_POST['static_count'] ?? 20));
-        $maxAllowed  = max($newsCount, $staticCount, intval($_POST['max_allowed'] ?? 1000));
-        pluginSetVariable('content_generator', 'news_count', $newsCount);
-        pluginSetVariable('content_generator', 'static_count', $staticCount);
-        pluginSetVariable('content_generator', 'max_allowed', $maxAllowed);
+    if (array_get($_POST, 'save', '') == '1') {
+        // Значения из формы БЕЗ дефолтов
+        $newsCount   = max(1, intval(array_get($_POST, 'news_count', 0)));
+        $staticCount = max(1, intval(array_get($_POST, 'static_count', 0)));
+        $maxAllowed  = max(1, intval(array_get($_POST, 'max_allowed', 0)));
+        // Логируем что пришло из формы
+        logger('POST data: news_count=' . $_POST['news_count'] . ', result=' . $newsCount, 'info', 'content_generator.log');
+        pluginSetVariable('content_generator', 'news_count', strval($newsCount));
+        pluginSetVariable('content_generator', 'static_count', strval($staticCount));
+        pluginSetVariable('content_generator', 'max_allowed', strval($maxAllowed));
+
+        // ВАЖНО: Сохраняем в базу данных!
+        pluginsSaveConfig();
+
+        logger('Content Generator config saved: news=' . $newsCount . ', static=' . $staticCount . ', max=' . $maxAllowed . ', ip=' . get_ip(), 'info', 'content_generator.log');
     }
     // Чтение сохранённых значений / дефолты
-    $newsCount   = intval(pluginGetVariable('content_generator', 'news_count')) ?: 50;
-    $staticCount = intval(pluginGetVariable('content_generator', 'static_count')) ?: 20;
-    $maxAllowed  = intval(pluginGetVariable('content_generator', 'max_allowed')) ?: 1000;
+    $newsCountRaw = pluginGetVariable('content_generator', 'news_count');
+    $staticCountRaw = pluginGetVariable('content_generator', 'static_count');
+    $maxAllowedRaw = pluginGetVariable('content_generator', 'max_allowed');
+    $newsCount   = ($newsCountRaw !== null && $newsCountRaw !== '') ? intval($newsCountRaw) : 10;
+    $staticCount = ($staticCountRaw !== null && $staticCountRaw !== '') ? intval($staticCountRaw) : 5;
+    $maxAllowed  = ($maxAllowedRaw !== null && $maxAllowedRaw !== '') ? intval($maxAllowedRaw) : 100;
     // Определяем пути к шаблонам
     $tpath = locatePluginTemplates(
         ['config/main', 'config/automation'],
@@ -31,7 +55,7 @@ function automation()
     );
     // Проверяем существование шаблонов
     if (empty($tpath['config/main']) || empty($tpath['config/automation'])) {
-        die('Ошибка: Не найдены необходимые шаблоны.');
+        die($lang['content_generator.error_missing_templates']);
     }
     try {
         // Загружаем основной шаблон
@@ -44,28 +68,38 @@ function automation()
             'static_count' => $staticCount,
             'max_allowed'  => $maxAllowed,
             'plugin_url'   => admin_url . '/admin.php?mod=extra-config&plugin=content_generator',
+            'lang'         => $lang['content_generator'],
         ];
         // Рендерим шаблон автоматизации
         $renderedAutomation = $automationTemplate->render($tVarsAutomation);
+        $documentationButton = '';
+        $documentationModal = '';
+        if (function_exists('plugin_documentation_markup')) {
+            list($documentationButton, $documentationModal) = plugin_documentation_markup('content_generator');
+        }
         // Переменные для основного шаблона
         $tVarsMain = [
             'entries'       => $renderedAutomation,
+            'plugin_name'   => 'content_generator',
             'php_self'      => $PHP_SELF,
             'plugin_url'    => admin_url . '/admin.php?mod=extra-config&plugin=content_generator',
             'skins_url'     => skins_url,
             'admin_url'     => admin_url,
             'home'          => home,
-            'current_title' => 'Automation',
+            'current_title' => $lang['content_generator']['title'],
+            'lang'          => $lang['content_generator'],
+            'documentation_button' => $documentationButton,
+            'documentation_modal' => $documentationModal,
         ];
         // Выводим основной шаблон
         echo $mainTemplate->render($tVarsMain);
     } catch (Exception $e) {
         // Обработка ошибок Twig
-        die('Ошибка шаблонизатора: ' . $e->getMessage());
+        die(sprintf($lang['content_generator.error_template'], $e->getMessage()));
     }
 }
 // Основной обработчик запросов
-switch ($_REQUEST['action'] ?? '') {
+switch (array_get($_REQUEST, 'action', '')) {
     default:
         automation();
         break;

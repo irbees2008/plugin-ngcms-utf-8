@@ -1,6 +1,21 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
+if (!defined('NGCMS')) die('HAL');
+
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\logger')) {
+	$ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+	if (file_exists($ngHelpersPath)) {
+		require_once $ngHelpersPath;
+	}
+}
+
+// Modernized with ng-helpers v0.2.2 (2026)
+// - Added array_get for safe REQUEST access
+// - Added sanitize for input cleaning
+// - Added logger for operations tracking
+use function Plugins\{array_get, sanitize, logger};
+
 //
 // Configuration file for plugin
 //
@@ -42,17 +57,20 @@ array_push($cfgX, array('name' => 'win_maxidle', 'title' => $lang['jchat:maxidle
 array_push($cfgX, array('name' => 'win_order', 'title' => $lang['jchat:order'], 'type' => 'select', 'values' => array('0' => $lang['jchat:order.asc'], '1' => $lang['jchat:order.desc']), 'value' => pluginGetVariable($plugin, 'win_order')));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>' . $lang['jchat:conf.window'] . '</b>', 'entries' => $cfgX));
 // RUN
-if ($_REQUEST['action'] == 'commit') {
+if (array_get($_REQUEST, 'action', '') == 'commit') {
 	// Check if we need to purge old messages
-	if ($_REQUEST['purge']) {
+	if (array_get($_REQUEST, 'purge', 0)) {
 		// Delete all extra records
-		$dc = $jcRowCount - intval($_REQUEST['purge_save']);
-		if (($_REQUEST['purge_save'] != '') && ($dc > 0)) {
+		$dc = $jcRowCount - intval(array_get($_REQUEST, 'purge_save', 0));
+		if ((array_get($_REQUEST, 'purge_save', '') != '') && ($dc > 0)) {
+			logger('Purging old messages: deleting ' . $dc . ' records', 'info', 'jchat.log');
 			$mysql->query("delete from " . prefix . "_jchat order by id limit " . $dc);
+			logger('Purge completed: ' . $dc . ' messages deleted', 'info', 'jchat.log');
 		}
 	}
 	// Check if we need to reload page
-	if ($_REQUEST['reload']) {
+	if (array_get($_REQUEST, 'reload', 0)) {
+		logger('Reload event triggered by admin', 'info', 'jchat.log');
 		$mysql->query("insert into " . prefix . "_jchat_events (chatid, postdate, type) values (1, unix_timestamp(now()), 3)");
 		$lid = $mysql->result("select LAST_INSERT_ID()");
 		$mysql->query("delete from " . prefix . "_jchat_events where type=3 and id <> " . db_squote($lid));

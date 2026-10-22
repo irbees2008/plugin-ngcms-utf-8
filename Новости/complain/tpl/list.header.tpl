@@ -1,107 +1,42 @@
-[extform]
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-	<title>Управление инцидентами</title>
-	<style type="text/css">
-		body {
-			font-family: verdana, arial;
-			font-size: 12px;
-			line-height: 14px;
-			color: #000000;
-			background: #fff;
-		}
+{# extform info скрыт в модалке для компактности #}
 
-		h1 {
-			font-size: 14px;
-			text-decoration: underline;
-		}
+<form method="post" action="{{ form_url }}" class="complain-form" data-ajax="true" data-list="1" data-refresh-url="{{ refresh_url }}">
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th style="width:32px"></th>
+					<th>{{ lang['complain:th.date']|default('Дата') }}</th>
+					<th>{{ lang['complain:th.error']|default('Проблема') }}</th>
+					<th>{{ lang['complain:th.title']|default('Материал') }}</th>
+					<th>{{ lang['complain:th.publisher']|default('Отправитель') }}</th>
+					<th>{{ lang['complain:th.owner']|default('Ответственный') }}</th>
+					<th>{{ lang['complain:th.status']|default('Статус') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{ entries|raw }}
+			</tbody>
+		</table>
+	</div>
 
-		#mt {
-			font-size: 10px;
-			background: #999999;
-		}
+	<div class="row g-2 align-items-center">
+		<div class="col-auto">
+			<label for="newstatus" class="col-form-label">{{ lang['complain:lbl.status']|default('Установить статус') }}</label>
+		</div>
+		<div class="col-auto">
+			<select name="newstatus" id="newstatus" class="form-select form-select-sm">
+				{{ status_options|raw }}
+			</select>
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-primary btn-sm" name="setstatus" value="1" type="submit">{{ lang['complain:btn.setstatus']|default('Применить статус') }}</button>
+			<button class="btn btn-secondary btn-sm" name="setowner" value="1" type="submit">{{ lang['complain:btn.setowner']|default('Назначить меня ответственным') }}</button>
+		</div>
+	</div>
 
-		#mt thead {
-			background: #EEEEEE;
-			font-weight: bold;
-		}
-
-		#mt tbody {
-			background: #FFFFFF;
-		}
-
-		#st {
-			font-size: 10px;
-			margin: 5px;
-		}
-
-		#st select {
-			font-size: 10px;
-		}
-
-		input {
-			font-size: 10px;
-		}
-	</style>
-</head>
-<body>
-[/extform]
-
-<script language="javascript">
-	var ETEXT = {ETEXT};
-
-	function toggleList() {
-		var btn = document.getElementById('btnCheckAll');
-		var f = document.getElementById('myform');
-		for (var i = 0; i < f.elements.length; i++) {
-			var e = f.elements[i];
-			if (e.name.substr(0, 4) == 'inc_') {
-				e.checked = btn.checked;
-			}
-		}
-	}
-</script>
-
-<h1>Список активных инцидентов</h1>
-
-<form action="{form_url}" name="myform" id="myform" method="post">
-	<table id="mt" width="100%" cellspacing=1 cellpadding=1>
-		<thead>
-		<tr>
-			<td>Дата</td>
-			<td>Новость</td>
-			<td>Ошибка</td>
-			<td>Автор новости</td>
-			<td>Автор инцидента</td>
-			<td>Назначена на</td>
-			<td>Статус</td>
-			<td><input type="checkbox" name="checkall" id="btnCheckAll" onclick="toggleList();"/></td>
-		</tr>
-		</thead>
-		<tbody>
-		{entries}
-		</tbody>
-	</table>
-	<br/>
-	<b><u>Действия с выделенными инцидентами:</u></b><br/>
-	<table id="st" cellspacing="0" cellpadding="0">
-		<tr>
-			<td><label><input type="checkbox" name="setowner" value="1"/> Назначить на меня</label></td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td><label><input type="checkbox" name="setstatus" value="1"/> Изменить статус на</label></td>
-			<td>&nbsp; &nbsp; <select name="newstatus">
-					{status_options}
-				</select></td>
-		</tr>
-	</table>
-	<input type="submit" value="Выполнить изменения"/>
+	<script>
+		// Делаем ETEXT доступным для inline-иконок в строках
+window.ETEXT = {{ ETEXT|raw }};
+	</script>
 </form>
-<br/>
-
-[extform]
-</body>
-</html>
-[/extform]

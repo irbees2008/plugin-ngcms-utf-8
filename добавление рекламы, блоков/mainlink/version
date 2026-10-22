@@ -1,0 +1,14 @@
+;
+; Version description file for plugin @@ Next Generation CMS
+;
+
+ID: mainlink
+Name: Links from mainlink.ru
+Version: 0.2
+Acts: index
+File: mainlink.php
+Config: config.php
+Type: plugin
+Description: Links from mainlink.ru
+Author: mainlink
+Author_URI: http://www.mainlink.ru/?partnerid=11893

@@ -2,6 +2,8 @@
 // Protect against hack attempts
 if (!defined('NGCMS')) die('HAL');
 
+use function Plugins\{logger, cache_get, cache_put, cache_forget, array_get, sanitize, get_ip, clamp};
+
 // Плагин подсветки кода: подключает локальные файлы SyntaxHighlighter из папки плагина
 // и активирует их на полной новости. Если в конфиге включён CDN — можно быстро
 // переключиться на внешние ресурсы.
@@ -13,7 +15,8 @@ pluginsLoadConfig();
 if (!function_exists('code_highlight_twig_brushEnabled')) {
     function code_highlight_twig_brushEnabled($params)
     {
-        $name = isset($params['name']) ? mb_strtolower(trim($params['name'])) : '';
+        $name = array_get($params, 'name', '');
+        $name = mb_strtolower(trim($name));
         // Сопоставление алиасов к ключам настроек плагина
         $aliases = [
             'js' => 'jscript',
@@ -41,6 +44,10 @@ if (!function_exists('code_highlight_twig_brushEnabled')) {
             'shell' => 'bash',
             'sh' => 'bash',
             'zsh' => 'bash',
+            'cmd' => 'cmd',
+            'batch' => 'cmd',
+            'bat' => 'cmd',
+            'dos' => 'cmd',
             'python' => 'python',
             'py' => 'python',
             'java' => 'java',
@@ -90,6 +97,7 @@ if (!function_exists('code_highlight_twig_hasAnyEnabled')) {
             'css',
             'plain',
             'bash',
+            'cmd',
             'python',
             'java',
             'csharp',
@@ -133,6 +141,17 @@ function code_highlight_build_assets_html()
         $theme = 'Default';
     }
 
+    // Cache key based on configuration
+    // Bump this when the generated script list changes so cached HTML includes new brushes.
+    $cacheKey = 'code_highlight:assets:v2:' . ($useCDN ? 'cdn' : 'local') . ':' . sanitize($theme, 'string');
+
+    // Try to get from cache (24 hours = 1440 minutes)
+    $cached = cache_get($cacheKey);
+    if ($cached !== null) {
+        logger('Code highlight assets served from cache: ' . ($useCDN ? 'CDN' : 'local') . ', theme=' . sanitize($theme, 'string'), 'debug', 'code_highlight.log');
+        return $cached;
+    }
+
     $html = [];
 
     // Функция: список включённых кистей из настроек
@@ -147,6 +166,9 @@ function code_highlight_build_assets_html()
         $html[] = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.min.css" />';
         $html[] = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shTheme' . htmlspecialchars($theme) . '.min.css" />';
         $html[] = '<script src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>';
+        global $config;
+        $home = isset($config['home_url']) ? rtrim($config['home_url'], '/') : '';
+        $base = $home . '/engine/plugins/code_highlight';
         $map = array(
             'jscript'    => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.min.js',
             'php'        => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushPhp.min.js',
@@ -156,6 +178,8 @@ function code_highlight_build_assets_html()
             'plain'      => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushPlain.min.js',
             // Дополнительные
             'bash'       => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushBash.min.js',
+            // Кисть CMD написана для этого плагина и подключается локально.
+            'cmd'         => $base . '/scripts/shBrushCmd.js?v=1',
             'python'     => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushPython.min.js',
             'java'       => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJava.min.js',
             'csharp'     => 'https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushCSharp.min.js',
@@ -192,6 +216,7 @@ function code_highlight_build_assets_html()
             'plain'      => 'shBrushPlain.js',
             // Дополнительные
             'bash'       => 'shBrushBash.js',
+            'cmd'        => 'shBrushCmd.js',
             'python'     => 'shBrushPython.js',
             'java'       => 'shBrushJava.js',
             'csharp'     => 'shBrushCSharp.js',
@@ -212,7 +237,8 @@ function code_highlight_build_assets_html()
             }
             $fs = $dirFS . $file;
             if (file_exists($fs)) {
-                $html[] = '<script src="' . $base . '/scripts/' . $file . '"></script>';
+                $version = ($k === 'cmd') ? '?v=1' : '';
+                $html[] = '<script src="' . $base . '/scripts/' . $file . $version . '"></script>';
             }
         }
     }
@@ -246,7 +272,12 @@ function code_highlight_build_assets_html()
         '      copyBtn.addEventListener("click", function(e){' .
         '        e.preventDefault();' .
         '        try {' .
-        '          var code = block.querySelector(".container").textContent;' .
+        '          var container = block.querySelector(".container");' .
+        '          if (!container) {' .
+        '            var overview = block.querySelector(".overview");' .
+        '            if (overview) { container = overview.querySelector(".container"); }' .
+        '          }' .
+        '          var code = container ? container.textContent : "";' .
         '          if (navigator.clipboard && navigator.clipboard.writeText) {' .
         '            navigator.clipboard.writeText(code).then(function(){' .
         '              var original = copyBtn.innerHTML; copyBtn.innerHTML = "<img src=\"' . $iconTick . '\" alt=\"Copied!\" style=\"vertical-align:middle\">";' .
@@ -266,7 +297,13 @@ function code_highlight_build_assets_html()
         '});' .
         '</script>';
 
-    return implode("\n", $html);
+    $result = implode("\n", $html);
+
+    // Cache for 24 hours (1440 minutes)
+    cache_put($cacheKey, $result, 1440);
+    logger('Code highlight assets generated and cached: ' . ($useCDN ? 'CDN' : 'local') . ', theme=' . sanitize($theme, 'string') . ', scripts=' . count($html), 'info', 'code_highlight.log');
+
+    return $result;
 }
 
 // Фильтр новостей: подключаем подсветку только на полной новости
@@ -274,11 +311,12 @@ class CodeHighlightNewsFilter extends NewsFilter
 {
     public function showNews($newsID, $SQLnews, &$tvars, $mode = [])
     {
-        if ($mode['style'] != 'full') {
+        if (array_get($mode, 'style', '') != 'full') {
             return 1;
         }
         if (function_exists('register_htmlvar')) {
             register_htmlvar('plain', code_highlight_build_assets_html());
+            logger('Code highlight activated for news: ' . intval($newsID) . ', IP=' . get_ip(), 'debug', 'code_highlight.log');
         }
         return 1;
     }

@@ -1,7 +1,7 @@
 <?php
-if (!defined('NGCMS')) die ('Galaxy in danger');
-function plugin_auth_social_install($action) {
-
+if (!defined('NGCMS')) die('Galaxy in danger');
+function plugin_auth_social_install($action)
+{
 	$db_create = array(
 		array(
 			'table'  => 'users',
@@ -17,7 +17,7 @@ function plugin_auth_social_install($action) {
 	);
 	switch ($action) {
 		case 'confirm':
-			generate_install_page('auth_social', 'GoGoGo!!');
+			generate_install_page('auth_social', 'Жми установить');
 			break;
 		case 'autoapply':
 		case 'apply':
@@ -28,6 +28,5 @@ function plugin_auth_social_install($action) {
 			}
 			break;
 	}
-
 	return true;
 }

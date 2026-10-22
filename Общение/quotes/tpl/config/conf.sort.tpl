@@ -1,28 +1,22 @@
-<form action="/engine/admin.php?mod=extra-config&plugin=quotes&action=showlist" method="post" name="options_bar">
-	<table border="0" width="100%" cellspacing="0" cellpadding="0" align="center" class="contentNav">
-		<tr>
-			<td style="padding-left : 10px;">Сортировать по<br />
-				<select name="sort">
-					{sort}
-				</select>
-			</td>
-			<td>Месяц<br />
-				<select name="postdate">
-					<option selected value="">Всё</option>
-					{selectdate}
-					</select>
-			</td>
-			<td>Автор<br />
-				<select name="author">
-					{author}
-				</select>
-			</td> 
-			<td>Активна<br />
-				<select name="status">
-					{status}
-				</select>
-			</td> 
-			<td><input type="submit" value="Показать" class="button" /></td> 
-		</tr> 
-	</table> 
-</form> 
+<form action="admin.php" method="get" class="row align-items-end mb-3">
+    <input type="hidden" name="mod" value="extra-config">
+    <input type="hidden" name="plugin" value="quotes">
+    <input type="hidden" name="action" value="showlist">
+    <div class="col-md-3 form-group">
+        <label for="quotes-sort">{{ sort_label }}</label>
+        <select class="form-control" id="quotes-sort" name="sort">{{ sort|raw }}</select>
+    </div>
+    <div class="col-md-3 form-group">
+        <label for="quotes-month">{{ month_label }}</label>
+        <select class="form-control" id="quotes-month" name="postdate"><option value="">{{ all_months }}</option>{{ selectdate|raw }}</select>
+    </div>
+    <div class="col-md-2 form-group">
+        <label for="quotes-author">{{ author_label }}</label>
+        <select class="form-control" id="quotes-author" name="author">{{ author|raw }}</select>
+    </div>
+    <div class="col-md-2 form-group">
+        <label for="quotes-status">{{ status_label }}</label>
+        <select class="form-control" id="quotes-status" name="status">{{ status|raw }}</select>
+    </div>
+    <div class="col-md-2 form-group"><button type="submit" class="btn btn-outline-primary">{{ show_button }}</button></div>
+</form>

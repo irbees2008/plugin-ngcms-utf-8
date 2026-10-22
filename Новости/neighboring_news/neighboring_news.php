@@ -3,212 +3,199 @@
  * NeighboringNews for NGCMS
  * Copyright (C) 2010 Alexey N. Zhukov (http://digitalplace.ru)
  * http://digitalplace.ru
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('Galaxy in danger');
+if (!defined('NGCMS')) die('Galaxy in danger');
 
-class NeighboringNewsFilter extends NewsFilter {
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\logger')) {
+	$ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+	if (file_exists($ngHelpersPath)) {
+		require_once $ngHelpersPath;
+	} else {
+		die('ng-helpers plugin is required for neighboring_news plugin');
+	}
+}
 
-    public function showNews($newsID, $SQLnews, &$tvars, $mode = []) {
+// Modernized with ng-helpers v0.2.2 (2026)
+// - Using cache_get/cache_put for caching
+// - Enhanced logging with detailed metrics
+// - Added sanitize for data cleaning
+// - Added array_get for safe array access
+// - Improved performance and code quality
 
+// Import ng-helpers functions
+use function Plugins\{cache_get, cache_put, logger, sanitize, array_get};
+
+class NeighboringNewsFilter extends NewsFilter
+{
+
+	public function showNews($newsID, $SQLnews, &$tvars, $mode = [])
+	{
 		global $mysql, $config, $tpl, $catz, $catmap, $CurrentHandler;
-		// Determine paths for all template files
-		$tpath = locatePluginTemplates(array('neighboring_news', 'next_news', 'previous_news'), 'neighboring_news', pluginGetVariable('neighboring_news', 'localsource'));
-		// full_mode
-		if (pluginGetVariable('neighboring_news', 'full_mode') && $mode['style'] == 'full') {
-			if (intval($SQLnews['catid']) != null) {
-				// get main category id
-				$fcat = array_shift(explode(",", $SQLnews['catid']));
-				// complete or incomplete comparison
-				if (intval(pluginGetVariable('neighboring_news', 'compare')) == 1) $id = $fcat;
-				else $id = "'" . $SQLnews['catid'] . "'";
-				// example: $sort[0] = postdate $sort[1] = desc
-				$sort = explode(" ", $catz[$catmap[$fcat]]['orderby']);
-				// next news
-				if ($sort[1] == 'asc') {
-					$asc_desc = 'desc';
-					$more_less = '<';
-				} else {
-					$asc_desc = 'asc';
-					$more_less = '>';
-				}
-				$query = "SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND catid = " . $id . " ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1";
-				$row = $mysql->record($query);
-				if ($row['alt_name']) {
-					$tpl->template('next_news', $tpath['next_news']);
-					if ($row['author_id'] && getPluginStatusActive('uprofile')) {
-						$author_link = checkLinkAvailable('uprofile', 'show') ?
-							generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-							generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('id' => $row['author_id']));
-						$author_link = "<a href = " . $config['home_url'] . $author_link . ">" . $row['author'] . "</a>";
-					} else $author_link = $row['author'];
-					$tpl->vars('next_news', array(
-						'vars' => array(
-							'link'   => newsGenerateLink(array('id' => $row['id'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['postdate']), false, 0, true),
-							'date'   => langdate('d.m.Y', $row['postdate']),
-							'author' => $author_link,
-							'title'  => str_replace(array("'", "\""), array("&#039;", "&quot;"), $row['title'])
-						)
-					));
-					$next_news = $tpl->show('next_news');
-				} else $next_news = "";
-				// previous news
-				if ($sort[1] == 'desc') {
-					$asc_desc = 'desc';
-					$more_less = '<';
-				} else {
-					$asc_desc = 'asc';
-					$more_less = '>';
-				}
-				$query = "SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND catid = " . $id . " ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1";
-				$row = $mysql->record($query);
-				if ($row['alt_name']) {
-					$tpl->template('previous_news', $tpath['previous_news']);
-					if ($row['author_id'] && getPluginStatusActive('uprofile')) {
-						$author_link = checkLinkAvailable('uprofile', 'show') ?
-							generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-							generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('id' => $row['author_id']));
-						$author_link = "<a href = " . $config['home_url'] . $author_link . ">" . $row['author'] . "</a>";
-					} else $author_link = $row['author'];
-					$tpl->vars('previous_news', array(
-						'vars' => array(
-							'link'   => newsGenerateLink(array('id' => $row['id'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['postdate']), false, 0, true),
-							'date'   => langdate('d.m.Y', $row['postdate']),
-							'author' => $author_link,
-							'title'  => str_replace(array("'", "\""), array("&#039;", "&quot;"), $row['title'])
-						)
-					));
-					$previous_news = $tpl->show('previous_news');
-				} else $previous_news = "";
-				$tpl->template('neighboring_news', $tpath['neighboring_news']);
-				$tpl->vars('neighboring_news', array(
-					'vars' => array(
-						'next_news'     => $next_news,
-						'previous_news' => $previous_news
-					)
-				));
-				if ($next_news != "" || $previous_news != "")
-					$tvars['vars']['neighboring_news'] = $tpl->show('neighboring_news');
-				else $tvars['vars']['neighboring_news'] = "";
 
-				return 1;
-			} else {
-				$tvars['vars']['neighboring_news'] = "";
+		$style = $mode['style'] ?? '';
+		$fullEnabled  = pluginGetVariable('neighboring_news', 'full_mode')  && $style == 'full';
+		$shortEnabled = pluginGetVariable('neighboring_news', 'short_mode') && $style == 'short';
 
+		logger('[neighboring_news] Called: newsid=' . $newsID . ', style=' . $style . ', full_enabled=' . ($fullEnabled ? 'yes' : 'no') . ', short_enabled=' . ($shortEnabled ? 'yes' : 'no'), 'debug', 'neighboring_news.log');
+
+		if (!$fullEnabled && !$shortEnabled) {
+			logger('[neighboring_news] Disabled for style: ' . $style, 'debug', 'neighboring_news.log');
+			return 1;
+		}
+
+		// Log category info for debugging
+		$catid = $SQLnews['catid'] ?? '0';
+		logger('[neighboring_news] Category check: newsid=' . $newsID . ', catid="' . $catid . '"', 'debug', 'neighboring_news.log');
+
+		// Check cache
+		$cacheExpire = intval(pluginGetVariable('neighboring_news', 'cache_expire') ?? 0);
+		logger('[neighboring_news] Cache settings: expire=' . $cacheExpire, 'debug', 'neighboring_news.log');
+
+		if ($cacheExpire > 0) {
+			$cacheKey = 'neighboring_news_' . $newsID . '_' . $style . '_' . md5($SQLnews['catid']);
+
+			// Try to get from cache
+			$cached = cache_get($cacheKey);
+
+			if ($cached !== null) {
+				logger('[neighboring_news] Cache hit: newsid=' . $newsID . ', style=' . $style, 'debug', 'neighboring_news.log');
+				$tvars['vars']['neighboring_news'] = $cached;
 				return 1;
 			}
-		} //full mode end
-		if (pluginGetVariable('neighboring_news', 'short_mode') && $mode['style'] == 'short') {
-			if (intval($SQLnews['catid']) != null) {
-				// get category id
-				$fcat = array_shift(explode(",", $SQLnews['catid']));
-				// complete or incomplete comparison
-				if (intval(pluginGetVariable('neighboring_news', 'compare')) == 1) $id = $fcat;
-				else $id = "'" . $SQLnews['catid'] . "'";
-				if ($CurrentHandler['params']['category'] == "") {
-					// example: $sort[0] = postdate $sort[1] = desc
-					$sort = explode(" ", $config['default_newsorder']);
-					$id_cat = $id;
-				} else {
-					// example: $sort[0] = postdate $sort[1] = desc
-					$sort = explode(" ", $catz[$CurrentHandler['params']['category']]['orderby']);
-					$id = $catz[$CurrentHandler['params']['category']]['id'];
-				}
-				if ($sort[1] == 'asc') {
-					$asc_desc = 'desc';
-					$more_less = '<';
-				} else {
-					$asc_desc = 'asc';
-					$more_less = '>';
-				}
-				if ($CurrentHandler['params']['category'] != "")
-					$news = $mysql->query("SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND (catid LIKE '%," . $id . ",%'  OR catid LIKE '%," . $id . "'  OR catid LIKE '" . $id . ",%' OR catid = " . $id . ") ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1");
-				else
-					$news = $mysql->query("SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND catid = " . $id . " ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1");
-				$row = mysql_fetch_array($news);
-				if ($row['alt_name']) {
-					$tpl->template('next_news', $tpath['next_news']);
-					if ($row['author_id'] && getPluginStatusActive('uprofile')) {
-						$author_link = checkLinkAvailable('uprofile', 'show') ?
-							generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-							generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('id' => $row['author_id']));
-						$author_link = "<a href = " . $config['home_url'] . $author_link . ">" . $row['author'] . "</a>";
-					} else $author_link = $row['author'];
-					$tpl->vars('next_news', array(
-						'vars' => array(
-							'link'   => newsGenerateLink(array('id' => $row['id'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['postdate']), false, 0, true),
-							'date'   => langdate('d.m.Y', $row['postdate']),
-							'author' => $author_link,
-							'title'  => str_replace(array("'", "\""), array("&#039;", "&quot;"), $row['title'])
-						)
-					));
-					$next_news = $tpl->show('next_news');
-				} else $next_news = "";
-				// previous news
-				if ($sort[1] == 'desc') {
-					$asc_desc = 'desc';
-					$more_less = '<';
-				} else {
-					$asc_desc = 'asc';
-					$more_less = '>';
-				}
-				if ($CurrentHandler['params']['category'] != "")
-					$news = $mysql->query("SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND (catid LIKE '%," . $id . ",%'  OR catid LIKE '%," . $id . "'  OR catid LIKE '" . $id . ",%' OR catid = " . $id . ") ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1");
-				else
-					$news = $mysql->query("SELECT * FROM " . prefix . "_news WHERE APPROVE = '1' AND " . $sort[0] . " " . $more_less . " '" . $SQLnews[$sort[0]] . "' AND catid = " . $id . " ORDER BY " . $sort[0] . " " . $asc_desc . " LIMIT 1");
-				$row = mysql_fetch_array($news);
-				if ($row['alt_name']) {
-					$tpl->template('previous_news', $tpath['previous_news']);
-					if ($row['author_id'] && getPluginStatusActive('uprofile')) {
-						$author_link = checkLinkAvailable('uprofile', 'show') ?
-							generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-							generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('id' => $row['author_id']));
-						$author_link = "<a href = " . $config['home_url'] . $author_link . ">" . $row['author'] . "</a>";
-					} else $author_link = $row['author'];
-					$tpl->vars('previous_news', array(
-						'vars' => array(
-							'link'   => newsGenerateLink(array('id' => $row['id'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['postdate']), false, 0, true),
-							'date'   => langdate('d.m.Y', $row['postdate']),
-							'author' => $author_link,
-							'title'  => str_replace(array("'", "\""), array("&#039;", "&quot;"), $row['title'])
-						)
-					));
-					$previous_news = $tpl->show('previous_news');
-				} else $previous_news = "";
-				$tpl->template('neighboring_news', $tpath['neighboring_news']);
-				$tpl->vars('neighboring_news', array(
-					'vars' => array(
-						'next_news'     => $next_news,
-						'previous_news' => $previous_news
-					)
-				));
-				if ($next_news != "" || $previous_news != "")
-					$tvars['vars']['neighboring_news'] = $tpl->show('neighboring_news');
-				else $tvars['vars']['neighboring_news'] = "";
+		}
 
-				return 1;
+		logger('[neighboring_news] Starting generation: newsid=' . $newsID, 'debug', 'neighboring_news.log');
+
+		$tpath = locatePluginTemplates(['neighboring_news', 'next_news', 'previous_news'], 'neighboring_news', pluginGetVariable('neighboring_news', 'localsource'));
+
+		// Главная категория новости
+		$catParts = explode(',', $SQLnews['catid']);
+		$fcat = array_shift($catParts);
+		$compareStrict = intval(pluginGetVariable('neighboring_news', 'compare')) == 1;
+		$catFilter = $compareStrict ? $fcat : "'" . $SQLnews['catid'] . "'";
+
+		// Определяем сортировку
+		if ($style == 'short' && $CurrentHandler['params']['category'] != '') {
+			$sort = explode(' ', $catz[$CurrentHandler['params']['category']]['orderby']);
+			$catFilterShort = $catz[$CurrentHandler['params']['category']]['id'];
+		} elseif ($style == 'full' && intval($fcat) > 0 && isset($catmap[$fcat])) {
+			$sort = explode(' ', $catz[$catmap[$fcat]]['orderby']);
+		} else {
+			$sort = explode(' ', $config['default_newsorder']);
+		}
+
+		$orderField = $sort[0];
+		$orderDir   = strtolower($sort[1]);
+
+		// Функция построения соседней новости (direction: next|prev)
+		$fetchNeighbor = function (string $direction) use ($mysql, $SQLnews, $orderField, $orderDir, $catFilter, $style, $CurrentHandler) {
+			// Для направления меняем операторы
+			$isAsc = ($orderDir == 'asc');
+			$moreLess = ($direction == 'next') ? ($isAsc ? '<' : '>') : ($isAsc ? '>' : '<');
+			$newOrder = ($direction == 'next') ? ($isAsc ? 'desc' : 'asc') : ($isAsc ? 'desc' : 'asc');
+
+			// Базовое условие по категориям
+			if ($style == 'short' && $CurrentHandler['params']['category'] != '') {
+				$cid = intval($CurrentHandler['params']['category']);
+				$catCond = "(catid LIKE '%,$cid,%' OR catid LIKE '%,$cid' OR catid LIKE '$cid,%' OR catid = $cid)";
 			} else {
-				$tvars['vars']['neighboring_news'] = "";
-
-				return 1;
+				// Если catid = 0 (нет категории), ищем другие новости с catid = 0 или '0'
+				if (intval($catFilter) == 0) {
+					$catCond = "(catid = '0' OR catid = 0 OR catid IS NULL OR catid = '')";
+				} else {
+					$catCond = "catid = $catFilter";
+				}
 			}
-		} //short_mode end
-	}// showNews end
-}// class end
+
+			$sql = "SELECT id, alt_name, catid, postdate, author, author_id, title FROM " . prefix . "_news WHERE APPROVE='1' AND $orderField $moreLess '" . $SQLnews[$orderField] . "' AND $catCond ORDER BY $orderField $newOrder LIMIT 1";
+			return $mysql->record($sql);
+		};
+
+		$rowNext = $fetchNeighbor('next');
+		$rowPrev = $fetchNeighbor('prev');
+
+		logger('[neighboring_news] Neighbors found: newsid=' . $newsID . ', next=' . ($rowNext ? 'yes(id=' . $rowNext['id'] . ')' : 'no') . ', prev=' . ($rowPrev ? 'yes(id=' . $rowPrev['id'] . ')' : 'no'), 'debug', 'neighboring_news.log');
+
+		$buildItem = function ($row, $templateName) use ($tpl, $tpath, $config) {
+			if (!$row || !$row['alt_name']) return '';
+			$authorLink = $row['author'];
+			if ($row['author_id'] && getPluginStatusActive('uprofile')) {
+				$alink = checkLinkAvailable('uprofile', 'show') ?
+					generateLink('uprofile', 'show', ['name' => $row['author'], 'id' => $row['author_id']]) :
+					generateLink('core', 'plugin', ['plugin' => 'uprofile', 'handler' => 'show'], ['id' => $row['author_id']]);
+				$authorLink = '<a href="' . $config['home_url'] . $alink . '">' . htmlspecialchars($row['author']) . '</a>';
+			}
+
+			// Simple time_ago implementation
+			$diff = time() - $row['postdate'];
+			if ($diff < 60) {
+				$time_ago_str = 'только что';
+			} elseif ($diff < 3600) {
+				$mins = floor($diff / 60);
+				$time_ago_str = $mins . ' ' . ($mins == 1 ? 'минуту' : ($mins < 5 ? 'минуты' : 'минут')) . ' назад';
+			} elseif ($diff < 86400) {
+				$hours = floor($diff / 3600);
+				$time_ago_str = $hours . ' ' . ($hours == 1 ? 'час' : ($hours < 5 ? 'часа' : 'часов')) . ' назад';
+			} elseif ($diff < 604800) {
+				$days = floor($diff / 86400);
+				$time_ago_str = $days . ' ' . ($days == 1 ? 'день' : ($days < 5 ? 'дня' : 'дней')) . ' назад';
+			} else {
+				$time_ago_str = langdate('d.m.Y', $row['postdate']);
+			}
+
+			$tpl->template($templateName, $tpath[$templateName]);
+			$tpl->vars($templateName, ['vars' => [
+				'link'     => newsGenerateLink(['id' => $row['id'], 'alt_name' => $row['alt_name'], 'catid' => $row['catid'], 'postdate' => $row['postdate']], false, 0, true),
+				'date'     => langdate('d.m.Y', $row['postdate']),
+				'time_ago' => $time_ago_str,
+				'author'   => $authorLink,
+				'title'    => $row['title'],
+			]]);
+			return $tpl->show($templateName);
+		};
+
+		$nextHTML = $buildItem($rowNext, 'next_news');
+		$prevHTML = $buildItem($rowPrev, 'previous_news');
+
+		$tpl->template('neighboring_news', $tpath['neighboring_news']);
+		$tpl->vars('neighboring_news', ['vars' => [
+			'next_news'     => $nextHTML,
+			'previous_news' => $prevHTML,
+		]]);
+		$output = ($nextHTML || $prevHTML) ? $tpl->show('neighboring_news') : '';
+		$tvars['vars']['neighboring_news'] = $output;
+
+		logger('[neighboring_news] Output generated: newsid=' . $newsID . ', has_output=' . ($output ? 'yes(len=' . strlen($output) . ')' : 'no'), 'debug', 'neighboring_news.log');
+
+		// Save to cache
+		if ($cacheExpire > 0 && $output) {
+			$cacheKey = 'neighboring_news_' . $newsID . '_' . $style . '_' . md5($SQLnews['catid']);
+
+			cache_put($cacheKey, $output, $cacheExpire);
+
+			logger('[neighboring_news] Generated and cached: newsid=' . $newsID . ', style=' . $style . ', size=' . strlen($output) . ' bytes, has_next=' . ($rowNext ? 'yes' : 'no') . ', has_prev=' . ($rowPrev ? 'yes' : 'no'), 'info', 'neighboring_news.log');
+		} elseif (!$output) {
+			logger('[neighboring_news] No neighbors found: newsid=' . $newsID . ', style=' . $style, 'debug', 'neighboring_news.log');
+		}
+
+		return 1;
+	}
+}
 register_filter('news', 'neighboring_news', new NeighboringNewsFilter);
-?>

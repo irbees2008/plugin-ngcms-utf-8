@@ -8,8 +8,8 @@ Author: Nail' R. Davydov (ROZARD)
 Jabber: ROZARD@ya.ru
 E-mail: ROZARD@list.ru
 -----------------------------------------------------
-© Настоящий программист никогда не ставит 
-комментариев. То, что писалось с трудом, должно 
+© Настоящий программист никогда не ставит
+комментариев. То, что писалось с трудом, должно
 пониматься с трудом. :))
 -----------------------------------------------------
 Данный код защищен авторскими правами
@@ -17,410 +17,339 @@ E-mail: ROZARD@list.ru
 */
 
 if (!defined('NGCMS')) {
-	exit('HAL');
+    exit('HAL');
 }
 
-$lang = LoadPluginLang('quotes', 'index');
+require_once __DIR__ . '/lib/runtime.php';
+
+LoadPluginLang('quotes', 'index');
 
 register_plugin_page('quotes', '', 'plugin_show_quotes');
 register_plugin_page('quotes', 'add', 'plugin_add_quotes');
-register_plugin_page('quotes', 'url', 'screen_rating_quotes');
 register_plugin_page('quotes', 'rss', 'plugin_rss_quotes');
 register_plugin_page('quotes', 'show', 'plugin_fullshow_quotes');
 
 function plugin_show_quotes($params)
 {
-	global $tpl, $template, $SUPRESS_TEMPLATE_SHOW, $SYSTEM_FLAGS, $mysql, $config, $parse, $userROW, $TemplateCache, $CurrentHandler;
+    global $twig, $template, $SUPRESS_TEMPLATE_SHOW, $SYSTEM_FLAGS, $mysql, $config, $parse, $userROW, $TemplateCache, $CurrentHandler;
 
-	//$SUPRESS_TEMPLATE_SHOW = 1;
+    //$SUPRESS_TEMPLATE_SHOW = 1;
 
-	if ($CurrentHandler['params']['page'] == true) {
-		$title = " : {$CurrentHandler['params']['page']} Страница";
-	}
+    $title = '';
+    $handlerPage = $CurrentHandler['params']['page'] ?? null;
+    if ($handlerPage) {
+        $title = " : {$handlerPage} Страница";
+    }
 
-	if ($_GET['page'] == true) {
-		$title = " : {$_GET['page']} Страница";
-	}
+    $getPage = $_GET['page'] ?? null;
+    if ($getPage) {
+        $title = " : {$getPage} Страница";
+    }
 
-	$sort = isset($params['sort']) ? $params['sort'] : $_GET['sort'];
+    $SYSTEM_FLAGS['info']['title']['group'] = "Цитатник{$title}";
+    $SYSTEM_FLAGS['meta']['description'] = pluginGetVariable('quotes', 'description');
+    $SYSTEM_FLAGS['meta']['keywords'] = pluginGetVariable('quotes', 'keywords');
 
-	switch ($sort) {
-		case 'top':
-			$sorting = 'rating desc';
-			$top_low = array('sort' => 'top');
-			break;
-		case 'low':
-			$sorting = 'rating asc';
-			$top_low = array('sort' => 'low');
-			break;
-		default:
-			$sorting = 'postdate DESC';
-			$top_low = array();
-	}
+    $page = isset($params['page']) ? (int) $params['page'] : (int) ($_GET['page'] ?? 0);
+    quotes_log('list_requested', ['page' => $page]);
+    $cacheFileName = md5('quotes' . $config['home_url'] . $config['theme'] . $config['default_lang']) . "{$page}.txt";
 
-	$SYSTEM_FLAGS['info']['title']['group'] = "Цитатник{$title}";
-	$SYSTEM_FLAGS['meta']['description'] = pluginGetVariable('quotes', 'description');
-	$SYSTEM_FLAGS['meta']['keywords'] = pluginGetVariable('quotes', 'keywords');
+    if (pluginGetVariable('quotes', 'cache')) {
+        $cacheData = cacheRetrieveFile($cacheFileName, pluginGetVariable('quotes', 'cacheExpire'), 'quotes');
+        if ($cacheData != false) {
+            quotes_log('list_cache_hit', ['page' => $page]);
+            $template['vars']['mainblock'] = $cacheData;
+            return;
+        }
+    }
 
-	$page = isset($params['page']) ? intval($params['page']) : intval($_GET['page']);
-	$cacheFileName = md5('quotes' . $config['home_url'] . $config['theme'] . $config['default_lang']) . "{$page}.txt";
+    $res = $mysql->result("select count(*) from " . prefix . "_quotes where approve = 1");
 
-	if (pluginGetVariable('quotes', 'cache')) {
-		$cacheData = cacheRetrieveFile($cacheFileName, pluginGetVariable('quotes', 'cacheExpire'), 'quotes');
-		if ($cacheData != false) {
-			$template['vars']['mainblock'] = $cacheData;
-			return;
-		}
-	}
+    $num = pluginGetVariable('quotes', 'count');
 
-	$res = $mysql->result("select count(*) from " . prefix . "_quotes where approve = 1");
+    $limitStart = 0;
+    $limitCount = $num;
+    $multi_scount = (int) $num;
+    $pageCount = 1;
+    if (($multi_scount > 0) && ($res > $multi_scount)) {
+        $pageCount = ceil($res / $multi_scount);
+        if ($page < 1) {
+            $page = 1;
+        }
+        $limitCount = intval($num);
+        $limitStart = ($page - 1) * intval($num);
+    }
 
-	$num = pluginGetVariable('quotes', 'count');
+    $tvars['vars']['pages'] = '';
+    if ($pageCount > 1) {
+        $paginationParams = checkLinkAvailable('quotes', '') ?
+            array('pluginName' => 'quotes', 'pluginHandler' => '', 'params' => array(), 'xparams' => array(), 'paginator' => array('page', 0, false)) :
+            array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'quotes'), 'xparams' => array(), 'paginator' => array('page', 1, false));
 
-	$limitStart = 0;
-	$limitCount = $num;
-	$multi_scount = intval($num);
-	if (($multi_scount > 0) && ($res > $multi_scount)) {
-		$pageCount = ceil($res / $multi_scount);
-		if ($page < 1) {
-			$page = 1;
-		}
-		$limitCount = intval($num);
-		$limitStart = ($page - 1) * intval($num);
-	}
+        templateLoadVariables(true);
+        $navigations = $TemplateCache['site']['#variables']['navigation'];
 
-	$tvars['vars']['pages'] = '';
-	if ($pageCount > 1) {
-		$paginationParams = checkLinkAvailable('quotes', '') ?
-			array('pluginName' => 'quotes', 'pluginHandler' => '', 'params' => $top_low, 'xparams' => array(), 'paginator' => array('page', 0, false)) :
-			array('pluginName' => 'core', 'pluginHandler' => 'plugin', 'params' => array('plugin' => 'quotes'), 'xparams' => $top_low, 'paginator' => array('page', 1, false));
+        $tvars['vars']['pages'] .= generatePagination($page, 1, $pageCount, 10, $paginationParams, $navigations);
+    }
 
-		templateLoadVariables(true);
-		$navigations = $TemplateCache['site']['#variables']['navigation'];
+    $tpath = locatePluginTemplates(array('showquotes', 'shortquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
 
-		$tvars['vars']['pages'] .= generatePagination($page, 1, $pageCount, 10, $paginationParams, $navigations);
-	}
+    $output = '';
+    foreach ($mysql->select("select id, content, approve, postdate, author, author_id from " . prefix . "_quotes where approve = 1 order by postdate DESC LIMIT " . abs((int) $limitStart) . ", " . abs((int) $limitCount)) as $row) {
+        $content = $row['content'];
+        $content = quotes_filter_hidden_blocks($content);
+        if ($config['use_htmlformatter']) {
+            $content = $parse->htmlformatter($content);
+        }
+        if ($config['use_bbcodes']) {
+            $content = $parse->bbcodes($content);
+        }
+        if ($config['use_smilies']) {
+            $content = $parse->smilies($content);
+        }
 
-	$tpath = locatePluginTemplates(array('showquotes', 'shortquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
+        $userlink = checkLinkAvailable('uprofile', 'show') ?
+            generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
+            generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('name' => $row['author'], 'id' => $row['author_id']));
 
-	foreach ($mysql->select("select id, content, rating, approve, postdate, author, author_id from " . prefix . "_quotes where approve = 1 order by ${sorting} LIMIT " . abs(intval($limitStart)) . ", " . abs(intval($limitCount))) as $row) {
-		$content = $row['content'];
-		if ($config['blocks_for_reg']) {
-			$content = userblocks_quotes_page($content);
-		}
-		if ($config['use_htmlformatter']) {
-			$content = $parse->htmlformatter($content);
-		}
-		if ($config['use_bbcodes']) {
-			$content = $parse->bbcodes($content);
-		}
-		if ($config['use_smilies']) {
-			$content = $parse->smilies($content);
-		}
+        $showlink = checkLinkAvailable('quotes', 'show') ?
+            generateLink('quotes', 'show', array('id' => $row['id'])) :
+            generateLink('core', 'plugin', array('plugin' => 'quotes', 'handler' => 'show'), array('id' => $row['id']));
 
-		$userlink = checkLinkAvailable('uprofile', 'show') ?
-			generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-			generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('name' => $row['author'], 'id' => $row['author_id']));
+        $output .= $twig->render($tpath['shortquotes'] . 'shortquotes.tpl', [
+            'content' => $content,
+            'date' => LangDate(pluginGetVariable('quotes', 'date'), $row['postdate']),
+            'author_url' => $userlink,
+            'author_name' => $row['author'],
+            'show_url' => $showlink,
+        ]);
+    }
 
-		$showlink = checkLinkAvailable('quotes', 'show') ?
-			generateLink('quotes', 'show', array('id' => $row['id'])) :
-			generateLink('core', 'plugin', array('plugin' => 'quotes', 'handler' => 'show'), array('id' => $row['id']));
+    $addlink = checkLinkAvailable('quotes', 'add') ?
+        generateLink('quotes', 'add') :
+        generateLink('core', 'plugin', array('plugin' => 'quotes', 'handler' => 'add'));
 
-		$pvars['vars'] = array(
-			'content' => $content,
-			'rating' => rating_show_quotes($row['id'], $row['rating']),
-			'date' => LangDate(pluginGetVariable('quotes', 'date'), $row['postdate']),
-			'author' => "<a href='${userlink}'>${row['author']}</a>",
-			'show' => "<a href='${showlink}'>Ccылка на цитату</a>"
-		);
+    if ($output == null) {
+        return error404();
+    }
 
-		$tpl->template('shortquotes', $tpath['shortquotes']);
-		$tpl->vars('shortquotes', $pvars);
-		$output .= $tpl->show('shortquotes');
-	}
-
-	$toplink = checkLinkAvailable('quotes', '') ?
-		generateLink('quotes', '', array('sort' => 'top')) :
-		generateLink('core', 'plugin', array('plugin' => 'quotes'), array('sort' => 'top'));
-
-	$lowlink = checkLinkAvailable('quotes', '') ?
-		generateLink('quotes', '', array('sort' => 'low')) :
-		generateLink('core', 'plugin', array('plugin' => 'quotes'), array('sort' => 'low'));
-
-	$addlink = checkLinkAvailable('quotes', 'add') ?
-		generateLink('quotes', 'add') :
-		generateLink('core', 'plugin', array('plugin' => 'quotes', 'handler' => 'add'));
-
-	$tvars['vars']['top'] = "<a href='${toplink}'>Лучшие цитаты</a>";
-	$tvars['vars']['low'] = "<a href='${lowlink}'>Плохие цитаты</a>";
-	$tvars['vars']['add'] = "<a href='${addlink}'>Добавить цитату</a>";
-
-	if ($output != null) {
-		$tvars['vars']['short'] = $output;
-	} else {
-		return error404();
-	}
-
-	$tpl->template('showquotes', $tpath['showquotes']);
-	$tpl->vars('showquotes', $tvars);
-	$result = $tpl->show('showquotes');
-	$template['vars']['mainblock'] = $result;
-	if (pluginGetVariable('quotes', 'cache')) {
-		cacheStoreFile($cacheFileName, $result, 'quotes');
-	}
+    $result = $twig->render($tpath['showquotes'] . 'showquotes.tpl', [
+        'add_url' => $addlink,
+        'short' => $output,
+        'pages' => $tvars['vars']['pages'],
+    ]);
+    $template['vars']['mainblock'] = $result;
+    if (pluginGetVariable('quotes', 'cache')) {
+        cacheStoreFile($cacheFileName, $result, 'quotes');
+    }
 }
 
 function plugin_fullshow_quotes($params)
 {
-	global $tpl, $template, $SUPRESS_TEMPLATE_SHOW, $SYSTEM_FLAGS, $mysql, $config, $parse, $userROW;
+    global $twig, $template, $SUPRESS_TEMPLATE_SHOW, $SYSTEM_FLAGS, $mysql, $config, $parse, $userROW;
 
-	//$SUPRESS_TEMPLATE_SHOW = 1;
+    //$SUPRESS_TEMPLATE_SHOW = 1;
 
-	$id = isset($params['id']) ? abs(intval($params['id'])) : abs(intval($_GET['id']));
+    $id = isset($params['id']) ? abs((int) $params['id']) : abs((int) ($_GET['id'] ?? 0));
+    quotes_log('quote_requested', ['quote_id' => $id]);
 
-	$quoteslink = checkLinkAvailable('quotes', '') ?
-		generateLink('quotes', '') :
-		generateLink('core', 'plugin', array('plugin' => 'quotes'));
+    $quoteslink = checkLinkAvailable('quotes', '') ?
+        generateLink('quotes', '') :
+        generateLink('core', 'plugin', array('plugin' => 'quotes'));
 
-	if ($id == null) {
-		header("HTTP/1.0 404 Not Found");
-		return announcement_quotes('Не передан id цитаты', $quoteslink, 1);
-	}
+    if ($id == null) {
+        header("HTTP/1.0 404 Not Found");
+        return quotes_toast_redirect('Не передан id цитаты', $quoteslink, 'error');
+    }
 
-	$SYSTEM_FLAGS['info']['title']['group'] = "Цитата №${id}";
-	$SYSTEM_FLAGS['meta']['description'] = pluginGetVariable('quotes', 'description');
-	$SYSTEM_FLAGS['meta']['keywords'] = pluginGetVariable('quotes', 'keywords');
+    $SYSTEM_FLAGS['info']['title']['group'] = "Цитата №{$id}";
+    $SYSTEM_FLAGS['meta']['description'] = pluginGetVariable('quotes', 'description');
+    $SYSTEM_FLAGS['meta']['keywords'] = pluginGetVariable('quotes', 'keywords');
 
-	$tpath = locatePluginTemplates(array('fullquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
+    $tpath = locatePluginTemplates(array('fullquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
 
-	foreach ($mysql->select("select id, content, rating, approve, postdate, author, author_id from " . prefix . "_quotes where approve = 1 and id = " . db_squote("{$id}")) as $row) {
-		$content = $row['content'];
-		if ($config['blocks_for_reg']) {
-			$content = userblocks_quotes_page($content);
-		}
-		if ($config['use_htmlformatter']) {
-			$content = $parse->htmlformatter($content);
-		}
-		if ($config['use_bbcodes']) {
-			$content = $parse->bbcodes($content);
-		}
-		if ($config['use_smilies']) {
-			$content = $parse->smilies($content);
-		}
+    $output = '';
+    foreach ($mysql->select("select id, content, approve, postdate, author, author_id from " . prefix . "_quotes where approve = 1 and id = " . db_squote("{$id}")) as $row) {
+        $content = $row['content'];
+        $content = quotes_filter_hidden_blocks($content);
+        if ($config['use_htmlformatter']) {
+            $content = $parse->htmlformatter($content);
+        }
+        if ($config['use_bbcodes']) {
+            $content = $parse->bbcodes($content);
+        }
+        if ($config['use_smilies']) {
+            $content = $parse->smilies($content);
+        }
 
-		$userlink = checkLinkAvailable('uprofile', 'show') ?
-			generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
-			generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('name' => $row['author'], 'id' => $row['author_id']));
+        $userlink = checkLinkAvailable('uprofile', 'show') ?
+            generateLink('uprofile', 'show', array('name' => $row['author'], 'id' => $row['author_id'])) :
+            generateLink('core', 'plugin', array('plugin' => 'uprofile', 'handler' => 'show'), array('name' => $row['author'], 'id' => $row['author_id']));
 
-		$pvars['vars'] = array(
-			'content' => $content,
-			'rating' => rating_show_quotes($row['id'], $row['rating']),
-			'date' => LangDate(pluginGetVariable('quotes', 'date'), $row['postdate']),
-			'author' => "<a href='${userlink}'>${row['author']}</a>",
-			'title' => "Цитата №${id}"
-		);
+        $output = $twig->render($tpath['fullquotes'] . 'fullquotes.tpl', [
+            'content' => $content,
+            'date' => LangDate(pluginGetVariable('quotes', 'date'), $row['postdate']),
+            'author_url' => $userlink,
+            'author_name' => $row['author'],
+            'title' => "Цитата №{$id}",
+            'tpl_url' => tpl_url,
+        ]);
+    }
 
-		$tpl->template('fullquotes', $tpath['fullquotes']);
-		$tpl->vars('fullquotes', $pvars);
-		$output = $tpl->show('fullquotes');
-	}
-
-	if ($output == null) {
-		return error404();
-	} else {
-		$template['vars']['mainblock'] = $output;
-	}
+    if ($output == null) {
+        return error404();
+    } else {
+        $template['vars']['mainblock'] = $output;
+    }
 }
 
 function plugin_add_quotes()
 {
-	global $tpl, $template, $SYSTEM_FLAGS, $SUPRESS_TEMPLATE_SHOW, $userROW, $mysql, $config;
+    global $twig, $template, $SYSTEM_FLAGS, $SUPRESS_TEMPLATE_SHOW, $userROW, $mysql, $config, $lang;
 
-	//$SUPRESS_TEMPLATE_SHOW = 1;
+    //$SUPRESS_TEMPLATE_SHOW = 1;
 
-	if (!is_array($userROW)) {
-		header("HTTP/1.0 404 Not Found");
-		return announcement_quotes('Для самых умных дарога лишь на сайт', home, 0);
-	}
+    if (!is_array($userROW)) {
+        quotes_log('public_add_rejected_anonymous');
+        header("HTTP/1.0 404 Not Found");
+        return quotes_toast_redirect('Для самых умных дарога лишь на сайт', home, 'error');
+    }
 
-	$SYSTEM_FLAGS['info']['title']['group'] = 'Добавить сообщение в цитатник';
+    quotes_log('public_add_opened', [
+        'method' => $_SERVER['REQUEST_METHOD'] ?? '',
+        'post_fields' => array_keys($_POST),
+        'content_present' => array_key_exists('content', $_POST),
+        'content_bytes' => is_string($_POST['content'] ?? null) ? strlen($_POST['content']) : 0,
+        'user_id' => (int)($userROW['id'] ?? 0),
+    ]);
 
-	$num_max = pluginGetVariable('quotes', 'max_char');
-	$time['time'] = time() + ($config['date_adjust'] * 60);
+    $SYSTEM_FLAGS['info']['title']['group'] = 'Добавить сообщение в цитатник';
 
-	$content = secure_html(convert($_POST['content']));
-	$data['content'] = str_replace("\r\n", "\n", $content);
+    $num_max = pluginGetVariable('quotes', 'max_char');
+    $time['time'] = time() + ($config['date_adjust'] * 60);
+    $error_flag = false;
+    $error_text = array();
 
-	if ($num_max == true) {
-		$data['content'] = substr($data['content'], 0, $num_max);
-	}
+    $submittedContent = is_string($_POST['content'] ?? null) ? $_POST['content'] : '';
+    $content = str_replace("\r\n", "\n", $submittedContent);
+    if ((int)$num_max > 0) {
+        $content = mb_substr($content, 0, (int)$num_max, 'UTF-8');
+    }
+    $data['content'] = secure_html($content);
 
-	$addlink = checkLinkAvailable('quotes', '') ?
-		generateLink('quotes', '') :
-		generateLink('core', 'plugin', array('plugin' => 'quotes'));
+    $addlink = checkLinkAvailable('quotes', '') ?
+        generateLink('quotes', '') :
+        generateLink('core', 'plugin', array('plugin' => 'quotes'));
 
-	if ($userROW['status'] == 1) {
-		$approve = 1;
-	} else {
-		$approve = 0;
-	}
+    if ($userROW['status'] == 1) {
+        $approve = 1;
+    } else {
+        $approve = 0;
+    }
 
-	if (isset($_POST['addpost'])) {
-		if (empty($data['content'])) {
-			$error_flag = true;
-			$error_text[] = msg(array("type" => "error", "text" => "Вы не добавили цитату"), 0, 2);
-		}
-		if (!empty($data['content'])) {
-			$mysql->query("insert into " . prefix . "_quotes
-			(postdate, content, approve, author, author_id)
-			values
-			('${time['time']}', " . db_squote($data['content']) . ", '${approve}', '${userROW['name']}', '${userROW['id']}')
-			");
-			return announcement_quotes('Данные внесены', $addlink, 2);
-		}
-	}
+    if (isset($_POST['addpost'])) {
+        quotes_log('public_add_attempt', [
+            'method' => $_SERVER['REQUEST_METHOD'] ?? '',
+            'content_present' => array_key_exists('content', $_POST),
+            'content_bytes' => strlen($submittedContent),
+            'content_valid_utf8' => preg_match('//u', $submittedContent) === 1,
+            'processed_bytes' => strlen($data['content']),
+            'content_empty' => trim($data['content']) === '',
+            'user_id' => (int)($userROW['id'] ?? 0),
+        ]);
 
-	$tvars['vars']['error'] = '';
-	if ($error_flag) {
-		$tvars['vars']['error'] = implode('<br />', $error_text);
-	}
+        if (trim($data['content']) === '') {
+            $error_flag = true;
+            $error_text[] = msg(array("type" => "error", "text" => "Вы не добавили цитату"), 0, 2);
+            quotes_log('public_add_rejected_empty', ['user_id' => (int)($userROW['id'] ?? 0)]);
+        }
+        if (trim($data['content']) !== '') {
+            $insertResult = $mysql->query("INSERT INTO " . prefix . "_quotes
+                (postdate, content, approve, author, author_id)
+                VALUES (" . db_squote($time['time']) . ", " . db_squote($data['content']) . ", " . db_squote($approve) . ", " . db_squote($userROW['name']) . ", " . db_squote((int)$userROW['id']) . ")");
+            if ($insertResult === null || $insertResult === false) {
+                quotes_log('public_add_insert_failed', ['user_id' => (int)$userROW['id']]);
+                return quotes_toast_redirect($lang['quotes_save_failed'], $addlink, 'error');
+            }
+            quotes_log('public_add_inserted', ['user_id' => (int)$userROW['id']]);
+            return quotes_toast_redirect('Данные внесены', $addlink, 'success');
+        }
+    }
 
-	$tvars['vars']['smilies'] = InsertSmilies('comments', 10);
-	$tvars['vars']['bbcodes'] = BBCodes();
-	$tvars['regx']["'\[latent\](.*?)\[/latent\]'si"] = ($num_max == 0) ? '' : '$1';
-	$tvars['vars']['max_char'] = $num_max;
+    $maxCharAlert = json_encode(
+        sprintf('Текст сообщения не должен быть больше %d символов', (int)$num_max),
+        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+    );
 
-	$tpath = locatePluginTemplates(array('addquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
+    $tpath = locatePluginTemplates(array('addquotes'), 'quotes', pluginGetVariable('quotes', 'localsource'));
 
-	$tpl->template('addquotes', $tpath['addquotes']);
-	$tpl->vars('addquotes', $tvars);
-	$template['vars']['mainblock'] = $tpl->show('addquotes');
+    $template['vars']['mainblock'] = $twig->render($tpath['addquotes'] . 'addquotes.tpl', [
+        'error' => $error_flag ? implode('<br />', $error_text) : '',
+        'content' => $data['content'],
+        'smilies' => InsertSmilies('comments', 10),
+        'bbcodes' => BBCodes(),
+        'max_char' => (int)$num_max,
+        'max_char_alert' => $maxCharAlert,
+    ]);
 }
 
 function plugin_rss_quotes()
 {
-	global $template, $config, $SUPRESS_TEMPLATE_SHOW, $SUPRESS_MAINBLOCK_SHOW, $mysql, $SYSTEM_FLAGS;
+    global $template, $config, $SUPRESS_TEMPLATE_SHOW, $SUPRESS_MAINBLOCK_SHOW, $mysql, $SYSTEM_FLAGS;
 
-	$SUPRESS_TEMPLATE_SHOW = 1;
-	$SUPRESS_MAINBLOCK_SHOW = 1;
+    $SUPRESS_TEMPLATE_SHOW = 1;
+    $SUPRESS_MAINBLOCK_SHOW = 1;
+    quotes_log('rss_requested');
 
-	$SYSTEM_FLAGS['info']['title']['group'] = 'RSS из цитатника';
+    $SYSTEM_FLAGS['info']['title']['group'] = 'RSS из цитатника';
 
-	$output = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
-$output .= '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    $output = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+    $output .= '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"
     xmlns:wfw="http://wellformedweb.org/CommentAPI/">' . "\n";
     $output .= "<channel>\n";
-        $output .= "<title>RSS цитатника</title>\n";
-        $output .= "
+    $output .= "<title>RSS цитатника</title>\n";
+    $output .= "
         <link>
         <![CDATA[" . $config['home_url'] . "]]>
         </link>\n";
-        $output .= "<language>ru</language>\n";
-        $output .= "<description>
+    $output .= "<language>ru</language>\n";
+    $output .= "<description>
             <![CDATA[" . $config['description'] . "]]>
         </description>\n";
-        $output .= "<generator>
+    $output .= "<generator>
             <![CDATA[Plugin rss_quotes (beta7) // Next Generation CMS (" . engineVersion . ")]]>
         </generator>\n";
 
-        foreach ($mysql->select("select content, postdate from " . prefix . "_quotes") as $row) {
+    foreach ($mysql->select("select content, postdate from " . prefix . "_quotes") as $row) {
         $output .= " <item>\n";
-            $output .= " <title>Цитата</title>\n";
-            $output .= "
+        $output .= " <title>Цитата</title>\n";
+        $output .= "
             <link>
             </link>\n";
-            $output .= " <description>
-                <![CDATA['${row['content']}']]>
+        $output .= " <description>
+                <![CDATA['{$row['content']}']]>
             </description>\n";
-            $output .= " <pubDate>" . strftime('%a, %d %b %Y %H:%M:%S GMT', $row['postdate']) . "</pubDate>\n";
-            $output .= "
-        </item>\n";
-        }
+        $output .= " <pubDate>" . gmdate('D, d M Y H:i:s', (int) $row['postdate']) . " GMT</pubDate>\n";
         $output .= "
+        </item>\n";
+    }
+    $output .= "
     </channel>\n</rss>\n";
-print $output;
+    print $output;
 }
 
-function update_rating_quotes()
+function quotes_toast_redirect($message, $url, $type)
 {
-global $mysql, $tpl, $userROW;
+    $delay = max(0, (int) pluginGetVariable('quotes', 'redirect_delay')) * 1000;
+    register_stylesheet(home . '/lib/notify.css');
 
-$id = intval($_GET['id']);
-$rating = intval($_GET['rating']);
-
-if (pluginGetVariable('quotes', 'users_rating') == true) {
-if (!is_array($userROW)) {
-return 'Вы должны зарегистрироваться';
+    return '<script src="' . home . '/lib/notify.js"></script>'
+        . '<script>(function(){'
+        . 'if(typeof window.showToast==="function"){window.showToast('
+        . json_encode($message, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ','
+        . '{type:' . json_encode($type) . '});}'
+        . 'window.setTimeout(function(){window.location.href='
+        . json_encode($url, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ';},'
+        . $delay . ');'
+        . '})();</script>';
 }
-if (flood_quotes(false, $id)) {
-return 'Вы уже голосовали';
-}
-flood_quotes(true, $id);
-}
-
-switch ($rating) {
-case 1:
-$rating = 1;
-break;
-case -1:
-$rating = -1;
-break;
-default:
-return 'Не допустимое значение';
-}
-
-session_start();
-
-if (($_SESSION['id'][$id] == true) or ($_COOKIE['rating_quotes' . $id] == true)) {
-return 'Вы уже голосовали';
-}
-
-$_SESSION['id'][$id] = $id;
-@setcookie('rating_quotes' . $id, 'voted', (time() + 31526000), '/');
-$mysql->query("update " . prefix . "_quotes set rating = rating + {$rating} where id = " . db_squote("{$id}"));
-$data = $mysql->record("select rating from " . prefix . "_quotes where id = " . db_squote("{$id}"));
-
-$tvars['vars']['rating'] = $data['rating'];
-$tvars['vars']['admin_url'] = admin_url;
-
-switch ($data['rating']) {
-case 0:
-$tvars['vars']['color'] = 'zero';
-break;
-case $data['rating'] > 0:
-$tvars['vars']['color'] = 'plus';
-break;
-case $data['rating'] < 0: $tvars['vars']['color']='less' ; break; }
-    $tpath=locatePluginTemplates(array('rating', ':rating.css' ), 'quotes' , pluginGetVariable('quotes', 'localsource'
-    )); register_stylesheet($tpath['url::rating.css'] . '/rating.css' ); $tpl->template('rating', $tpath['rating']);
-    $tpl->vars('rating', $tvars);
-    return $tpl->show('rating');
-    }
-
-    function rating_show_quotes($id, $rating)
-    {
-    global $tpl, $userROW;
-
-    $tpath = locatePluginTemplates(array('rating', 'rating.form', ':rating.css'), 'quotes', pluginGetVariable('quotes',
-    'localsource'));
-    register_stylesheet($tpath['url::rating.css'] . '/rating.css');
-
-    $tvars['vars']['ajax_url'] = generateLink('core', 'plugin', array('plugin' => 'quotes', 'handler' => 'url'),
-    array());
-    $tvars['vars']['id'] = $id;
-    $tvars['vars']['rating'] = $rating;
-
-    if (pluginGetVariable('quotes', 'users_rating') == true) {
-    if (is_array($userROW)) {
-    $tpl->template('rating.form', $tpath['rating.form']);
-    $tpl->vars('rating.form', $tvars);
-    return $tpl->show('rating.form');
-    } else {
-    return '';
-    }
-    } else {
-    $tpl->template('rating', $tpath['rating']);
-    $tpl->vars('rating', $tvars);
-    return $tpl->show('rating');
-    }
-    }

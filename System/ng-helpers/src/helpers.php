@@ -113,7 +113,7 @@ if (! function_exists(__NAMESPACE__ . '\catz')) {
      * @param  int|null  $id  Идентификатор категории.
      * @return array
      */
-    function catz(int $id = null): array
+    function catz(?int $id = null): array
     {
         /**
          * @var  array  $catz
@@ -212,7 +212,7 @@ if (! function_exists(__NAMESPACE__ . '\request')) {
      * @param  mixed  $default
      * @return string|array
      */
-    function request(string $key = null, $default = null)
+    function request(?string $key = null, $default = null)
     {
         if (is_null($key)) {
             return $_REQUEST;
@@ -351,7 +351,10 @@ if (! function_exists(__NAMESPACE__ . '\session')) {
     function session($key = null, $default = null)
     {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            if (!ensureSessionStarted()) {
+                // Если это бот, возвращаем дефолтное значение
+                return is_null($key) ? [] : value($default);
+            }
         }
         if (is_null($key)) {
             return $_SESSION;
@@ -556,7 +559,7 @@ if (! function_exists(__NAMESPACE__ . '\now')) {
      * @param  string|null  $format
      * @return string|int
      */
-    function now(string $format = null)
+    function now(?string $format = null)
     {
         $timestamp = time();
         if (is_null($format)) {
@@ -572,7 +575,7 @@ if (! function_exists(__NAMESPACE__ . '\optional')) {
      * @param  callable|null  $callback
      * @return mixed
      */
-    function optional($value = null, callable $callback = null)
+    function optional($value = null, ?callable $callback = null)
     {
         if (is_null($callback)) {
             return $value === null ? new class {
@@ -624,7 +627,7 @@ if (! function_exists(__NAMESPACE__ . '\collect')) {
             {
                 return new self(array_map($callback, $this->items));
             }
-            public function filter(callable $callback = null): object
+            public function filter(?callable $callback = null): object
             {
                 if ($callback) {
                     return new self(array_filter($this->items, $callback));
@@ -955,7 +958,10 @@ if (! function_exists(__NAMESPACE__ . '\csrf_token')) {
     function csrf_token(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            if (!ensureSessionStarted()) {
+                // Для ботов возвращаем временный токен
+                return bin2hex(random_bytes(32));
+            }
         }
         if (!isset($_SESSION['_token'])) {
             $_SESSION['_token'] = bin2hex(random_bytes(32));
@@ -969,7 +975,7 @@ if (! function_exists(__NAMESPACE__ . '\validate_csrf')) {
      * @param  string|null  $token
      * @return bool
      */
-    function validate_csrf(string $token = null): bool
+    function validate_csrf(?string $token = null): bool
     {
         $token = $token ?? request('_token');
         if (!$token) {
@@ -1659,7 +1665,7 @@ if (! function_exists(__NAMESPACE__ . '\when')) {
      * @param  callable|null  $default
      * @return mixed
      */
-    function when(bool $condition, callable $callback, callable $default = null)
+    function when(bool $condition, callable $callback, ?callable $default = null)
     {
         if ($condition) {
             return $callback();
@@ -1679,7 +1685,7 @@ if (! function_exists(__NAMESPACE__ . '\unless')) {
      * @param  callable|null  $default
      * @return mixed
      */
-    function unless(bool $condition, callable $callback, callable $default = null)
+    function unless(bool $condition, callable $callback, ?callable $default = null)
     {
         return when(!$condition, $callback, $default);
     }
@@ -2229,7 +2235,10 @@ if (! function_exists(__NAMESPACE__ . '\csrf_token')) {
     function csrf_token(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            if (!ensureSessionStarted()) {
+                // Для ботов возвращаем временный токен
+                return bin2hex(random_bytes(32));
+            }
         }
 
         if (!isset($_SESSION['csrf_token'])) {
@@ -2260,7 +2269,10 @@ if (! function_exists(__NAMESPACE__ . '\validate_csrf')) {
     function validate_csrf(): bool
     {
         if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+            if (!ensureSessionStarted()) {
+                // Для ботов CSRF валидация не проходит
+                return false;
+            }
         }
 
         $token = $_POST['csrf_token'] ?? $_REQUEST['csrf_token'] ?? '';

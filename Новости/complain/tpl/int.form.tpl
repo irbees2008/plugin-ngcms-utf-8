@@ -1,46 +1,37 @@
-<style type="text/css">
-	#senderror {
-		padding-top: 10px;
-		background: #fff7e1;
-		border: 1px dashed #e8e8e8;
-		margin-top: 10px;
-		padding-bottom: 20px;
-	}
+<form method="post" action="{{ form_url }}" class="complain-form" data-ajax="true">
+	<input type="hidden" name="ds_id" value="{{ ds_id }}">
+	<input type="hidden" name="entry_id" value="{{ entry_id }}">
 
-	#senderror select.error {
-		border: 1px solid #e8e8e8;
-		background: #fff;
-	}
-
-	#senderror input.report {
-		border: 1px solid #e8e8e8;
-		background: #fff;
-	}
-
-	#senderror .texth {
-		float: left;
-		position: relative;
-		left: 10px;
-	}
-
-	#senderror .formh {
-		float: right;
-		position: relative;
-		top: -4px;
-		right: 10px;
-	}
-</style>
-<div id="senderror">
-	<div class="texth">Сообщить об ошибке:</div>
-	<div class="formh">
-		<form method="post" target="_blank" action="{form_url}">
-			<input type="hidden" name="ds_id" value="{ds_id}"/>
-			<input type="hidden" name="entry_id" value="{entry_id}"/>
-			<select name="error" class="error" id="errorSelect">
-				<option value="">Выберите тип ошибки..</option>
-				{errorlist}
-			</select>
-			<input type="submit" class="report" value="Отправить" onclick="if (document.getElementById('errorSelect').value==''){alert('Необходимо выбрать тип ошибки!'); return false;}; "/>
-		</form>
+	<div class="mb-2">
+		<label class="form-label">{{ lang['complain:lbl.error']|default('Что не так?') }}</label>
+		<select name="error" class="form-select" required>
+			{{ errorlist|raw }}
+		</select>
 	</div>
-</div>
+
+	[text]
+	<div class="mb-2">
+		<label class="form-label">{{ lang['complain:lbl.text']|default('Комментарий (необязательно)') }}</label>
+		<textarea name="error_text" class="form-control" rows="3"></textarea>
+	</div>
+	[/text]
+	
+	  [notify]
+	<div class="form-check mb-2">
+		<input class="form-check-input" type="checkbox" name="notify" id="complain_notify">
+		<label class="form-check-label" for="complain_notify">{{ lang['complain:lbl.notify']|default('Уведомлять меня об изменениях') }}</label>
+	</div>
+	[/notify]
+	
+	  [email]
+	<div class="mb-2">
+		<label class="form-label">E-mail</label>
+		<input type="email" name="mail" class="form-control" placeholder="name@example.com">
+	</div>
+	[/email]
+
+	<div class="d-flex gap-2">
+		<button type="submit" class="btn btn-primary">{{ lang['complain:btn.send']|default('Отправить') }}</button>
+		<button type="button" class="btn btn-outline-secondary" data-close-modal>{{ lang['complain:btn.cancel']|default('Отмена') }}</button>
+	</div>
+</form>

@@ -1,6 +1,17 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die ('HAL');
+if (!defined('NGCMS')) die('HAL');
+
+// Ensure ng-helpers is loaded
+if (!function_exists('Plugins\\logger')) {
+	$ngHelpersPath = __DIR__ . '/../ng-helpers/ng-helpers.php';
+	if (file_exists($ngHelpersPath)) {
+		require_once $ngHelpersPath;
+	}
+}
+
+use function Plugins\{array_get, logger, get_ip};
+
 //
 // Configuration file for plugin
 //
@@ -8,13 +19,9 @@ if (!defined('NGCMS')) die ('HAL');
 pluginsLoadConfig();
 // Fill configuration parameters
 $cfg = array();
-$cfgX = array();
 array_push($cfg, array('descr' => 'Плагин позволяет любому посетителю отправить администратору/автору новости отчёт о проблеме в конкретной новости'));
 $cfgX = array();
-array_push($cfgX, array('name' => 'localsource', 'title' => "Выберите каталог из которого плагин будет брать шаблоны для отображения<br /><small><b>Шаблон сайта</b> - плагин будет пытаться взять шаблоны из общего шаблона сайта; в случае недоступности - шаблоны будут взяты из собственного каталога плагина<br /><b>Плагин</b> - шаблоны будут браться из собственного каталога плагина</small>", 'type' => 'select', 'values' => array('0' => 'Шаблон сайта', '1' => 'Плагин'), 'value' => intval(pluginGetVariable($plugin, 'localsource'))));
-array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки отображения</b>', 'entries' => $cfgX));
-$cfgX = array();
-array_push($cfgX, array('name' => 'extform', 'title' => "Режим отображения формы", 'descr' => "<b>Новость</b> - форма отчёта выводится в самой новости<br/><b>Отдельная страница</b> - в новости выводится только ссылка, форма же показывается на отдельной странице", 'type' => 'select', 'values' => array('0' => 'Новость', '1' => 'Отдельная страница'), 'value' => intval(pluginGetVariable($plugin, 'extform'))));
+// Убраны настройки отображения и вариант inline-формы: плагин всегда работает через AJAX-модалку, шаблоны берутся из каталога плагина
 array_push($cfgX, array('name' => 'errlist', 'title' => "Список ошибок", 'descr' => "Записывается в формате:<br/>КОД_ОШИБКИ<b>|</b>ТЕКСТ_ОШИБКИ<br/><b>КОД_ОШИБКИ</b> - уникальный цифровой идентификатор (от 1 до 255) ошибки<br/><b>ТЕКСТ_ОШИБКИ</b> - текст ошибки, показываемый пользователю.<br/>Пользователю и администратору будет отображаться текст, но в БД будет храниться только код", 'type' => 'text', 'html_flags' => 'cols=50 rows=6', 'value' => pluginGetVariable($plugin, 'errlist')));
 array_push($cfgX, array('name' => 'inform_author', 'title' => "Оповещать автора новости по email о проблеме", 'descr' => "<b>Да</b> - на каждый отчёт об ошибке будет сформировано email сообщение<br/><b>Нет</b> - email сообщение отправляться не будет", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_author'))));
 array_push($cfgX, array('name' => 'inform_admin', 'title' => "Оповещать <b>администраторов сайта</b> по email о проблеме", 'descr' => "<b>Да</b> - на каждый отчёт об ошибке будет сформировано email сообщение<br/><b>Нет</b> - email сообщение отправляться не будет", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_admin'))));
@@ -25,17 +32,17 @@ array_push($cfgX, array('name' => 'allow_text', 'title' => "Разрешить �
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки оповещений</b>', 'entries' => $cfgX));
 $cfgX = array();
 array_push($cfgX, array('name' => 'admins', 'title' => "Список назначенных администраторов", 'descr' => "Укажите список логинов пользователей (по одному логину в строке), которым будут выданы административные права для работы с данным плагином<br/><i>Пробелы в конце строк недопустимы!</i>", 'type' => 'text', 'html_flags' => 'cols=50 rows=2', 'value' => pluginGetVariable($plugin, 'admins')));
-array_push($cfgX, array('name' => 'inform_admins', 'title' => "Оповещать <b>назначенных администраторов</b> по email о проблеме", 'descr' => "<b>Да</b> - на каждый отчёт об ошибке будет сформировано email сообщение<br/><b>Нет</b> - email сообщение отправляться не будет", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_admin'))));
+array_push($cfgX, array('name' => 'inform_admins', 'title' => "Оповещать <b>назначенных администраторов</b> по email о проблеме", 'descr' => "<b>Да</b> - на каждый отчёт об ошибке будет сформировано email сообщение<br/><b>Нет</b> - email сообщение отправляться не будет", 'type' => 'select', 'values' => array('0' => 'Нет', '1' => 'Да'), 'value' => intval(pluginGetVariable($plugin, 'inform_admins'))));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Управление доступом</b>', 'entries' => $cfgX));
 $cfgX = array();
 array_push($cfgX, array('name' => 'cache', 'title' => "Разрешить кеширование формы<br />", 'descr' => '<b>Да</b> - кеширование разрешено<br /><b>Нет</b> - кеширование запрещено', 'type' => 'select', 'values' => array('1' => 'Да', '0' => 'Нет'), 'value' => intval(pluginGetVariable($plugin, 'cache'))));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки кеширования</b>', 'entries' => $cfgX));
 // RUN
-if ($_REQUEST['action'] == 'commit') {
+if (array_get($_REQUEST, 'action', '') == 'commit') {
 	// If submit requested, do config save
 	commit_plugin_config_changes($plugin, $cfg);
+	logger('Complain plugin config saved, IP=' . get_ip(), 'info', 'complain.log');
 	print_commit_complete($plugin);
 } else {
 	generate_config_page($plugin, $cfg);
 }
-?>

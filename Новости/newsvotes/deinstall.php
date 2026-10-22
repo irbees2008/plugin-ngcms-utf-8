@@ -8,7 +8,8 @@ if (!defined('NGCMS')) die ('HAL');
 //
 
 pluginsLoadConfig();
-LoadPluginLang($plugin, 'main');
+$plugin = 'newsvotes';
+LoadPluginLang($plugin, 'config', '', '', ':');
 
 
 $db_update = array(
@@ -33,10 +34,12 @@ $db_update = array(
 	)
 );
 
-if ($_REQUEST['action'] == 'commit') {
+if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'commit') {
 	if (fixdb_plugin_install($plugin, $db_update, 'deinstall')) {
 		plugin_mark_deinstalled($plugin);
 	}
 } else {
-	generate_install_page($plugin, '', 'deinstall');
+	generate_install_page($plugin, $lang['newsvotes:desc_deinstall'], 'deinstall');
 }
+
+?>

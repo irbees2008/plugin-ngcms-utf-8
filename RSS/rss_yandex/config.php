@@ -1,6 +1,6 @@
 <?php
 // Protect against hack attempts
-if (!defined('NGCMS')) die('HAL');
+if (!defined('NGCMS')) die ('HAL');
 //
 // Configuration file for plugin
 //
@@ -34,7 +34,6 @@ array_push($cfgX, array('type' => 'input', 'name' => 'feed_title', 'title' => '�
 array_push($cfgX, array('type' => 'text', 'name' => 'news_title', 'title' => 'Заголовок (название) новости', 'descr' => 'Допустимые переменные:<br/><b>%site_title%</b> - название сайта<br/><b>%news_title%</b> - заголовок новости<br/><b>%cat_title%</b> - название <b>главной</b> категории новости<br/>Значение по умолчанию: <b>%cat_title% %news_title%</b>', 'html_flags' => 'style="width: 350px;"', 'value' => pluginGetVariable('rss_yandex', 'news_title') ? pluginGetVariable('rss_yandex', 'news_title') : '%cat_title% %news_title%'));
 array_push($cfgX, array('type' => 'select', 'name' => 'full_format', 'title' => 'Формат генерации полного текста новости для ленты Яndex', 'descr' => '<b>Полная</b> - выводится только полная часть новости<br><b>Короткая+полная</b> - выводится короткая + полная часть новости', 'values' => array('0' => 'Полная', '1' => 'Полная+короткая'), 'value' => pluginGetVariable('rss_yandex', 'full_format')));
 array_push($cfgX, array('type' => 'input', 'name' => 'news_age', 'title' => 'Максимальный срок давности новостей для публикации в ленте', 'descr' => 'Яndex индексирует новости не старше <b>8 суток</b>.<br/>Значение по умолчанию: 10 суток', 'value' => pluginGetVariable('rss_yandex', 'news_age')));
-array_push($cfgX, array('type' => 'select', 'name' => 'news_order', 'title' => 'Порядок сортировки новостей в ленте', 'descr' => '<b>Из настроек системы</b> — использовать настройку «Порядок сортировки новостей на главной странице» из раздела <i>Настройки → Новости</i><br>Остальные значения переопределяют системную настройку', 'values' => array('auto' => 'Из настроек системы', 'id desc' => 'По ID (убывание)', 'id asc' => 'По ID (возрастание)', 'postdate desc' => 'По дате публикации (убывание)', 'postdate asc' => 'По дате публикации (возрастание)', 'title desc' => 'По заголовку (убывание)', 'title asc' => 'По заголовку (возрастание)'), 'value' => pluginGetVariable('rss_yandex', 'news_order') ?: 'auto'));
 array_push($cfgX, array('type' => 'input', 'name' => 'delay', 'title' => 'Отсрочка вывода новостей в ленту', 'descr' => 'Вы можете задать время (<b>в минутах</b>) на которое будет откладываться вывод новостей в RSS ленту', 'value' => pluginGetVariable('rss_yandex', 'delay')));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Общие настройки</b>', 'entries' => $cfgX));
 $cfgX = array();
@@ -54,10 +53,11 @@ array_push($cfgX, array('name' => 'cache', 'title' => "Использовать 
 array_push($cfgX, array('name' => 'cacheExpire', 'title' => "Период обновления кеша<br /><small>(через сколько секунд происходит обновление кеша. Значение по умолчанию: <b>60</b>)</small>", 'type' => 'input', 'value' => intval(pluginGetVariable($plugin, 'cacheExpire')) ? pluginGetVariable($plugin, 'cacheExpire') : '60'));
 array_push($cfg, array('mode' => 'group', 'title' => '<b>Настройки кеширования</b>', 'entries' => $cfgX));
 // RUN
-if (!empty($_REQUEST['action']) && $_REQUEST['action'] == 'commit') {
+if ($_REQUEST['action'] == 'commit') {
 	// If submit requested, do config save
 	commit_plugin_config_changes($plugin, $cfg);
 	print_commit_complete($plugin);
 } else {
 	generate_config_page($plugin, $cfg);
 }
+?>
