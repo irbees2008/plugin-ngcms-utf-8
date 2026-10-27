@@ -50,7 +50,7 @@ function payments_adapter_notify(array $data, array $cfg): void
     }
 
     if ($status === 'success') {
-        payments_mark_paid($orderId, 'pay2pay', $data['transaction_id'] ?? '', $data);
+        payments_mark_paid($orderId, 'pay2pay', $data['transaction_id'] ?? '', $data, (string)$amount, isset($data['currency']) ? (string)$data['currency'] : null);
         echo 'OK';
     }
 }

@@ -8,7 +8,7 @@
 		<h3>{{ lang.pay_choose_method }}</h3>
 		{% for method in adapters %}
 			<a href="{{ app.request.uri }}?order_id={{ order.id }}&uniqid={{ order.uniqid }}&method={{ method }}" class="payment-method-btn btn btn-outline-primary">
-				{{ method|upper }}
+				{{ adapter_labels[method]|default(method|upper) }}
 			</a>
 		{% endfor %}
 	</div>

@@ -1,9 +1,5 @@
-<div class="not_logged">
-	<span style="float:right;"><a href="/plugin/finance/"><u>Ваш баланс</u></a>: $<font color="red"><b>{ubalance}</b></font>&nbsp;</b></span>
-	Доступ к данному контенту платный.<br/>Стоимость: $<b> {price}</b>
-
-	<font color=red>(ваших средств недостаточно)</font><br/><br/>
-	Для получения доступа Вам необходимо пополнить Ваш баланс.<br/>
-	Выберите способ пополнения:
-	<ul>{acceptors}</ul>
+<div class="finance-locked-content alert alert-warning">
+    <p>{{ lang.news_access }} {{ lang['news.block'] }} {{ block_number }}. {{ lang.news_price }}: <strong>{{ price }} {{ currency }}</strong></p>
+    <p>{{ lang.balance }}: {{ ubalance }} {{ currency }}. {{ lang.news_need_topup }}</p>
+    <a class="btn btn-primary" href="{{ finance_url }}">{{ lang.topup }}</a>
 </div>

@@ -7,10 +7,11 @@ file: "payments.php"
 config: "config.php"
 install: "install.php"
 type: "plugin"
+acts: "core, ppages, twig"
 description: "Платёжные адаптеры для магазина"
 author: "copilot"
 author_uri: "https://ngcms.org/"
-minenginebuild: "111111"
+minenginebuild: "2020731"
 title: "Платёжные системы"
 information: "Обеспечивает приём онлайн-оплаты заказов через Robokassa, LiqPay, YooMoney, Unitpay, Pay2Pay, Privat24, FreeKassa."
 preinstall: "no"
@@ -24,7 +25,7 @@ preinstall: "no"
 
 Плагин подключает платёжные шлюзы к корзине (`basket`). После оформления заказа через форму `feedback` пользователь перенаправляется на страницу выбора оплаты.
 
-Поддерживаемые адаптеры: Robokassa, LiqPay, Unitpay, Pay2Pay и Privat24.
+Поддерживаемые адаптеры: Robokassa, LiqPay, Unitpay, Pay2Pay и Privat24. Для локальной проверки полного платёжного цикла доступен отключённый по умолчанию тестовый адаптер.
 
 ## Установка
 
@@ -72,6 +73,12 @@ preinstall: "no"
 - `payments_privat24_enabled` — включить.
 - `payments_privat24_merchant_id` — Merchant ID.
 - `payments_privat24_merchant_password` — Merchant password.
+
+### Локальная тестовая оплата
+
+Включите `payments_test_enabled` (**Локальная тестовая оплата**) в настройках Payments только на локальном стенде; выключено по умолчанию. Внешний платёжный провайдер и callback URL для неё не нужны. После выбора метода откроется экран подтверждения; нажатие кнопки отметит заказ оплаченным и запустит штатные обработчики Payments/Finance. Тестовый метод виден только вошедшему пользователю, которому принадлежит заказ. Оставляйте его выключенным на рабочем сайте: подтверждение имитирует успешную оплату без списания реальных средств.
+
+Чтобы проверить Finance, войдите тестовым аккаунтом, создайте пополнение на `/plugin/finance/`, выберите тестовый метод и подтвердите оплату. Проверьте зачисление и запись в истории, затем оплатите этим балансом новость с положительной ценой и `[fin_lock]...[/fin_lock]`. Проверьте, что текст открылся и баланс уменьшился. Повторное включение тестового метода на production может привести к бесплатному зачислению средств.
 
 ## URL-страницы плагина
 
@@ -141,12 +148,33 @@ function payments_adapter_redirect(int $orderId, array $order, array $cfg): void
 function payments_adapter_notify(array $data, array $cfg): void
 {
     $orderId = intval($data['order_id']);
-    payments_mark_paid($orderId, 'mygateway', $data['transaction_id'], $data);
+    payments_mark_paid(
+        $orderId,
+        'mygateway',
+        $data['transaction_id'],
+        $data,
+        isset($data['amount']) ? (string)$data['amount'] : null,
+        isset($data['currency']) ? (string)$data['currency'] : null
+    );
     echo 'OK';
 }
 ```
 
 4. Добавьте настройки адаптера в `config.php` (массив `$adapterMeta`).
+
+`payments_mark_paid()` сохраняет совместимость с прежним вызовом из четырёх аргументов и принимает дополнительные `$paidAmount` и `$paidCurrency`. Передавайте сумму и валюту из callback шлюза только после проверки его подписи.
+
+## Обработчики успешной оплаты
+
+Другие плагины могут зарегистрировать обработчик оплаченного заказа:
+
+```php
+payments_register_paid_handler('myplugin', 'myplugin_handle_paid_order');
+```
+
+Обработчик получает `(int $orderId, string $method, string $externalId, array $rawData, ?string $paidAmount, ?string $paidCurrency)`. Он должен обрабатывать только собственные заказы, сравнивать подтверждённую сумму с записью своего заказа и быть идемпотентным: шлюз может повторить callback. Ошибка обработчика возвращается в обработку callback, чтобы платёж можно было повторить.
+
+Плагин `finance` использует этот API для пополнения счёта. Он зачисляет деньги только по заказам из собственной таблицы `finance_payment_orders`; обычные заказы корзины не затрагиваются.
 
 ## Проверка статуса оплаты (AJAX)
 

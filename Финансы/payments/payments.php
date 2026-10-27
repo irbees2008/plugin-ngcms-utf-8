@@ -6,7 +6,7 @@
  */
 if (!defined('NGCMS')) die('HAL');
 
-use function Plugins\{logger, sanitize};
+use function Plugins\{logger, redirect, sanitize};
 
 LoadPluginLang('payments', 'main', '', '', ':');
 
@@ -27,6 +27,10 @@ function payments_lang_vars(): array
         'order_label' => $lang['payments:order.label'],
         'redirect_title' => $lang['payments:redirect.title'],
         'redirecting' => $lang['payments:redirecting'],
+        'test_title' => $lang['payments:test.title'],
+        'test_warning' => $lang['payments:test.warning'],
+        'test_confirm' => $lang['payments:test.confirm'],
+        'test_cancel' => $lang['payments:test.cancel'],
     ];
 }
 
@@ -65,10 +69,38 @@ function payments_get_order(int $id): ?array
     return $row ?: null;
 }
 
+function payments_register_paid_handler(string $name, callable $handler): void
+{
+    if ($name === '') {
+        throw new InvalidArgumentException('Payment handler name must not be empty.');
+    }
+
+    if (!isset($GLOBALS['PAYMENTS_PAID_HANDLERS'])) {
+        $GLOBALS['PAYMENTS_PAID_HANDLERS'] = [];
+    }
+    $GLOBALS['PAYMENTS_PAID_HANDLERS'][$name] = $handler;
+}
+
+function payments_dispatch_paid_handlers(int $orderId, string $method, string $externalId, array $rawData, ?string $paidAmount, ?string $paidCurrency): void
+{
+    if (function_exists('getPluginStatusActive') && getPluginStatusActive('finance') && function_exists('load_extras')) {
+        load_extras('core', 'finance');
+    }
+
+    foreach ($GLOBALS['PAYMENTS_PAID_HANDLERS'] ?? [] as $handler) {
+        call_user_func($handler, $orderId, $method, $externalId, $rawData, $paidAmount, $paidCurrency);
+    }
+}
+
 // ─── Mark order paid ───────────────────────────────────────────────────────
-function payments_mark_paid(int $orderId, string $method, string $externalId, array $rawData = []): void
+function payments_mark_paid(int $orderId, string $method, string $externalId, array $rawData = [], ?string $paidAmount = null, ?string $paidCurrency = null): void
 {
     global $mysql;
+    $order = payments_get_order($orderId);
+    if (!$order) {
+        throw new RuntimeException('Cannot mark missing payment order as paid: #' . $orderId);
+    }
+
     $mysql->query("UPDATE " . prefix . "_basket_orders SET status='paid', payment_method=" . db_squote($method) . ", paid_at=" . db_squote(time()) . " WHERE id=" . db_squote($orderId));
     $mysql->query(
         "INSERT INTO " . prefix . "_payments_transactions
@@ -78,20 +110,50 @@ function payments_mark_paid(int $orderId, string $method, string $externalId, ar
          " . db_squote(json_encode($rawData)) . "," . db_squote(time()) . ")"
     );
     logger("Order #$orderId marked paid via $method (ext: $externalId)", 'info', 'payments.log');
+    payments_dispatch_paid_handlers($orderId, $method, $externalId, $rawData, $paidAmount, $paidCurrency);
 }
 
 // ─── Get configured adapters list ─────────────────────────────────────────
+function payments_adapter_config(string $name): array
+{
+    global $PLUGINS;
+
+    pluginsLoadConfig();
+    $pluginConfig = $PLUGINS['config']['payments'] ?? [];
+    if (!is_array($pluginConfig)) {
+        throw new RuntimeException('Payments configuration is not an array.');
+    }
+
+    $adapterConfig = [];
+    $prefix = $name . '_';
+    foreach ($pluginConfig as $key => $value) {
+        if (is_string($key) && strpos($key, $prefix) === 0) {
+            $adapterConfig[substr($key, strlen($prefix))] = $value;
+        }
+    }
+
+    return $adapterConfig;
+}
+
 function payments_active_adapters(): array
 {
-    $cfg = pluginsLoadConfig('payments');
     $result = [];
     foreach (payments_load_adapters() as $name => $file) {
-        $adapterCfg = $cfg[$name] ?? [];
+        $adapterCfg = payments_adapter_config($name);
         if (!empty($adapterCfg['enabled'])) {
             $result[$name] = ['config' => $adapterCfg, 'file' => $file];
         }
     }
     return $result;
+}
+
+function payments_test_order_allowed(array $order): bool
+{
+    global $userROW;
+
+    return is_array($userROW)
+        && !empty($userROW['id'])
+        && (int)($order['user_id'] ?? 0) === (int)$userROW['id'];
 }
 
 // ─── Page: payment selection / redirect to gateway ────────────────────────
@@ -116,14 +178,27 @@ function payments_pay_page()
     }
 
     $adapters = payments_active_adapters();
+    if (isset($adapters['test']) && !payments_test_order_allowed($order)) {
+        unset($adapters['test']);
+    }
 
     // If method selected — redirect to gateway
     if ($method && isset($adapters[$method])) {
         include_once $adapters[$method]['file'];
+        if ($method === 'test') {
+            payments_adapter_redirect($orderId, $order, $adapters[$method]['config']);
+            return;
+        }
         $SUPRESS_TEMPLATE_SHOW = 1;
         $SUPRESS_MAINBLOCK_SHOW = 1;
         payments_adapter_redirect($orderId, $order, $adapters[$method]['config']);
         exit;
+    }
+
+    $adapterLabels = [];
+    foreach ($adapters as $name => $adapter) {
+        $label = trim((string)($adapter['config']['label'] ?? ''));
+        $adapterLabels[$name] = $label !== '' ? $label : strtoupper($name);
     }
 
     // Show payment method selection page
@@ -133,6 +208,7 @@ function payments_pay_page()
         'order'    => $order,
         'items'    => json_decode($order['items_json'], true),
         'adapters' => array_keys($adapters),
+        'adapter_labels' => $adapterLabels,
         'lang'     => payments_lang_vars(),
     ]);
 }

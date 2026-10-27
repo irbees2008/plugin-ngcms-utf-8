@@ -64,7 +64,14 @@ function payments_adapter_notify(array $data, array $cfg): void
     $orderId = intval(end($parts));
 
     if (in_array($payload['status'] ?? '', ['success', 'sandbox'], true)) {
-        payments_mark_paid($orderId, 'liqpay', $payload['payment_id'] ?? '', $payload);
+        payments_mark_paid(
+            $orderId,
+            'liqpay',
+            $payload['payment_id'] ?? '',
+            $payload,
+            isset($payload['amount']) ? (string)$payload['amount'] : null,
+            isset($payload['currency']) ? (string)$payload['currency'] : null
+        );
         echo 'OK';
     }
 }

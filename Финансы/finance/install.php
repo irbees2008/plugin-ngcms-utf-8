@@ -14,8 +14,11 @@ if (!defined('NGCMS')) die ('HAL');
 function plugin_finance_install($action) {
 
 	global $lang;
-	if ($action != 'autoapply')
-		loadPluginLang('finance', 'config', '', '', ':');
+	$financeLang = [];
+	if ($action != 'autoapply') {
+		loadPluginLang('finance', 'config', '', 'finance', '#');
+		$financeLang = isset($lang['finance']) && is_array($lang['finance']) ? $lang['finance'] : [];
+	}
 	// Fill DB_UPDATE configuration scheme
 	$db_update = array(
 		array(
@@ -34,6 +37,10 @@ function plugin_finance_install($action) {
 			'action' => 'cmodify',
 			'fields' => array(
 				array('action' => 'cmodify', 'name' => 'fin_price', 'type' => 'char(40)', 'params' => "default ''"),
+				array('action' => 'cmodify', 'name' => 'fin_price2', 'type' => 'char(40)', 'params' => "default ''"),
+				array('action' => 'cmodify', 'name' => 'fin_price3', 'type' => 'char(40)', 'params' => "default ''"),
+				array('action' => 'cmodify', 'name' => 'fin_price4', 'type' => 'char(40)', 'params' => "default ''"),
+				array('action' => 'cmodify', 'name' => 'fin_price5', 'type' => 'char(40)', 'params' => "default ''"),
 			)
 		),
 		array(
@@ -93,6 +100,44 @@ function plugin_finance_install($action) {
 				array('action' => 'cmodify', 'name' => 'description', 'type' => 'text'),
 			)
 		),
+		array(
+			'table'  => 'finance_payment_orders',
+			'action' => 'cmodify',
+			'key'    => 'primary key(order_id), KEY status (status)',
+			'engine' => 'InnoDB',
+			'fields' => array(
+				array('action' => 'cmodify', 'name' => 'order_id', 'type' => 'int(11)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'user_id', 'type' => 'int(11)', 'params' => 'not null default 0'),
+				array('action' => 'cmodify', 'name' => 'amount', 'type' => 'decimal(12,2)', 'params' => 'not null default 0'),
+				array('action' => 'cmodify', 'name' => 'status', 'type' => 'varchar(20)', 'params' => "not null default 'pending'"),
+				array('action' => 'cmodify', 'name' => 'created_at', 'type' => 'int(11)', 'params' => 'not null default 0'),
+				array('action' => 'cmodify', 'name' => 'credited_at', 'type' => 'int(11)', 'params' => 'not null default 0'),
+			)
+		),
+		array(
+			'table'  => 'finance_file_downloads',
+			'action' => 'cmodify',
+			'key'    => 'primary key(id), UNIQUE KEY token_key (user_id, file_id, token_hash), KEY file_user (file_id, user_id)',
+			'engine' => 'InnoDB',
+			'fields' => array(
+				array('action' => 'cmodify', 'name' => 'id', 'type' => 'int(11)', 'params' => 'not null auto_increment'),
+				array('action' => 'cmodify', 'name' => 'user_id', 'type' => 'int(11)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'file_id', 'type' => 'int(11)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'token_hash', 'type' => 'char(64)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'created_at', 'type' => 'int(11)', 'params' => 'not null default 0'),
+			)
+		),
+		array(
+			'table'  => 'finance_file_download_counters',
+			'action' => 'cmodify',
+			'key'    => 'primary key(user_id, file_id)',
+			'engine' => 'InnoDB',
+			'fields' => array(
+				array('action' => 'cmodify', 'name' => 'user_id', 'type' => 'int(11)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'file_id', 'type' => 'int(11)', 'params' => 'not null'),
+				array('action' => 'cmodify', 'name' => 'downloads', 'type' => 'int(11)', 'params' => 'not null default 0'),
+			)
+		),
 		// array(
 		//  'table'  => 'pricelist',
 		//  'action' => 'cmodify',
@@ -118,7 +163,10 @@ function plugin_finance_install($action) {
 	// Apply requested action
 	switch ($action) {
 		case 'confirm':
-			generate_install_page('finance', $lang['finance:desc_install']);
+			if (empty($financeLang['desc_install'])) {
+				throw new RuntimeException('Missing finance installation description translation.');
+			}
+			generate_install_page('finance', $financeLang['desc_install']);
 			break;
 		case 'autoapply':
 		case 'apply':
@@ -140,4 +188,3 @@ function plugin_finance_install($action) {
 
 	return true;
 }
-

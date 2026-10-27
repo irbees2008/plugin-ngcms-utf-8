@@ -5,6 +5,245 @@
 global $FINANCE_MONEY_ACCEPTORS;
 $FINANCE_MONEY_ACCEPTORS = array();
 $FINANCE_CACHE = array();
+
+function finance_news_access_durations(): array {
+	return [
+		'permanent' => null,
+		'1h' => 3600,
+		'2h' => 7200,
+		'3h' => 10800,
+		'page' => null,
+		'session' => null,
+	];
+}
+
+function finance_news_access_duration(): string {
+	$duration = pluginGetVariable('finance', 'news_access_duration');
+	if ($duration === false || $duration === null || $duration === '') {
+		return 'permanent';
+	}
+	if (!is_string($duration) || !array_key_exists($duration, finance_news_access_durations())) {
+		throw new RuntimeException('Invalid Finance paid-news access duration setting.');
+	}
+	return $duration;
+}
+
+function finance_news_block_count(): int {
+	$value = pluginGetVariable('finance', 'news_block_count');
+	if ($value === false || $value === null || $value === '') {
+		return 1;
+	}
+	$count = filter_var($value, FILTER_VALIDATE_INT);
+	if ($count === false || $count < 1 || $count > 5) {
+		throw new RuntimeException('Invalid Finance paid-news block count setting.');
+	}
+	return $count;
+}
+
+function finance_news_price_field(int $blockNumber): string {
+	if ($blockNumber < 1 || $blockNumber > 5) {
+		throw new InvalidArgumentException('Finance news block number must be between 1 and 5.');
+	}
+	return $blockNumber === 1 ? 'fin_price' : 'fin_price' . $blockNumber;
+}
+
+function finance_ensure_news_price_columns(): void {
+	static $ready = false;
+	if ($ready) {
+		return;
+	}
+	global $mysql;
+	$table = prefix . '_news';
+	for ($blockNumber = 1; $blockNumber <= 5; $blockNumber++) {
+		$field = finance_news_price_field($blockNumber);
+		$schema = $mysql->record(
+			"SHOW COLUMNS FROM " . $table . " LIKE " . db_squote($field)
+		);
+		if (!is_array($schema)) {
+			$mysql->query(
+				"ALTER TABLE " . $table . " ADD COLUMN `" . $field . "` char(40) default ''"
+			);
+			$schema = $mysql->record(
+				"SHOW COLUMNS FROM " . $table . " LIKE " . db_squote($field)
+			);
+		}
+		if (!is_array($schema)) {
+			throw new RuntimeException('Finance could not create the news price field: ' . $field);
+		}
+	}
+	$ready = true;
+}
+
+function finance_content_protection_settings(): array {
+	global $config;
+	$settings = [];
+	foreach (['copy_dots', 'copy_watermark', 'disable_selection', 'visible_watermark'] as $key) {
+		$value = pluginGetVariable('finance', 'protect_' . $key);
+		if (in_array($value, [1, '1', true], true)) {
+			$settings[$key] = true;
+		} elseif (in_array($value, [0, '0', false, null, ''], true)) {
+			$settings[$key] = false;
+		} else {
+			throw new RuntimeException('Invalid Finance content protection setting: ' . $key);
+		}
+	}
+	$watermark = pluginGetVariable('finance', 'protect_watermark_text');
+	if ($watermark !== false && $watermark !== null && !is_string($watermark)) {
+		throw new RuntimeException('Invalid Finance watermark text setting.');
+	}
+	$siteTitle = is_array($config) ? trim((string)($config['home_title'] ?? '')) : '';
+	$settings['watermark_text'] = is_string($watermark) && trim($watermark) !== ''
+		? trim($watermark)
+		: ($siteTitle !== '' ? $siteTitle : 'Finance');
+	return $settings;
+}
+
+function finance_private_download_limit(): int {
+	$value = pluginGetVariable('finance', 'max_file_downloads');
+	if ($value === false || $value === null || $value === '') {
+		return 10;
+	}
+	$limit = filter_var($value, FILTER_VALIDATE_INT);
+	if ($limit === false || $limit < 1 || $limit > 10) {
+		throw new RuntimeException('Invalid Finance private file download limit setting.');
+	}
+	return $limit;
+}
+
+function finance_ensure_file_download_schema(): void {
+	static $ready = false;
+	if ($ready) {
+		return;
+	}
+	global $mysql;
+	$tables = [
+		prefix . '_finance_file_downloads' =>
+			'CREATE TABLE IF NOT EXISTS ' . prefix . '_finance_file_downloads (' .
+			'id INT NOT NULL AUTO_INCREMENT, user_id INT NOT NULL, file_id INT NOT NULL, ' .
+			'token_hash CHAR(64) NOT NULL, created_at INT NOT NULL DEFAULT 0, ' .
+			'PRIMARY KEY (id), UNIQUE KEY token_key (user_id, file_id, token_hash), ' .
+			'KEY file_user (file_id, user_id)) ENGINE=InnoDB',
+		prefix . '_finance_file_download_counters' =>
+			'CREATE TABLE IF NOT EXISTS ' . prefix . '_finance_file_download_counters (' .
+			'user_id INT NOT NULL, file_id INT NOT NULL, downloads INT NOT NULL DEFAULT 0, ' .
+			'PRIMARY KEY (user_id, file_id)) ENGINE=InnoDB',
+	];
+	foreach ($tables as $tableName => $createSql) {
+		$status = $mysql->record("SHOW TABLE STATUS WHERE Name=" . db_squote($tableName));
+		if (!$status) {
+			$mysql->query($createSql);
+			$status = $mysql->record("SHOW TABLE STATUS WHERE Name=" . db_squote($tableName));
+		}
+		$engine = is_array($status) ? ($status['Engine'] ?? ($status['Type'] ?? '')) : '';
+		if (strcasecmp((string)$engine, 'InnoDB') !== 0) {
+			throw new RuntimeException('Finance file download table must use InnoDB: ' . $tableName);
+		}
+	}
+	$ready = true;
+}
+
+function finance_private_storage_dir(bool $create = false): string {
+	if (!function_exists('ngcms_private_upload_dir')) {
+		$uploadClass = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'includes' .
+			DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'upload.class.php';
+		if (!is_file($uploadClass)) {
+			throw new RuntimeException('The core private upload storage helper is unavailable.');
+		}
+		include_once $uploadClass;
+	}
+	return ngcms_private_upload_dir($create);
+}
+
+function finance_private_file_path(string $folder, string $name): string {
+	finance_private_storage_dir();
+	if (!function_exists('ngcms_private_upload_path')) {
+		throw new RuntimeException('The core private upload path helper is unavailable.');
+	}
+	return ngcms_private_upload_path($folder, $name);
+}
+
+function finance_news_requires_private_files(int $newsId): bool {
+	global $mysql;
+	$row = null;
+	if ($newsId > 0) {
+		$row = $mysql->record(
+			"SELECT * FROM " . prefix . "_news WHERE id=" . db_squote($newsId) . " LIMIT 1"
+		);
+		if (!is_array($row)) {
+			throw new RuntimeException('Unable to load the news record before deciding its attachment storage.');
+		}
+	}
+	for ($blockNumber = 1; $blockNumber <= 5; $blockNumber++) {
+		$rawPrice = $row[$field = finance_news_price_field($blockNumber)] ?? null;
+		if ($newsId === 0 && array_key_exists($field, $_REQUEST)) {
+			$rawPrice = $_REQUEST[$field];
+		}
+		$minor = finance_amount_to_minor($rawPrice ?? '0');
+		if ($minor === false || $minor > 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function finance_private_file_url(int $fileId, int $newsId): string {
+	static $urls = [];
+	global $userROW, $mysql;
+	$key = $newsId . ':' . $fileId;
+	if (isset($urls[$key])) {
+		return $urls[$key];
+	}
+
+	$userId = is_array($userROW) ? (int)($userROW['id'] ?? 0) : 0;
+	if ($userId < 1) {
+		return $urls[$key] = '';
+	}
+
+	$news = $mysql->record(
+		"SELECT * FROM " . prefix . "_news WHERE id=" . db_squote($newsId) . " LIMIT 1"
+	);
+	if (!$news) {
+		return $urls[$key] = '';
+	}
+	$hasPaidBlocks = false;
+	for ($blockNumber = 1; $blockNumber <= 5; $blockNumber++) {
+		$blockPrice = finance_amount_to_minor($news[finance_news_price_field($blockNumber)] ?? '0');
+		if ($blockPrice === false || $blockPrice > 0) {
+			$hasPaidBlocks = true;
+			break;
+		}
+	}
+	$isPrivileged = (int)($userROW['status'] ?? 99) <= 2;
+	$hasAccess = !$hasPaidBlocks || $isPrivileged
+		|| finance_user_has_paid_news_access($newsId, $userId)
+		|| finance_has_temporary_session_access($newsId, $userId);
+	if (!$hasAccess) {
+		return $urls[$key] = '';
+	}
+
+	if (!isset($_SESSION['finance_file_launches']) || !is_array($_SESSION['finance_file_launches'])) {
+		$_SESSION['finance_file_launches'] = [];
+	}
+	foreach ($_SESSION['finance_file_launches'] as $tokenHash => $launch) {
+		if (!is_array($launch) || (int)($launch['expires_at'] ?? 0) < time()) {
+			unset($_SESSION['finance_file_launches'][$tokenHash]);
+		}
+	}
+	$token = bin2hex(random_bytes(32));
+	$_SESSION['finance_file_launches'][hash('sha256', $token)] = [
+		'user_id' => $userId,
+		'file_id' => $fileId,
+		'news_id' => $newsId,
+		'expires_at' => time() + 600,
+		'authorized_paid' => $hasPaidBlocks,
+	];
+	return $urls[$key] = generateLink('core', 'plugin', ['plugin' => 'finance'], [
+		'mode' => 'private_download',
+		'file_id' => $fileId,
+		'launch' => $token,
+	]);
+}
+
 // ================================================================
 // Шаблон класса пополнения баланса
 // ================================================================
@@ -96,6 +335,7 @@ function finance_register_acceptor(&$ref) {
 function finance_check_money($userlogin, $balance_no = -1) {
 
 	global $mysql, $userROW, $FINANCE_CACHE;
+	$balance_no = (int)$balance_no;
 	if (is_array($userROW) && ($userlogin == $userROW['name'])) {
 		$res = $userROW;
 	} else {
@@ -103,7 +343,8 @@ function finance_check_money($userlogin, $balance_no = -1) {
 	}
 	if ($res) {
 		if ($balance_no >= 0) {
-			return $res['balance' . $balance_no];
+			$column = $balance_no === 0 ? 'balance' : 'balance' . $balance_no;
+			return isset($res[$column]) ? $res[$column] : 0;
 		}
 		$sum = isset($res['balance']) ? $res['balance'] : 0;
 		// Проверяем нет ли данных уже в кеше
@@ -210,15 +451,16 @@ function finance_get_balance_type($balance_no) {
 //
 function finance_pay($identity, $payment) {
 
-	global $mysql, $userROW;
+	global $mysql;
 	// Если нам не передали identity пользователя - выходим
 	if (!isset($identity['id']) && !isset($identity['login']))
 		return false;
-	// Если надо заплатить со счета текущего пользователя - берём данные из памяти
-	if (is_array($userROW) && ((isset($identity['id']) && ($userROW['id'] == $identity['id'])) || (isset($identity['login']) && ($userROW['login'] == $identity['login'])))) {
-		$res = $userROW;
+	if (isset($identity['id'])) {
+		$res = $mysql->record("select * from " . uprefix . "_users where id=" . db_squote($identity['id']));
+	} elseif (isset($identity['login'])) {
+		$res = $mysql->record("select * from " . uprefix . "_users where name=" . db_squote($identity['login']));
 	} else {
-		$res = $mysql->record("select * from " . uprefix . "_users where " . (isset($identity['id']) ? ('id=' . db_squote($identity['id'])) : 'login=' . db_squote($identity['name'])));
+		$res = false;
 	}
 	// Выход если пользователь не найден
 	if (!is_array($res)) return false;
@@ -309,6 +551,21 @@ function finance_pay($identity, $payment) {
 function finance_add_money($userlogin, $balance, $sum, $description = '') {
 
 	global $mysql, $userROW, $ip;
+	if (!is_scalar($sum)) {
+		\Plugins\logger('Rejected non-scalar finance credit amount.', 'warn', 'finance.log');
+		return 0;
+	}
+	$sum = trim((string)$sum);
+	if (!preg_match('/^\d{1,8}(?:\.\d{1,2})?$/', $sum)) {
+		\Plugins\logger('Rejected invalid finance credit amount.', 'warn', 'finance.log');
+		return 0;
+	}
+	$amountMinor = (int)round((float)$sum * 100);
+	$balance = (int)$balance;
+	if ($balance < 0 || $balance > 4 || $amountMinor < 1) {
+		\Plugins\logger('Rejected out-of-range finance credit.', 'warn', 'finance.log');
+		return 0;
+	}
 	if (is_array($userROW) && ($userlogin == $userROW['name'])) {
 		$res = $userROW;
 	} else {
@@ -317,13 +574,18 @@ function finance_add_money($userlogin, $balance, $sum, $description = '') {
 	if ($res) {
 		// Пользователь найден
 		//print "Add money request for user '$userlogin', balance no '$balance' sum '$sum'<br />\n"."update ".uprefix.'_users set balance_'.$balance.'=balance_'.$balance.'+'.intval($sum*100).' where id = '.$res['id'];
-		$mysql->query("update " . uprefix . '_users set balance' . $balance . '=balance' . $balance . '+' . intval($sum * 100) . ' where id = ' . $res['id']);
+		$column = $balance === 0 ? 'balance' : 'balance' . $balance;
+		if ((int)$res[$column] > 2147483647 - $amountMinor) {
+			\Plugins\logger('Finance credit would overflow the user balance.', 'error', 'finance.log');
+			return 0;
+		}
+		$mysql->query("update " . uprefix . '_users set ' . $column . '=' . $column . '+' . $amountMinor . ' where id = ' . db_squote($res['id']));
 		// * сохранение лога
-		$mysql->query("insert into " . prefix . "_finance_history (user_id, dt, operation_type, balance" . ($balance > 0 ? $balance : '') . ", ip, description) values (" . db_squote($res['id']) . ", now(), 1, " . intval($sum * 100) . ", " . db_squote($ip) . ", " . db_squote($description) . ")");
+		$mysql->query("insert into " . prefix . "_finance_history (user_id, dt, operation_type, " . $column . ", ip, description) values (" . db_squote($res['id']) . ", now(), 1, " . $amountMinor . ", " . db_squote(isset($ip) ? $ip : '') . ", " . db_squote($description) . ")");
 
 		return 1;
 	} else {
-		print "Unknow user: $userlogin";
+		\Plugins\logger('Unknown user for finance credit: ' . (string)$userlogin, 'error', 'finance.log');
 	}
 
 	return 0;

@@ -60,7 +60,7 @@ function payments_adapter_notify(array $data, array $cfg): void
     }
 
     if ($method === 'pay') {
-        payments_mark_paid($orderId, 'unitpay', $params['unitpayId'] ?? '', $params);
+        payments_mark_paid($orderId, 'unitpay', $params['unitpayId'] ?? '', $params, (string)$amount, isset($params['currency']) ? (string)$params['currency'] : null);
         echo json_encode(['result' => ['message' => 'ok']]);
     } else {
         echo json_encode(['result' => ['message' => 'ok']]);

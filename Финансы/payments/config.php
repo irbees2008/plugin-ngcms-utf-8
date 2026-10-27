@@ -65,6 +65,7 @@ $adapterMeta = [
         ['name' => 'merchant_id',       'title' => $lang['payments:config.field.merchant_id']],
         ['name' => 'merchant_password', 'title' => $lang['payments:config.field.merchant_password']],
     ]],
+    'test'      => ['title' => $lang['payments:config.test_gateway'], 'fields' => []],
     'yoomoney'  => ['title' => 'YooMoney', 'fields' => [
         ['name' => 'shop_id',      'title' => $lang['payments:config.field.shop_id']],
         ['name' => 'secret_key',   'title' => $lang['payments:config.field.secret_key']],
@@ -86,6 +87,9 @@ foreach ($adapterMeta as $adapterName => $meta) {
         'values' => [0 => $lang['payments:config.option_no'], 1 => $lang['payments:config.option_yes']],
         'value'  => pluginGetVariable('payments', $adapterName . '_enabled'),
     ]);
+    if ($adapterName === 'test') {
+        $cfgX[count($cfgX) - 1]['descr'] = $lang['payments:config.test_warning'];
+    }
     array_push($cfgX, [
         'name'  => $adapterName . '_label',
         'type'  => 'input',

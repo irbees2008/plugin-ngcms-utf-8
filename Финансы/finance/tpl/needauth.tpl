@@ -1,4 +1,4 @@
-<div class="not_logged">
-	Доступ к данному контенту платный.<br/>Стоимость: $<b> {price}</b>
-	<br/><br/><font color=red>Для совершения финансовых операций вам необходимо авторизоваться!</font>
+<div class="finance-locked-content alert alert-warning">
+    <p>{{ lang.news_access }} {{ lang['news.block'] }} {{ block_number }}. {{ lang.news_price }}: <strong>{{ price }} {{ currency }}</strong></p>
+    <p>{{ lang.news_login_required }}</p>
 </div>

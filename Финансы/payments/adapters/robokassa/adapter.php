@@ -53,6 +53,6 @@ function payments_adapter_notify(array $data, array $cfg): void
         die("bad sign\n");
     }
 
-    payments_mark_paid($invId, 'robokassa', (string)$invId, $data);
+    payments_mark_paid($invId, 'robokassa', (string)$invId, $data, (string)$amount, isset($data['OutSumCurrency']) ? (string)$data['OutSumCurrency'] : null);
     echo "OK{$invId}\n";
 }

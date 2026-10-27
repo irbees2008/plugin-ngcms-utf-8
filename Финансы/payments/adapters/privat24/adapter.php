@@ -73,7 +73,14 @@ function payments_adapter_notify(array $data, array $cfg): void
     }
 
     if ($state === 'ok') {
-        payments_mark_paid($orderId, 'privat24', (string)$orderId, ['state' => $state, 'amount' => $amount]);
+        payments_mark_paid(
+            $orderId,
+            'privat24',
+            (string)$orderId,
+            ['state' => $state, 'amount' => $amount],
+            $amount,
+            $currency
+        );
         echo 'OK';
     }
 }
