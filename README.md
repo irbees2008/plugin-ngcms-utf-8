@@ -31,7 +31,6 @@
 | [auth_punbb](./auth_punbb/plugin.md) | авторизация с использованием БД форума punBB |
 | [auth_social](./auth_social/plugin.md) | Аутентификация через ВК, Google, Yandex, Facebook и т.д. |
 | [auth_vb](./auth_vb/plugin.md) | авторизация с использованием БД форума vBulletin |
-| [autokey_0200/plugins/autokeys_old](./autokey_0200/plugins/autokeys_old/plugin.md) | Автоматическое добавление поля keywords |
 | [autokeys](./autokeys/plugin.md) | Автоматическое добавление поля keywords |
 | [avatar_news](./avatar_news/plugin.md) | Вывод аватара пользователя, который добавил новость |
 | [avtek_callback](./avtek_callback/plugin.md) | Конструктор форм обратной связи (Email + Telegram + Leads + XLS) |
@@ -82,11 +81,8 @@
 | [forum](./forum/plugin.md) | Форумный функционал с интеграцией новостных страниц и комментариев. |
 | [ga_stat](./ga_stat/plugin.md) | Показывает графики статистики Google Analytics |
 | [gallery](./gallery/plugin.md) | Управление галереями и отображение изображений на сайте. |
-| [ggg_recaptcha](./ggg_recaptcha/plugin.md) | Защита форм сайта от интернет-ботов с reCAPTCHA v3. Предназначен для плагинов comments, feedback и... |
 | [gmanager](./gmanager/plugin.md) | Позволяет управлять галереями на сайте |
 | [gmanager/gmanager](./gmanager/gmanager/plugin.md) | Позволяет управлять галереями на сайте |
-| [gmanager_0_03/comments](./gmanager_0_03/comments/plugin.md) | Комментарии пользователей |
-| [gmanager_0_03/gmanager](./gmanager_0_03/gmanager/plugin.md) | Позволяет управлять галереями на сайте |
 | [grab](./grab/plugin.md) | Импортирует новости с других сайтов и добавляет их в NGCMS. |
 | [gsmg](./gsmg/plugin.md) | Генерация карты сайта для Google |
 | [guestbook](./guestbook/plugin.md) | Гостевая книга сайта |
@@ -124,9 +120,7 @@
 | [newsvotes](./newsvotes/plugin.md) | Создание и проведение опросов, связанных с новостями. |
 | [ng-advanced-captcha](./ng-advanced-captcha/plugin.md) | Продвинутая защита форм от ботов. Локальная система с несколькими типами капчи без внешних сервисов. |
 | [ng-captcha](./ng-captcha/plugin.md) | Универсальная защита форм от ботов с поддержкой Google reCAPTCHA v3, Cloudflare Turnstile и Яндекс SmartCaptcha |
-| [ng-grecaptcha-master](./ng-grecaptcha-master/plugin.md) | Защита форм сайта от интернет-ботов с Google reCAPTCHA v3. Предназначен для плагинов comments, feedback и... |
 | [ng-helpers](./ng-helpers/plugin.md) | Расширенная коллекция вспомогательных функций для плагинов NGCMS (60+ функций). |
-| [ng-helpers-master](./ng-helpers-master/plugin.md) | Коллекция вспомогательных функций для плагинов системы NGCMS. |
 | [ng-turnstile](./ng-turnstile/plugin.md) | Невидимая защита от ботов с Cloudflare Turnstile. Современная альтернатива CAPTCHA без головоломок. |
 | [ng-yandex-captcha](./ng-yandex-captcha/plugin.md) | Защита форм сайта от интернет-ботов с Яндекс SmartCaptcha. Предназначен для плагинов comments, feedback и... |
 | [ngcms_eshop-master/engine/plugins/breadcrumbs](./ngcms_eshop-master/engine/plugins/breadcrumbs/plugin.md) | Показывает посетителю его местонахождение на сайте |
@@ -158,7 +152,6 @@
 | [robots_editor](./robots_editor/plugin.md) | Плагин для редактирования файла robots.txt |
 | [rss_export](./rss_export/plugin.md) | Экспорт новостей в формате RSS |
 | [rss_import](./rss_import/plugin.md) | Импорт новостей через RSS (ng-helpers v0.2.2, PHP 8.0+) |
-| [rss_ukrnet](./rss_ukrnet/plugin.md) | Экспорт новостей в формате RSS |
 | [rss_yandex](./rss_yandex/plugin.md) | Экспорт RSS потока для Яndex (ng-helpers v0.2.2, PHP 8.0+) |
 | [same_category_news](./same_category_news/plugin.md) | Выводит внутри новости список новостей из такой(их)-же категории что и данная новость |
 | [scn](./scn/plugin.md) | Выводит ссылки на другие новости из тех же категорий на странице полной новости. |
