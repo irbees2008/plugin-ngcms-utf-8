@@ -1,0 +1,60 @@
+---
+id: "reputation"
+name: "Users Reputation"
+version: "1.3"
+acts: "ppages, action.ppages.uprofile, plugin.uprofile, plugin.comments, comments:show"
+file: "reputation.php"
+type: "plugin"
+install: "install.php"
+deinstall: "uninstall.php"
+config: "config.php"
+description: "Репутация пользователей"
+author: "LinMas"
+author_uri: "http://linmas.org.ua/"
+minenginebuild: "3740369"
+icons: "<i class=\"fa fa-address-card-o fa-3x\" aria-hidden=\"true\"></i>"
+---
+
+Репутация рользователей.
+
+Важно: для работы плагина необходим плагин comments 
+
+в шаблонах 
+	comments.show.tpl плагина comments 
+	profile.tpl плагина uprofile
+	users.tpl плагина uprofile
+	вставить
+[isplugin reputation] 	- открытие тега который не выводит свое содержимое при выключенном плагине reputation
+{reputation}				- переменная, вместо которой выводится содержимое шаблона reputation.comments.tpl или reputation.uprofile.tpl, в зависимости от того где выводится
+[/isplugin] 					- закрывающий тег сокрытия
+
+change.tpl - шаблон формы изменения репутации
+	{formurl} 				- урл куда отрправляются данные формы
+	{changername} 		- имя изменяющего
+	{username} 			- имя 
+	{action} 				- действие(текст)
+	{url} 						- урл страници на который изменили репутацию
+	{uid} 						- id пользователя кому изменяется репутация
+	{act} 					- действие(кодовое значеник)
+	 Важно: Для корректной работы формы рекомендуется менять только оформление, можно изменять только элементы формы, кроме кнопки SUBMIT.
+
+changes.tpl - шаблон страници с закладками пользователя
+	{user} 					- имя пользователя
+	{entres} 				- вывод изменений через шаблон entries.tpl
+
+entries.tpl - шаблон ссылки добавить в закладки(удалить из закладок)	
+	{user} 					- имя изменившего пользователя
+	{action} 				- действие
+	{comment} 			- комментарий к изменению
+	{date} 					- дата изменения
+	{url} 						- урл страници, на которой изменили репутацию
+	
+reputation.comments.tpl - шаблон репутации который выводится в комментариях
+	{+url}					- урл формы понижения репутации
+	{-url}						- урл формы повышения репутации
+	{url}						- урл страници с изменениями репутации пользователя
+	{reputation}			- знечение репутации пользователя
+	[can-change][/can-change] - теги, содержимое которых отображается только тогда, когда вошедший пользователь может изменить репутацию другому пользователю
+	
+reputation.uprofile.tpl - шаблон вывода репутации пользователя в его профиле
+	все переменные такие же как и в reputation.comments.tpl
