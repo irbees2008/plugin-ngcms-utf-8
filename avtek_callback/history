@@ -1,0 +1,5 @@
+[1.1.3] Expanded plugin setup documentation; fixed per-form empty Telegram/CRM overrides to inherit global settings and made the phone placeholder configurable.
+[1.1.2] Reworked plugin settings, forms, and leads screens into Bootstrap 4 Twig templates while preserving existing actions and fields.
+[1.1.1] Restored the plugin documentation button and modal in the Xnews-style admin header.
+[1.1.0] Bootstrap 4 admin layout, registered Twig rendering, enabled automatic AJAX submission for embedded forms, fixed error display and CSRF-protected admin mutations; corrected table-prefix fallback and documentation.
+[1.0.0] initial release

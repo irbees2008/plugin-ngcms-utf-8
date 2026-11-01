@@ -1,0 +1,1 @@
+<a href="{link}">{name}</a>: <b>{goals}</b> гол (iв)<br />

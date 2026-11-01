@@ -1,0 +1,1 @@
+<img width='30' height='10' src='/engine/plugins/football_stats/channel_logo/{logo}' />

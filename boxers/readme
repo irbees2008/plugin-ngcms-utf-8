@@ -1,0 +1,31 @@
+¬се шаблоны, начинающиес€ с conf.***.tpl это шаблоны админской части. 
+
+* conf.add.boxers.form.tpl - добавление боксера
+* conf.add.organization.form.tpl - добавление организаций, типа WBC
+* conf.add.weight.form.tpl - добавление весовых категорий
+* conf.config.tpl - шаблон пункта "Ќастройки"
+* conf.edit.boxers.form.tpl - редактирование боксера
+* conf.edit.fights.tpl - редактирование бо€
+* conf.edit.organization.form.tpl - редактирование организаций
+* conf.edit.weight.form.tpl - редактирование весовых категорий
+* conf.fights.tpl - шаблон строки одного бо€ в списке боев в админке
+* conf.list.boxers.row.tpl - шаблон строки одного боксера в списке боксеров в админке
+* conf.list.boxers.tpl - список боксеров
+* conf.list.organization.row.tpl - шаблон строки одной организации в списке организаций в админке
+* conf.list.organization.tpl - список организаций
+* conf.list.weights.row.tpl - шаблон строки одной категории в списке весовых категорий в админке
+* conf.list.weights.tpl - список весовых категорий
+* conf.main.tpl - основной шаблон админки внутри которого вывод€тс€ списки боксеров, списки весовых категорий, рейтинги и т.п.
+* conf.ratings.tpl - управление рейтингами в админке
+
+
+¬се шаблоны, начинающиес€ с plugin.***.tpl это шаблоны страниц на сайте. 
+
+* plugin.alphabet.tpl - /plugin/boxers/
+* plugin.letter.tpl - - /plugin/boxers/ шаблон дл€ одной буквы
+* plugin.rating.all.all.entries.tpl - /plugin/boxers/ratings/ шаблон дл€ €чейки таблицы рейтингов ¬се весовые - ¬се организации
+* plugin.rating.all.all.tpl - /plugin/boxers/ratings/ сама таблица рейтингов ¬се весовые - ¬се организации
+* plugin.rating.all.one.tpl - /plugin/boxers/ratings/ шаблон внутри которого вывод€тс€ элементы из plugin.rating.entries.all.one.tpl. ¬се весовые - ќдна организаци€, ќдна организаци€ - ¬се весовые, ќдна весова€ - ќдна организаци€
+* plugin.rating.entries.all.one.tpl - /plugin/boxers/ratings/ шаблон дл€ одного рейтинга ¬се весовые - ќдна организаци€, ќдна организаци€ - ¬се весовые, ќдна весова€ - ќдна организаци€
+* plugin.ratings.tpl - /plugin/boxers/ratings/ кост€к внутри которого вывод€тс€ выпадающие списки с выбором весов, рейтингов, истории и сами 	рейтинги
+* profile.tpl - профиль боксера /boxer/»ћя

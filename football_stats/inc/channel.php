@@ -1,0 +1,31 @@
+<?php
+ return array (
+' '	=>	'1.gif',
+'upltv'			=>	'upltv.gif',
+'Setanta'			=>	'setanta-sports.gif',
+'Megogo'			=>	'megogo1.gif',
+'Xsport'			=>	'XSPORT.gif',
+'2+2'			=>	'2_2.gif',
+'Футбол 1'	=>	'trk_futbol.gif',
+'Футбол 2'	=>	'futbol_plyus.gif',
+'Футбол 3'	=>	'futbol_3.gif',
+'Уніант ТБ'	=>	'unian.gif',
+'Setanta_'			=>	'Setanta.gif',
+'Setanta+'			=>	'setantaplus.gif',
+'Перший'		=>	'pervyiy.gif',
+'Інтер'		=>	'Inter.gif',
+'НТН'			=>	'ntn.gif',
+'1+1'			=>	'1_1.gif',
+'Спорт 1'		=>	'sport1.gif',
+'Спорт 2'		=>	'sport2.gif',
+'Зік'	=>	'zik.gif',
+'Наш футбол'	=>	'ntv_nashfootball.jpg',
+'Росія 2'			=>	'rosia2.jpg',
+'НТВ спорт'		=>	'ntv_sport.jpg',
+'Евроспорт'			=>	'eurosport.gif',
+'ТРК Україна'			=>	'TRK_Ukraina.gif',
+'Футбол+'	=>	'futbol_plyus.gif',
+'Футбол'	=>	'trk_futbol.gif',
+'СПОРТ ПЛЮС'			=>	'sportplus.gif'
+ );
+
